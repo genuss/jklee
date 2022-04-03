@@ -1,0 +1,7 @@
+Developing interactively
+
+To develop ui-plugin
+1. Run ./gradlew :spring-boot-admin:installNode :spring-boot-admin:assembleFrontend
+2. Run ./gradlew :spring-boot-admin:watch
+3. Run./gradlew :samples:bootRun
+4. Hack the UI code
