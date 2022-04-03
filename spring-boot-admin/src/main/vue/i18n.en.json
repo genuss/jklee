@@ -1,0 +1,17 @@
+{
+  "jklee": {
+    "ui": {
+      "results": "Profiling Results",
+      "session": {
+        "arguments": "Arguments",
+        "duration": "Duration",
+        "format": "Format",
+        "name": "Session Name",
+        "profiling": "Profiling...",
+        "start": "Start Profiling",
+        "title": "Profiling Session"
+      },
+      "settings": "Settings"
+    }
+  }
+}

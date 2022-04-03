@@ -1,0 +1,25 @@
+{
+  "name": "spring-boot-admin-sample-custom-ui",
+  "packageManager": "npm@9.6.7",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "build:dev": "NODE_ENV=development vite build --emptyOutDir --sourcemap --mode development --watch"
+  },
+  "dependencies": {
+    "vue": "3.3.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "4.3.4",
+    "@vue-macros/reactivity-transform": "^0.3.0",
+    "vite": "4.4.9",
+    "vite-plugin-static-copy": "^0.17.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
