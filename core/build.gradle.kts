@@ -10,4 +10,5 @@ dependencies {
   compileOnly("com.fasterxml.jackson.core:jackson-annotations")
 
   testCompileOnly("com.fasterxml.jackson.core:jackson-annotations")
+  testImplementation("org.junit.jupiter:junit-jupiter")
 }

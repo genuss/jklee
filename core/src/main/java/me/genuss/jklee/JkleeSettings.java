@@ -22,8 +22,7 @@ public class JkleeSettings {
 
   @Builder.Default boolean failOnInitErrors = false;
 
-  @Builder.Default @NonNull
-  AsyncProfilerOptions asyncProfilerOptions = AsyncProfilerOptions.builder().build();
+  @Builder.Default @NonNull AsyncProfiler asyncProfiler = AsyncProfiler.builder().build();
 
   public static JkleeSettings defaults() {
     return JkleeSettings.builder().build();
@@ -34,7 +33,7 @@ public class JkleeSettings {
   @Accessors(fluent = true)
   @JsonAutoDetect(fieldVisibility = Visibility.ANY)
   @JsonInclude(Include.NON_EMPTY)
-  public static class AsyncProfilerOptions {
+  public static class AsyncProfiler {
 
     @Builder.Default @NonNull List<@NonNull String> agentPathCandidates = List.of();
 

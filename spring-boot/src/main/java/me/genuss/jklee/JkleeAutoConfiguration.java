@@ -1,22 +1,29 @@
 package me.genuss.jklee;
 
-import java.util.List;
-import me.genuss.jklee.JkleeSettings.AsyncProfilerOptions;
+import me.genuss.jklee.JkleeSettings.AsyncProfiler;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableConfigurationProperties(JkleeConfigurationProperties.class)
+@ConditionalOnProperty(value = "jklee.enabled", matchIfMissing = true)
 public class JkleeAutoConfiguration {
 
   @Bean
-  public Jklee jklee() {
+  public Jklee jklee(JkleeConfigurationProperties properties) {
+    var asyncProfiler = properties.getAsyncProfiler();
     return new Jklee(
         JkleeSettings.builder()
-            .asyncProfilerOptions(
-                AsyncProfilerOptions.builder()
-                    .agentPathCandidates(
-                        List.of(
-                            "/Users/agenus/soft/async-profiler-2.8.3-macos/build/libasyncProfiler.so"))
+            .enabled(properties.isEnabled())
+            .failOnInitErrors(properties.isFailOnInitErrors())
+            .asyncProfiler(
+                AsyncProfiler.builder()
+                    .agentPathCandidates(asyncProfiler.getAgentPathCandidates())
+                    .resultsDir(asyncProfiler.getResultsDir())
+                    .logsDir(asyncProfiler.getLogsDir())
+                    .appendPidToDirs(asyncProfiler.isAppendPidToDirs())
                     .build())
             .build());
   }

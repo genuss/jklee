@@ -28,6 +28,10 @@ allprojects {
       googleJavaFormat("1.15.0")
       targetExclude("src/main/java/one/profiler/**/*.java")
     }
+    json {
+      target("src/**/*.json")
+      gson().sortByKeys().indentWithSpaces(2)
+    }
   }
 
   java {

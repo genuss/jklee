@@ -1,6 +1,5 @@
 package me.genuss.jklee;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import lombok.extern.java.Log;
 import me.genuss.jklee.Jklee.ProfilingRequest;
 import me.genuss.jklee.Jklee.ProfilingRequest.Command;
-import me.genuss.jklee.JkleeSettings.AsyncProfilerOptions;
+import me.genuss.jklee.JkleeSettings.AsyncProfiler;
 
 @Log
 public class JkleeTest {
@@ -19,8 +18,8 @@ public class JkleeTest {
             JkleeSettings.builder()
                 .enabled(true)
                 .failOnInitErrors(true)
-                .asyncProfilerOptions(
-                    AsyncProfilerOptions.builder()
+                .asyncProfiler(
+                    AsyncProfiler.builder()
                         .agentPathCandidates(
                             List.of(
                                 "/Users/agenus/soft/async-profiler-2.8.3-macos/build/libasyncProfiler.so"))

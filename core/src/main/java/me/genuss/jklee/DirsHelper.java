@@ -10,17 +10,17 @@ class DirsHelper {
   private static final String DEFAULT_RESULTS_DIR = "results";
 
   static Path prepareLogsDir(JkleeSettings settings) throws IOException {
-    return getPath(settings, settings.asyncProfilerOptions().logsDir(), DEFAULT_LOGS_DIR);
+    return getPath(settings, settings.asyncProfiler().logsDir(), DEFAULT_LOGS_DIR);
   }
 
   static Path prepareResultsDir(JkleeSettings settings) throws IOException {
-    return getPath(settings, settings.asyncProfilerOptions().resultsDir(), DEFAULT_RESULTS_DIR);
+    return getPath(settings, settings.asyncProfiler().resultsDir(), DEFAULT_RESULTS_DIR);
   }
 
   private static Path getPath(JkleeSettings settings, Path dir, String fallback)
       throws IOException {
-    var options = settings.asyncProfilerOptions();
-    Path logsDir = dir != null ? dir : defaultDir(fallback, options.appendPidToDirs());
+    var asyncProfiler = settings.asyncProfiler();
+    Path logsDir = dir != null ? dir : defaultDir(fallback, asyncProfiler.appendPidToDirs());
     Files.createDirectories(logsDir);
 
     return logsDir;

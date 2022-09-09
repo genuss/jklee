@@ -35,7 +35,7 @@ class AsyncProfilerLauncher {
 
   public AsyncProfilerLauncher(JkleeSettings settings) {
     asyncProfiler =
-        settings.asyncProfilerOptions().agentPathCandidates().stream()
+        settings.asyncProfiler().agentPathCandidates().stream()
             .map(Path::of)
             .filter(Files::exists)
             .map(this::tryLoad)
@@ -78,32 +78,6 @@ class AsyncProfilerLauncher {
     this.resultsDir = resultsDir;
   }
 
-  private AsyncProfiler tryLoad(Path path) {
-    Path realPath;
-    try {
-      realPath = path.toRealPath();
-    } catch (IOException e) {
-      log.fine("Not a path: " + path);
-      return null;
-    }
-    AsyncProfiler asyncProfiler;
-    try {
-      asyncProfiler = AsyncProfiler.getInstance(realPath.toString());
-    } catch (Exception e) {
-      log.fine(
-          () ->
-              String.format(
-                  "Couldn't load async profiler from %s. Error was: %s", realPath, e.getMessage()));
-      return null;
-    }
-    log.info(
-        () ->
-            String.format(
-                "Loaded async profiler native library from '%s'. Version: %s",
-                realPath, asyncProfiler.getVersion()));
-    return asyncProfiler;
-  }
-
   public void execute(ProfilingRequest request) {
     var startCommand = prepareCommand(request, resultsDir, logsDir);
     log.fine("Executing raw command: " + startCommand);
@@ -144,6 +118,32 @@ class AsyncProfilerLauncher {
     } catch (IOException e) {
       return null;
     }
+  }
+
+  private AsyncProfiler tryLoad(Path path) {
+    Path realPath;
+    try {
+      realPath = path.toRealPath();
+    } catch (IOException e) {
+      log.fine("Not a path: " + path);
+      return null;
+    }
+    AsyncProfiler asyncProfiler;
+    try {
+      asyncProfiler = AsyncProfiler.getInstance(realPath.toString());
+    } catch (Exception e) {
+      log.fine(
+          () ->
+              String.format(
+                  "Couldn't load async profiler from %s. Error was: %s", realPath, e.getMessage()));
+      return null;
+    }
+    log.info(
+        () ->
+            String.format(
+                "Loaded async profiler native library from '%s'. Version: %s",
+                realPath, asyncProfiler.getVersion()));
+    return asyncProfiler;
   }
 
   private boolean isResult(Path path, BasicFileAttributes attributes) {
