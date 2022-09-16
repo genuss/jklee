@@ -22,7 +22,6 @@ public class JkleeAutoConfiguration {
                 AsyncProfiler.builder()
                     .agentPathCandidates(asyncProfiler.getAgentPathCandidates())
                     .resultsDir(asyncProfiler.getResultsDir())
-                    .logsDir(asyncProfiler.getLogsDir())
                     .appendPidToDirs(asyncProfiler.isAppendPidToDirs())
                     .build())
             .build());

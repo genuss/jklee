@@ -43,8 +43,8 @@ public class Jklee {
     return asyncProfiler.getAvailableProfilingResults();
   }
 
-  public Path getProfilingResult(String fileName) {
-    return asyncProfiler.getProfilingResult(fileName);
+  public Path getProfilingResult(String sessionName) {
+    return asyncProfiler.getProfilingResult(sessionName);
   }
 
   @Builder

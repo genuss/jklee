@@ -1,14 +1,18 @@
 package me.genuss.jklee;
 
+import java.io.File;
 import java.nio.file.Path;
 import me.genuss.jklee.Jklee.ProfilingRequest;
 import me.genuss.jklee.Jklee.ProfilingRequest.Command;
 
 class CommandParser {
 
-  static String prepareCommand(ProfilingRequest request, Path resultsDir, Path logsDir) {
+  public static final String FILENAME_RESULT = "result";
+  public static final String FILENAME_LOG = "async-profiler.log";
+
+  static String prepareCommand(ProfilingRequest request, Path sessionDir) {
     if (request.rawArguments() != null) {
-      return request.rawArguments() + fileAndLogArgs(request, resultsDir, logsDir);
+      return request.rawArguments() + fileAndLogArgs(request, sessionDir);
     }
 
     if (request.command() == Command.START) {
@@ -17,21 +21,20 @@ class CommandParser {
           + request.event()
           + ",interval="
           + request.interval().toNanos()
-          + fileAndLogArgs(request, resultsDir, logsDir);
+          + fileAndLogArgs(request, sessionDir);
     }
     throw new UnsupportedOperationException(
         String.format("Command %s is not supported yet", request.command()));
   }
 
-  public static String prepareStopCommand(ProfilingRequest request, Path resultsDir, Path logsDir) {
-    return "stop" + fileAndLogArgs(request, resultsDir, logsDir);
+  public static String prepareStopCommand(ProfilingRequest request, Path sessionDir) {
+    return "stop" + fileAndLogArgs(request, sessionDir);
   }
 
-  private static String fileAndLogArgs(ProfilingRequest request, Path resultsDir, Path logsDir) {
-    var id = request.id();
+  private static String fileAndLogArgs(ProfilingRequest request, Path sessionDir) {
     var formatString = request.format().format().isEmpty() ? "," + request.format().format() : "";
-    var resultFile = resultsDir + "/" + id + request.format().extension();
-    var logFile = logsDir + "/" + id + ".log";
+    var resultFile = sessionDir + File.separator + FILENAME_RESULT + request.format().extension();
+    var logFile = sessionDir + File.separator + FILENAME_LOG;
     return formatString + ",file=" + resultFile + ",log=" + logFile;
   }
 }

@@ -22,6 +22,8 @@ public class JkleeSettings {
 
   @Builder.Default boolean failOnInitErrors = false;
 
+  boolean cleanResultsDirOnStart;
+
   @Builder.Default @NonNull AsyncProfiler asyncProfiler = AsyncProfiler.builder().build();
 
   public static JkleeSettings defaults() {
@@ -38,8 +40,6 @@ public class JkleeSettings {
     @Builder.Default @NonNull List<@NonNull String> agentPathCandidates = List.of();
 
     Path resultsDir;
-
-    Path logsDir;
 
     @Builder.Default boolean appendPidToDirs = true;
   }

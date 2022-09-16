@@ -30,17 +30,14 @@ public class JkleeConfigurationProperties {
 
     List<String> agentPathCandidates;
     Path resultsDir;
-    Path logsDir;
     boolean appendPidToDirs;
 
     public AsyncProfiler(
         @DefaultValue("[]") List<String> agentPathCandidates,
         Path resultsDir,
-        Path logsDir,
         @DefaultValue("true") boolean appendPidToDirs) {
       this.agentPathCandidates = agentPathCandidates;
       this.resultsDir = resultsDir;
-      this.logsDir = logsDir;
       this.appendPidToDirs = appendPidToDirs;
     }
   }

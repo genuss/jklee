@@ -17,7 +17,7 @@ public class JkleeProfileEndpoint {
   }
 
   @WriteOperation
-  public void downloadFile(
+  public void startProfiling(
       @Selector String id, String rawArguments, Duration duration, Format format) {
     // rawArguments example start,event=itimer,interval=1ms
     jklee.start(

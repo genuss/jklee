@@ -24,8 +24,8 @@ public class JkleeFilesEndpoint {
   }
 
   @ReadOperation
-  public WebEndpointResponse<Resource> downloadFile(@Selector String fileName) {
-    var result = jklee.getProfilingResult(fileName);
+  public WebEndpointResponse<Resource> downloadProfilingResults(@Selector String sessionName) {
+    var result = jklee.getProfilingResult(sessionName);
     if (result == null) {
       return new WebEndpointResponse<>(WebEndpointResponse.STATUS_NOT_FOUND);
     }

@@ -1,5 +1,7 @@
 package me.genuss.jklee;
 
+import static java.util.function.Predicate.not;
+import static me.genuss.jklee.CommandParser.FILENAME_RESULT;
 import static me.genuss.jklee.CommandParser.prepareCommand;
 import static me.genuss.jklee.CommandParser.prepareStopCommand;
 
@@ -30,7 +32,6 @@ class AsyncProfilerLauncher {
           });
 
   private final AsyncProfiler asyncProfiler;
-  private final Path logsDir;
   private final Path resultsDir;
 
   public AsyncProfilerLauncher(JkleeSettings settings) {
@@ -47,23 +48,9 @@ class AsyncProfilerLauncher {
     } else if (asyncProfiler == null) {
       log.config(
           "Agent path not specified or async profiler couldn't be loaded from there. Disabling jklee");
-      logsDir = null;
       resultsDir = null;
       return;
     }
-
-    Path logsDir;
-    try {
-      logsDir = DirsHelper.prepareLogsDir(settings);
-    } catch (IOException e) {
-      if (settings.failOnInitErrors()) {
-        throw new UncheckedIOException(e);
-      }
-      this.logsDir = null;
-      this.resultsDir = null;
-      return;
-    }
-    this.logsDir = logsDir;
 
     Path resultsDir;
     try {
@@ -79,7 +66,13 @@ class AsyncProfilerLauncher {
   }
 
   public void execute(ProfilingRequest request) {
-    var startCommand = prepareCommand(request, resultsDir, logsDir);
+    var sessionDir = getSessionDirPath(request.id());
+    try {
+      Files.createDirectories(sessionDir);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    var startCommand = prepareCommand(request, sessionDir);
     log.fine("Executing raw command: " + startCommand);
     try {
       asyncProfiler.execute(startCommand);
@@ -89,7 +82,7 @@ class AsyncProfilerLauncher {
 
     POOL.schedule(
         () -> {
-          var stopCommand = prepareStopCommand(request, resultsDir, logsDir);
+          var stopCommand = prepareStopCommand(request, sessionDir);
           log.fine("Executing stop command: " + stopCommand);
           return asyncProfiler.execute(stopCommand);
         },
@@ -98,8 +91,9 @@ class AsyncProfilerLauncher {
   }
 
   public List<String> getAvailableProfilingResults() {
-    try (var stream = Files.find(resultsDir, 1, this::isResult)) {
+    try (var stream = Files.find(resultsDir, 1, this::isDir)) {
       return stream
+          .filter(not(resultsDir::equals))
           .map(Path::getFileName)
           .map(Path::toString)
           .sorted()
@@ -109,10 +103,10 @@ class AsyncProfilerLauncher {
     }
   }
 
-  public Path getProfilingResult(String fileName) {
-    try (var stream = Files.find(resultsDir, 1, this::isResult)) {
+  public Path getProfilingResult(String sessionName) {
+    try (var stream = Files.find(getSessionDirPath(sessionName), 1, this::isFile)) {
       return stream
-          .filter(path -> path.getFileName().toString().equals(fileName))
+          .filter(path -> path.getFileName().toString().startsWith(FILENAME_RESULT))
           .findAny()
           .orElse(null);
     } catch (IOException e) {
@@ -146,7 +140,15 @@ class AsyncProfilerLauncher {
     return asyncProfiler;
   }
 
-  private boolean isResult(Path path, BasicFileAttributes attributes) {
+  private Path getSessionDirPath(String sessionName) {
+    return Path.of(resultsDir.toString(), sessionName);
+  }
+
+  private boolean isDir(Path path, BasicFileAttributes attributes) {
+    return attributes.isDirectory();
+  }
+
+  private boolean isFile(Path path, BasicFileAttributes attributes) {
     return attributes.isRegularFile();
   }
 }
