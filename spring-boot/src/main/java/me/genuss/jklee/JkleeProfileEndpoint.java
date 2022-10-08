@@ -4,6 +4,7 @@ import java.time.Duration;
 import me.genuss.jklee.Jklee.ProfilingRequest;
 import me.genuss.jklee.Jklee.ProfilingRequest.Format;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 
@@ -16,9 +17,14 @@ public class JkleeProfileEndpoint {
     this.jklee = jklee;
   }
 
+  @ReadOperation
+  public void readOperation() {
+    // this operation is only needed for spring-boot-admin to recognize write-operation
+    throw new UnsupportedOperationException("Only write operations are allowed");
+  }
+
   @WriteOperation
-  public void startProfiling(
-      @Selector String id, String rawArguments, Duration duration, Format format) {
+  public void start(@Selector String id, String rawArguments, Duration duration, Format format) {
     // rawArguments example start,event=itimer,interval=1ms
     jklee.start(
         ProfilingRequest.builder()

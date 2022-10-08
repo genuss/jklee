@@ -19,12 +19,12 @@ public class JkleeFilesEndpoint {
   }
 
   @ReadOperation
-  public ProfilingResultFiles getAvailableProfilingResults() {
+  public ProfilingResultFiles getResults() {
     return new ProfilingResultFiles(jklee.getAvailableProfilingResults());
   }
 
   @ReadOperation
-  public WebEndpointResponse<Resource> downloadProfilingResults(@Selector String sessionName) {
+  public WebEndpointResponse<Resource> download(@Selector String sessionName) {
     var result = jklee.getProfilingResult(sessionName);
     if (result == null) {
       return new WebEndpointResponse<>(WebEndpointResponse.STATUS_NOT_FOUND);

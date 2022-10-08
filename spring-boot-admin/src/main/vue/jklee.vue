@@ -21,6 +21,40 @@
         <span v-text="file" />
       </button>
     </div>
+
+    <div>
+      sessionName:
+      <input
+        type="text"
+        v-model="profileSessionName"
+      >
+      <br>
+      rawArguments:
+      <input
+        type="text"
+        v-model="profileRawArguments"
+      >
+      <br>
+      profileFormat:
+      <input
+        type="text"
+        v-model="profileFormat"
+      >
+      <br>
+      profileDuration:
+      <input
+        type="text"
+        v-model="profileDuration"
+      >
+      <br>
+      <button
+        class="button"
+        @click="profile(profileSessionName, profileRawArguments, profileDuration, profileFormat)"
+      >
+        <font-awesome-icon icon="download" />&nbsp;
+        <span>start profiling</span>
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -34,13 +68,17 @@ export default {
   },
   data: () => ({
     settings: '',
-    resultFiles: ''
+    resultFiles: '',
+    profileRawArguments: 'start,event=cpu,interval=1ms',
+    profileSessionName: 'test',
+    profileDuration: '2s',
+    profileFormat: 'FLAMEGRAPH',
   }),
   methods: {
     async downloadProfilerResult(fileName) {
       this.instance.axios.get(
         `actuator/jklee-files/${fileName}`,
-        {headers: {'Accept': 'application/octet-stream'}}
+        {headers: {'Accept': 'text/*,application/*'}},
       ).then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
@@ -49,8 +87,20 @@ export default {
         document.body.appendChild(link);
         link.click();
       });
-    }
-
+    },
+    async profile(sessionName, rawArguments, profileDuration, profileFormat) {
+      this.instance.axios.post(
+        `actuator/jklee-profile/${sessionName}`,
+        {
+          rawArguments: rawArguments,
+          duration: profileDuration,
+          format: profileFormat,
+        }
+      )
+        .then((response) => {
+          console.log(response)
+        })
+    },
   },
   async created() {
     const response = await this.instance.axios.get('actuator/jklee-settings');
