@@ -3,6 +3,7 @@ package me.genuss.jklee;
 import java.time.Duration;
 import me.genuss.jklee.Jklee.ProfilingRequest;
 import me.genuss.jklee.Jklee.ProfilingRequest.Format;
+import me.genuss.jklee.Jklee.ProfilingResponse;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
@@ -24,9 +25,10 @@ public class JkleeProfileEndpoint {
   }
 
   @WriteOperation
-  public void start(@Selector String id, String rawArguments, Duration duration, Format format) {
+  public ProfilingResponse start(
+      @Selector String id, String rawArguments, Duration duration, Format format) {
     // rawArguments example start,event=itimer,interval=1ms
-    jklee.start(
+    return jklee.start(
         ProfilingRequest.builder()
             .id(id)
             .rawArguments(rawArguments)

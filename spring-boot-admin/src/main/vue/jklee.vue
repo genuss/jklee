@@ -11,15 +11,15 @@
     <pre>Raw settings:<br><span v-text="settings" /></pre>
     <div
       v-for="file in resultFiles.files"
-      :key="file.id"
+      :key="file"
     >
-      <button
+      <a
         class="button"
-        @click="downloadProfilerResult(file)"
+        :href="`instances/${instance.id}/actuator/jklee-files/${file}`"
       >
         <font-awesome-icon icon="download" />&nbsp;
         <span v-text="file" />
-      </button>
+      </a>
     </div>
 
     <div>
@@ -75,19 +75,6 @@ export default {
     profileFormat: 'FLAMEGRAPH',
   }),
   methods: {
-    async downloadProfilerResult(fileName) {
-      this.instance.axios.get(
-        `actuator/jklee-files/${fileName}`,
-        {headers: {'Accept': 'text/*,application/*'}},
-      ).then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', fileName); //or any other extension
-        document.body.appendChild(link);
-        link.click();
-      });
-    },
     async profile(sessionName, rawArguments, profileDuration, profileFormat) {
       this.instance.axios.post(
         `actuator/jklee-profile/${sessionName}`,

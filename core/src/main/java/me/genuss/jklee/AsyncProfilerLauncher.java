@@ -1,5 +1,6 @@
 package me.genuss.jklee;
 
+import static java.lang.String.format;
 import static java.util.function.Predicate.not;
 import static me.genuss.jklee.CommandParser.FILENAME_RESULT;
 import static me.genuss.jklee.CommandParser.prepareCommand;
@@ -65,29 +66,33 @@ class AsyncProfilerLauncher {
     this.resultsDir = resultsDir;
   }
 
-  public void execute(ProfilingRequest request) {
-    var sessionDir = getSessionDirPath(request.id());
-    try {
-      Files.createDirectories(sessionDir);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+  public void execute(ProfilingRequest request) throws Exception {
+    if (asyncProfiler == null) {
+      throw new JkleeInactiveException("Async profiler is not loaded");
     }
+    validate(request);
+    var sessionDir = getSessionDir(request.id());
+    Files.createDirectories(sessionDir);
     var startCommand = prepareCommand(request, sessionDir);
     log.fine("Executing raw command: " + startCommand);
-    try {
-      asyncProfiler.execute(startCommand);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    asyncProfiler.execute(startCommand);
 
-    POOL.schedule(
-        () -> {
-          var stopCommand = prepareStopCommand(request, sessionDir);
-          log.fine("Executing stop command: " + stopCommand);
-          return asyncProfiler.execute(stopCommand);
-        },
-        request.duration().toMillis(),
-        TimeUnit.MILLISECONDS);
+    if (request.duration() != null) {
+      POOL.schedule(() -> stop(request), request.duration().toMillis(), TimeUnit.MILLISECONDS);
+    }
+  }
+
+  private void stop(ProfilingRequest request) {
+    var sessionDir = getSessionDir(request.id());
+    var stopCommand = prepareStopCommand(request, sessionDir);
+    log.fine(() -> String.format("Executing stop command: %s", stopCommand));
+    try {
+      String result = asyncProfiler.execute(stopCommand);
+      log.fine(
+          () -> format("Stopped async profiler session %s with result: %s", request.id(), result));
+    } catch (Exception e) {
+      log.warning(() -> format("Error while stopping async profiler: %s", e.getMessage()));
+    }
   }
 
   public List<String> getAvailableProfilingResults() {
@@ -104,7 +109,7 @@ class AsyncProfilerLauncher {
   }
 
   public Path getProfilingResult(String sessionName) {
-    try (var stream = Files.find(getSessionDirPath(sessionName), 1, this::isFile)) {
+    try (var stream = Files.find(getSessionDir(sessionName), 1, this::isFile)) {
       return stream
           .filter(path -> path.getFileName().toString().startsWith(FILENAME_RESULT))
           .findAny()
@@ -128,19 +133,31 @@ class AsyncProfilerLauncher {
     } catch (Exception e) {
       log.fine(
           () ->
-              String.format(
+              format(
                   "Couldn't load async profiler from %s. Error was: %s", realPath, e.getMessage()));
       return null;
     }
     log.info(
         () ->
-            String.format(
+            format(
                 "Loaded async profiler native library from '%s'. Version: %s",
                 realPath, asyncProfiler.getVersion()));
     return asyncProfiler;
   }
 
-  private Path getSessionDirPath(String sessionName) {
+  private void validate(ProfilingRequest request) {
+    if (request.id() == null || request.id().isBlank()) {
+      throw new IllegalArgumentException("Session id is required");
+    }
+    if (request.rawArguments() == null || request.rawArguments().isBlank()) {
+      throw new IllegalArgumentException("Raw arguments are required");
+    }
+    if (request.format() == null) {
+      throw new IllegalArgumentException("Format is required");
+    }
+  }
+
+  private Path getSessionDir(String sessionName) {
     return Path.of(resultsDir.toString(), sessionName);
   }
 

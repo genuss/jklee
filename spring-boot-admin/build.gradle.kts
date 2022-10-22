@@ -1,7 +1,4 @@
-plugins {
-  id("org.siouan.frontend-jdk11") version "6.0.0"
-}
-
+plugins { id("org.siouan.frontend-jdk11") version "6.0.0" }
 
 dependencies {
   implementation("de.codecentric:spring-boot-admin-starter-client")

@@ -3,7 +3,6 @@ package me.genuss.jklee;
 import java.io.File;
 import java.nio.file.Path;
 import me.genuss.jklee.Jklee.ProfilingRequest;
-import me.genuss.jklee.Jklee.ProfilingRequest.Command;
 
 class CommandParser {
 
@@ -15,16 +14,7 @@ class CommandParser {
       return request.rawArguments() + fileAndLogArgs(request, sessionDir);
     }
 
-    if (request.command() == Command.START) {
-      return request.command().command()
-          + ",event="
-          + request.event()
-          + ",interval="
-          + request.interval().toNanos()
-          + fileAndLogArgs(request, sessionDir);
-    }
-    throw new UnsupportedOperationException(
-        String.format("Command %s is not supported yet", request.command()));
+    throw new UnsupportedOperationException("Parser without raw arguments is not implemented");
   }
 
   public static String prepareStopCommand(ProfilingRequest request, Path sessionDir) {

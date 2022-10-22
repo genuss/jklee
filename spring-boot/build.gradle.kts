@@ -1,8 +1,7 @@
-plugins {
-  `java-library`
-}
+plugins { `java-library` }
 
 dependencies {
+  compileOnly("com.fasterxml.jackson.core:jackson-annotations")
   compileOnly("org.projectlombok:lombok")
   annotationProcessor("org.projectlombok:lombok")
 

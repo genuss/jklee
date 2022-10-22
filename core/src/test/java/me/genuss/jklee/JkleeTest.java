@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.extern.java.Log;
 import me.genuss.jklee.Jklee.ProfilingRequest;
-import me.genuss.jklee.Jklee.ProfilingRequest.Command;
 import me.genuss.jklee.JkleeSettings.AsyncProfiler;
 
 @Log
@@ -39,13 +38,7 @@ public class JkleeTest {
             "cpu-eater");
     eater.start();
     jklee.start(
-        ProfilingRequest.builder()
-            .command(Command.START)
-            .event("itimer")
-            .interval(Duration.ofMillis(1))
-            .duration(Duration.ofSeconds(2))
-            .id("idempotent-id")
-            .build());
+        ProfilingRequest.builder().duration(Duration.ofSeconds(2)).id("idempotent-id").build());
 
     Thread.sleep(3000);
     eater.interrupt();

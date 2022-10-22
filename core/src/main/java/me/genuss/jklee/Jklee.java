@@ -1,5 +1,10 @@
 package me.genuss.jklee;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
@@ -35,8 +40,36 @@ public class Jklee {
     return settings;
   }
 
-  public void start(ProfilingRequest request) {
-    asyncProfiler.execute(request);
+  public ProfilingResponse start(ProfilingRequest request) {
+    try {
+      asyncProfiler.execute(request);
+    } catch (IllegalArgumentException e) {
+      return ProfilingResponse.builder()
+          .result(ResultCode.INVALID_COMMAND)
+          .errorMessage(e.getMessage())
+          .build();
+    } catch (IllegalStateException e) {
+      return ProfilingResponse.builder()
+          .result(ResultCode.ASYNC_PROFILER_ERROR)
+          .errorMessage(e.getMessage())
+          .build();
+    } catch (JkleeInactiveException e) {
+      return ProfilingResponse.builder()
+          .result(ResultCode.JKLEE_NOT_ACTIVE)
+          .errorMessage(e.getMessage())
+          .build();
+    } catch (IOException e) {
+      return ProfilingResponse.builder()
+          .result(ResultCode.FILESYSTEM_ERROR)
+          .errorMessage(e.getMessage())
+          .build();
+    } catch (Exception e) {
+      return ProfilingResponse.builder()
+          .result(ResultCode.UNKNOWN)
+          .errorMessage(e.getMessage())
+          .build();
+    }
+    return ProfilingResponse.ok();
   }
 
   public List<String> getAvailableProfilingResults() {
@@ -50,15 +83,14 @@ public class Jklee {
   @Builder
   @Value
   @Accessors(fluent = true)
+  @JsonAutoDetect(fieldVisibility = Visibility.ANY)
+  @JsonInclude(Include.NON_EMPTY)
   public static class ProfilingRequest {
 
     String id;
-    Command command;
     String rawArguments;
     @Builder.Default Format format = Format.TEXT;
     Duration duration;
-    String event;
-    Duration interval;
 
     @Getter
     @Accessors(fluent = true)
@@ -98,6 +130,29 @@ public class Jklee {
         this.extension = extension;
       }
     }
+  }
+
+  @Builder
+  @Value
+  @Accessors(fluent = true)
+  @JsonAutoDetect(fieldVisibility = Visibility.ANY)
+  @JsonInclude(Include.NON_EMPTY)
+  public static class ProfilingResponse {
+    ResultCode result;
+    String errorMessage;
+
+    static ProfilingResponse ok() {
+      return ProfilingResponse.builder().result(ResultCode.STARTED).build();
+    }
+  }
+
+  public enum ResultCode {
+    STARTED,
+    FILESYSTEM_ERROR,
+    JKLEE_NOT_ACTIVE,
+    ASYNC_PROFILER_ERROR,
+    INVALID_COMMAND,
+    UNKNOWN,
   }
 }
 
