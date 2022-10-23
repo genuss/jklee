@@ -65,6 +65,15 @@ allprojects {
       }
     }
   }
+  repositories {
+    maven {
+      url = uri("https://nexus.px019.net/repository/px019_core/")
+      credentials {
+        username = System.getenv("NEXUS_USER") ?: System.getProperty("NEXUS_USER")
+        password = System.getenv("NEXUS_PASS") ?: System.getProperty("NEXUS_PASS")
+      }
+    }
+  }
 }
 
 jgitver { useDirty = true }

@@ -26,14 +26,17 @@ populate-gradle-cache:
   only:
     refs:
       - master
+      - vivid
     variables:
       - $GRADLE_POPULATE_CACHE == "true"
     changes:
       - build.gradle
       - gradle/wrapper/gradle-wrapper.properties
       - settings.gradle
+      - spring-boot-admin/package-lock.json
+      - spring-boot-admin/package.json
   script:
-    - env
+    - env | sort
     - ./gradlew clean dependencies --parallel
   stage: cache-build
   tags: [ build ]
@@ -43,6 +46,7 @@ gradle-build:
     when: always
     paths:
       - build/reports
+      - '*/build/reports'
   cache:
     - key: gradle
       policy: pull
@@ -52,16 +56,14 @@ gradle-build:
       policy: pull-push
       paths:
         - build
+        - '*/build'
     - key: jar-$CI_COMMIT_REF_NAME
       policy: push
       paths:
         - build/libs
   image: $BUILDER_IMAGE
   script:
-    - env
-    - ./gradlew clean build --parallel
-  services:
-    - name: 560755210414.dkr.ecr.eu-central-1.amazonaws.com/external/docker:stable-dind
-      command: [ '--registry-mirror=https://dh-proxy-dev.px019.net' ]
+    - env | sort
+    - ./gradlew build publish --parallel
   stage: source-build
   tags: [ build ]
