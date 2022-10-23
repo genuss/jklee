@@ -44,6 +44,7 @@ populate-gradle-cache:
     - ls -lh spring-boot-admin
     - ls -lh spring-boot-admin/node
     - ls -lh spring-boot-admin/node/bin
+    - ldd ./spring-boot-admin/node/bin/node
     - ./spring-boot-admin/node/bin/npm set registry https://nexus.px019.net/repository/nodejs-org-dist/
     - ./gradlew :spring-boot-admin:installFrontend --parallel
     - ./gradlew clean dependencies --parallel
