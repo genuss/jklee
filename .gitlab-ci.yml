@@ -37,6 +37,7 @@ populate-gradle-cache:
       - settings.gradle
       - spring-boot-admin/package-lock.json
       - spring-boot-admin/package.json
+      - .gitlab-ci.yml # remove later
   script:
     - env | sort
     - ./gradlew :spring-boot-admin:installNode --parallel
@@ -49,26 +50,26 @@ populate-gradle-cache:
   stage: cache-build
   tags: [ build ]
 
-gradle-build:
-  artifacts:
-    when: always
-    paths:
-      - build/reports
-      - '*/build/reports'
-  cache:
-    - key: gradle
-      policy: pull
-      paths:
-        - $GRADLE_USER_HOME
-    - key: build-$CI_COMMIT_REF_NAME
-      policy: pull-push
-      paths:
-        - build
-        - '*/build'
-  image: $BUILDER_IMAGE
-  script:
-    - env | sort
-    - npm set registry https://nexus.px019.net/repository/nodejs-org-dist/
-    - ./gradlew build publish --parallel
-  stage: source-build
-  tags: [ build ]
+#gradle-build:
+#  artifacts:
+#    when: always
+#    paths:
+#      - build/reports
+#      - '*/build/reports'
+#  cache:
+#    - key: gradle
+#      policy: pull
+#      paths:
+#        - $GRADLE_USER_HOME
+#    - key: build-$CI_COMMIT_REF_NAME
+#      policy: pull-push
+#      paths:
+#        - build
+#        - '*/build'
+#  image: $BUILDER_IMAGE
+#  script:
+#    - env | sort
+#    - npm set registry https://nexus.px019.net/repository/nodejs-org-dist/
+#    - ./gradlew build publish --parallel
+#  stage: source-build
+#  tags: [ build ]
