@@ -40,8 +40,9 @@ populate-gradle-cache:
   script:
     - env | sort
     - ./gradlew clean dependencies --parallel
-    - npm set registry https://nexus.px019.net/repository/nodejs-org-dist/
-    - ./gradlew :spring-boot-admin:installNode :spring-boot-admin:installFrontend --parallel
+    - ./gradlew :spring-boot-admin:installNode --parallel
+    - spring-boot-admin/node/bin/npm set registry https://nexus.px019.net/repository/nodejs-org-dist/
+    - ./gradlew :spring-boot-admin:installFrontend --parallel
   stage: cache-build
   tags: [ build ]
 
