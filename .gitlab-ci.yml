@@ -22,6 +22,8 @@ populate-gradle-cache:
         - $GRADLE_USER_HOME/caches/transforms-3
         - $GRADLE_USER_HOME/notifications
         - $GRADLE_USER_HOME/wrapper
+        - spring-boot-admin/node
+        - spring-boot-admin/node_modules
   image: $BUILDER_IMAGE
   only:
     refs:
@@ -38,6 +40,8 @@ populate-gradle-cache:
   script:
     - env | sort
     - ./gradlew clean dependencies --parallel
+    - npm set registry https://nexus.px019.net/repository/nodejs-org-dist/
+    - ./gradlew :spring-boot-admin:installNode :spring-boot-admin:installFrontend --parallel
   stage: cache-build
   tags: [ build ]
 
@@ -57,13 +61,10 @@ gradle-build:
       paths:
         - build
         - '*/build'
-    - key: jar-$CI_COMMIT_REF_NAME
-      policy: push
-      paths:
-        - build/libs
   image: $BUILDER_IMAGE
   script:
     - env | sort
+    - npm set registry https://nexus.px019.net/repository/nodejs-org-dist/
     - ./gradlew build publish --parallel
   stage: source-build
   tags: [ build ]
