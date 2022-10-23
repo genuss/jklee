@@ -1,0 +1,67 @@
+variables:
+  BUILDER_IMAGE: $DOCKER_REGISTRY_DEV/devops/processing-java-builder:j18.0.2-10-i1
+  DOCKER_REGISTRY_DEV: 560755210414.dkr.ecr.eu-central-1.amazonaws.com
+  GRADLE_USER_HOME: .gradle-home
+
+  ARTIFACT_COMPRESSION_LEVEL: fastest
+  CACHE_COMPRESSION_LEVEL: slowest
+  FF_USE_FASTZIP: 'true'
+  TRANSFER_METER_FREQUENCY: 2s
+
+stages:
+  - cache-build
+  - source-build
+
+populate-gradle-cache:
+  cache:
+    - key: gradle
+      policy: pull-push
+      paths:
+        - $GRADLE_USER_HOME/caches/jars-9
+        - $GRADLE_USER_HOME/caches/modules-2
+        - $GRADLE_USER_HOME/caches/transforms-3
+        - $GRADLE_USER_HOME/notifications
+        - $GRADLE_USER_HOME/wrapper
+  image: $BUILDER_IMAGE
+  only:
+    refs:
+      - master
+    variables:
+      - $GRADLE_POPULATE_CACHE == "true"
+    changes:
+      - build.gradle
+      - gradle/wrapper/gradle-wrapper.properties
+      - settings.gradle
+  script:
+    - env
+    - ./gradlew clean dependencies --parallel
+  stage: cache-build
+  tags: [ build ]
+
+gradle-build:
+  artifacts:
+    when: always
+    paths:
+      - build/reports
+  cache:
+    - key: gradle
+      policy: pull
+      paths:
+        - $GRADLE_USER_HOME
+    - key: build-$CI_COMMIT_REF_NAME
+      policy: pull-push
+      paths:
+        - build
+    - key: jar-$CI_COMMIT_REF_NAME
+      policy: push
+      paths:
+        - build/libs
+  image: $BUILDER_IMAGE
+  script:
+    - env
+    - ./gradlew clean build --parallel
+  services:
+    - name: 560755210414.dkr.ecr.eu-central-1.amazonaws.com/external/docker:stable-dind
+      command: [ '--registry-mirror=https://dh-proxy-dev.px019.net' ]
+  stage: source-build
+  tags: [ build ]
