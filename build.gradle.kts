@@ -1,7 +1,11 @@
 plugins {
-  java
+  `java`
+  `maven-publish`
   id("com.diffplug.spotless") version "6.11.0"
+  id("fr.brouillard.oss.gradle.jgitver") version "0.9.1"
 }
+
+group = "me.genuss.jklee"
 
 val jkleeSpringBootVersion: String by properties
 val jkleeSpringBootAdminVersion: String by properties
@@ -10,8 +14,10 @@ allprojects {
   repositories { mavenCentral() }
 
   apply {
-    plugin("java")
     plugin("com.diffplug.spotless")
+    plugin("fr.brouillard.oss.gradle.jgitver")
+    plugin("java")
+    plugin("maven-publish")
   }
   dependencies {
     implementation(
@@ -38,7 +44,10 @@ allprojects {
     }
   }
 
-  java { toolchain { languageVersion.set(JavaLanguageVersion.of(11)) } }
+  java {
+    toolchain { languageVersion.set(JavaLanguageVersion.of(11)) }
+    withSourcesJar()
+  }
 
   tasks.withType<JavaCompile>().configureEach {
     options.release.set(11)
@@ -46,4 +55,16 @@ allprojects {
   }
 
   tasks.named<Test>("test") { useJUnitPlatform() }
+
+  publishing {
+    publications {
+      create<MavenPublication>("jklee") {
+        groupId = rootProject.group as String
+        artifactId = project.name
+        from(project.components["java"])
+      }
+    }
+  }
 }
+
+jgitver { useDirty = true }
