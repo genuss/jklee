@@ -11,8 +11,6 @@ val jkleeSpringBootVersion: String by properties
 val jkleeSpringBootAdminVersion: String by properties
 
 allprojects {
-  repositories { mavenCentral() }
-
   apply {
     plugin("com.diffplug.spotless")
     plugin("fr.brouillard.oss.gradle.jgitver")
@@ -64,13 +62,13 @@ allprojects {
         from(project.components["java"])
       }
     }
-  }
-  repositories {
-    maven {
-      url = uri("https://nexus.px019.net/repository/px019_core/")
-      credentials {
-        username = System.getenv("NEXUS_USER") ?: System.getProperty("NEXUS_USER")
-        password = System.getenv("NEXUS_PASS") ?: System.getProperty("NEXUS_PASS")
+    repositories {
+      maven {
+        url = uri("https://nexus.px019.net/repository/px019_core/")
+        credentials {
+          username = System.getenv("NEXUS_USER") ?: System.getProperty("NEXUS_USER")
+          password = System.getenv("NEXUS_PASS") ?: System.getProperty("NEXUS_PASS")
+        }
       }
     }
   }
