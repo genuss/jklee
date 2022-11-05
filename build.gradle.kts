@@ -42,9 +42,7 @@ allprojects {
     }
   }
 
-  java {
-    withSourcesJar()
-  }
+  java { withSourcesJar() }
 
   tasks.withType<JavaCompile>().configureEach {
     options.release.set(11)
