@@ -29,8 +29,8 @@ populate-gradle-cache:
     refs:
       - master
       - vivid
-#    variables:
-#      - $GRADLE_POPULATE_CACHE == "true"
+    variables:
+      - $GRADLE_POPULATE_CACHE == "true"
     changes:
       - build.gradle
       - gradle/wrapper/gradle-wrapper.properties
