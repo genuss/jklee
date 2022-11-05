@@ -67,7 +67,7 @@ class AsyncProfilerLauncher {
   }
 
   public void execute(ProfilingRequest request) throws Exception {
-    if (asyncProfiler == null) {
+    if (isNotLoaded()) {
       throw new JkleeInactiveException("Async profiler is not loaded");
     }
     validate(request);
@@ -96,6 +96,9 @@ class AsyncProfilerLauncher {
   }
 
   public List<String> getAvailableProfilingResults() {
+    if (isNotLoaded()) {
+      return List.of();
+    }
     try (var stream = Files.find(resultsDir, 1, this::isDir)) {
       return stream
           .filter(not(resultsDir::equals))
@@ -109,6 +112,9 @@ class AsyncProfilerLauncher {
   }
 
   public Path getProfilingResult(String sessionName) {
+    if (isNotLoaded()) {
+      return null;
+    }
     try (var stream = Files.find(getSessionDir(sessionName), 1, this::isFile)) {
       return stream
           .filter(path -> path.getFileName().toString().startsWith(FILENAME_RESULT))
@@ -143,6 +149,10 @@ class AsyncProfilerLauncher {
                 "Loaded async profiler native library from '%s'. Version: %s",
                 realPath, asyncProfiler.getVersion()));
     return asyncProfiler;
+  }
+
+  private boolean isNotLoaded() {
+    return asyncProfiler == null;
   }
 
   private void validate(ProfilingRequest request) {

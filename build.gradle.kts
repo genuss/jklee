@@ -1,8 +1,8 @@
 plugins {
-  `java`
-  `maven-publish`
   id("com.diffplug.spotless") version "6.11.0"
   id("fr.brouillard.oss.gradle.jgitver") version "0.9.1"
+  id("java")
+  id("maven-publish")
 }
 
 group = "me.genuss.jklee"
