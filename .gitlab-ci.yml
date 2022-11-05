@@ -63,7 +63,6 @@ gradle-build:
   image: $BUILDER_IMAGE
   script:
     - env | sort
-    - npm set registry https://nexus.px019.net/repository/nodejs-org-dist/
     - ./gradlew build publish --parallel -x assembleFrontend
   stage: source-build
   tags: [ build ]
