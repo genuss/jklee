@@ -69,7 +69,7 @@ export default {
   data: () => ({
     settings: '',
     resultFiles: '',
-    profileRawArguments: 'start,event=cpu,interval=1ms',
+    profileRawArguments: 'start,event=itimer,interval=1ms',
     profileSessionName: 'test',
     profileDuration: '2s',
     profileFormat: 'FLAMEGRAPH',
