@@ -18,9 +18,9 @@ allprojects {
     plugin("maven-publish")
   }
   dependencies {
-    implementation(
+    compileOnly(
         platform("de.codecentric:spring-boot-admin-dependencies:$jkleeSpringBootAdminVersion"))
-    implementation(
+    compileOnly(
         platform("org.springframework.boot:spring-boot-dependencies:$jkleeSpringBootVersion"))
     testImplementation(
         platform("org.springframework.boot:spring-boot-dependencies:$jkleeSpringBootVersion"))

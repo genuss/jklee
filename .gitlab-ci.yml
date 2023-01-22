@@ -63,6 +63,6 @@ gradle-build:
   image: $BUILDER_IMAGE
   script:
     - env | sort
-    - ./gradlew build publish --parallel -x assembleFrontend
+    - ./gradlew build publish version --parallel -x assembleFrontend
   stage: source-build
   tags: [ build ]
