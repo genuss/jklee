@@ -70,4 +70,7 @@ allprojects {
   }
 }
 
-jgitver { useDirty = true }
+jgitver {
+  failIfDirty = (System.getenv("CI") ?: "false").toBooleanStrict()
+  useDirty = true
+}
