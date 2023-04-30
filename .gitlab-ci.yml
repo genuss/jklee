@@ -60,8 +60,9 @@ gradle-build:
     - key: build-$CI_COMMIT_REF_NAME
       policy: pull-push
       paths:
-        - build
+        - $GRADLE_USER_HOME/caches/build-cache-1
         - '*/build'
+        - build
   image: $BUILDER_IMAGE
   script:
     - env | sort
