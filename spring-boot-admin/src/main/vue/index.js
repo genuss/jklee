@@ -1,14 +1,12 @@
-import jkleeEndpoint from './jklee';
+import jkleeEndpoint from './jklee.vue';
 
-SBA.use({
-  install({viewRegistry}) {
-    viewRegistry.addView({
-      name: 'instances/jklee',
-      parent: 'instances',
-      path: 'jklee',
-      component: jkleeEndpoint,
-      label: 'jklee',
-      isEnabled: ({instance}) => instance.hasEndpoint('jklee-settings'),
-    });
-  }
-});
+SBA.viewRegistry.addView({
+  name: "instances/jklee",
+  parent: "instances",
+  path: "jklee",
+  component: jkleeEndpoint,
+  label: "jklee",
+  isEnabled: ({ instance }) => {
+    return instance.hasEndpoint("jklee-settings");
+  },
+})

@@ -32,15 +32,17 @@ populate-gradle-cache:
     variables:
       - $GRADLE_POPULATE_CACHE == "true"
     changes:
-      - build.gradle
+      - build.gradle.kts
       - gradle/wrapper/gradle-wrapper.properties
-      - settings.gradle
+      - settings.gradle.kts
       - spring-boot-admin/package-lock.json
       - spring-boot-admin/package.json
-      - .gitlab-ci.yml # remove later
   script:
     - env | sort
     - ./gradlew clean dependencies --parallel
+    - ./gradlew installNode
+    - PATH=$PATH:spring-boot-admin/node/bin npm set registry https://nexus.px019.net/repository/registry.npmjs.org
+    - ./gradlew installFrontend
   stage: cache-build
   tags: [ build ]
 
@@ -63,6 +65,7 @@ gradle-build:
   image: $BUILDER_IMAGE
   script:
     - env | sort
-    - ./gradlew build publish version --parallel -x assembleFrontend
+    - PATH=$PATH:spring-boot-admin/node/bin npm set registry https://nexus.px019.net/repository/registry.npmjs.org
+    - ./gradlew build publish version --parallel --build-cache -Dorg.gradle.jvmargs=-Xmx2g
   stage: source-build
   tags: [ build ]

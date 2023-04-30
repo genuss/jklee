@@ -8,22 +8,29 @@
 -->
 <template>
   <div class="jklee">
-    <pre>Raw settings:<br><span v-text="settings" /></pre>
-    <div class="file-list">
-      <div
-        v-for="file in resultFiles.files"
-        :key="file"
-        class="file"
-      >
-        <a
-          class="btn btn-primary"
-          :href="`instances/${instance.id}/actuator/jklee-files/${file}`"
-        >
-          <i class="fa fa-download"></i>&nbsp;
-          <span v-text="file" />
-        </a>
+    <pre>Raw settings:<br><span v-text="settings"/></pre>
+
+    <sba-panel :title="'Profiling results'">
+      <div class="content info">
+        <table class="table">
+          <tr
+            v-for="result in results"
+            :key="result.name"
+          >
+            <td class="info__key">
+              <a
+                class="btn btn-primary"
+                :href="`instances/${instance.id}/actuator/jklee-files/${result.name}`"
+              >
+                <i class="fa fa-download"></i>&nbsp;
+                <span v-text="result.name"/>
+              </a>
+            </td>
+            <td class="info__key" v-text="result.endedAt"/>
+          </tr>
+        </table>
       </div>
-    </div>
+    </sba-panel>
 
     <div>
       sessionName:
@@ -50,24 +57,24 @@
         v-model="profileDuration"
       >
       <br>
-      <button
-        class="button"
-        :disabled="submitting"
+
+      <sba-button
+        :disabled="profiling"
         @click="profile(profileSessionName, profileRawArguments, profileDuration, profileFormat)"
       >
-        <template v-if="!submitting">
-          <font-awesome-icon icon="download" />&nbsp;
-          <span>start profiling</span>
+        <template v-if="!profiling">
+          <font-awesome-icon icon="download"/>&nbsp;
+          <span>Start profiling</span>
         </template>
         <template v-else>
           <div class="loader">Profiling...</div>
         </template>
-      </button>
+      </sba-button>
     </div>
   </div>
 </template>
-<script>
 
+<script>
 export default {
   props: {
     instance: {
@@ -76,20 +83,20 @@ export default {
     }
   },
   data: () => ({
-    settings: '',
-    resultFiles: '',
+    settings: 'd',
+    results: [],
     profileRawArguments: 'start,event=itimer,interval=1ms',
     profileSessionName: 'test',
     profileDuration: '2s',
     profileFormat: 'FLAMEGRAPH',
-    submitting: false,
+    profiling: false,
   }),
   methods: {
     async profile(sessionName, rawArguments, profileDuration, profileFormat) {
-      this.submitting = true;
+      this.profiling = true;
       const durationInMillis = parseToMillis(profileDuration);
       setTimeout(() => {
-        this.submitting = false;
+        this.profiling = false;
         this.updateResultsList()
       }, durationInMillis)
 
@@ -101,14 +108,13 @@ export default {
           format: profileFormat,
         }
       )
-        .then((response) => {
-          console.log(response)
-        })
+      .then((response) => {
+        console.log(response)
+      })
     },
     async updateResultsList() {
-      const resultFiles = await this.instance.axios.get('actuator/jklee-files');
-      this.resultFiles = resultFiles.data;
-
+      const response = await this.instance.axios.get('actuator/jklee-files');
+      this.results = response.data.results;
     }
   },
   async created() {
@@ -138,115 +144,8 @@ function parseToMillis(timeString) {
 </script>
 
 <style>
-
-.loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  background-color: #ffffff;
-  animation: fill 2s ease-out forwards;
-}
-
-@keyframes fill {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
 .jklee {
   font-size: 12pt;
   width: 80%;
 }
-
-pre {
-  margin: 0;
-  font-size: 10pt;
-}
-
-button {
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 12pt;
-  margin: 4px 2px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  border-radius: 3px;
-  width: 100%;
-}
-
-input[type="text"] {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 12pt;
-}
-
-a.button {
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 12pt;
-  margin: 4px 2px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  border-radius: 3px;
-}
-
-a.button:hover {
-  background-color: #3e8e41;
-}
-
-span {
-  font-size: 12pt;
-}
-
-.file-list {
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-
-.file {
-  margin-right: 10px;
-  margin-bottom: 10px;
-}
-
-.font-awesome-icon {
-  font-size: 12pt;
-  margin-right: 4px;
-}
-
-/* CSS for loader animation */
-.loader:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  background-color: #ffffff;
-  animation: fill 2s ease-out forwards;
-}
-
-@keyframes fill {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
 </style>

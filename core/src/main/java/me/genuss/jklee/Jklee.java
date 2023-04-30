@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -72,7 +73,7 @@ public class Jklee {
     return ProfilingResponse.ok();
   }
 
-  public List<String> getAvailableProfilingResults() {
+  public List<ProfilingResult> getAvailableProfilingResults() {
     return asyncProfiler.getAvailableProfilingResults();
   }
 
@@ -144,6 +145,16 @@ public class Jklee {
     static ProfilingResponse ok() {
       return ProfilingResponse.builder().result(ResultCode.STARTED).build();
     }
+  }
+
+  @Builder
+  @Value
+  @Accessors(fluent = true)
+  @JsonAutoDetect(fieldVisibility = Visibility.ANY)
+  @JsonInclude(Include.NON_EMPTY)
+  public static class ProfilingResult {
+    String name;
+    Instant endedAt;
   }
 
   public enum ResultCode {

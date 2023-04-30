@@ -9,11 +9,13 @@ dependencies {
 }
 
 frontend {
-  nodeVersion.set("16.13.2")
+  nodeVersion.set("18.16.0")
   assembleScript.set("run build")
   nodeDistributionUrlRoot.set("https://nexus.px019.net/repository/nodejs-org-dist/")
 }
 
 tasks.register<org.siouan.frontendgradleplugin.infrastructure.gradle.RunNpm>("npmWatch") {
-  script.set("run watch")
+  script.set("run build:dev")
 }
+
+tasks.named("processResources") { dependsOn.add(tasks.named("assembleFrontend")) }

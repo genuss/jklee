@@ -1,16 +1,15 @@
 plugins {
-  id("com.diffplug.spotless") version "6.11.0"
+  id("com.diffplug.spotless") version "6.18.0"
   id("fr.brouillard.oss.gradle.jgitver") version "0.9.1"
   id("java")
   id("maven-publish")
 }
 
-group = "me.genuss.jklee"
-
 val jkleeSpringBootVersion: String by properties
 val jkleeSpringBootAdminVersion: String by properties
 
 allprojects {
+  group = "me.genuss.jklee"
   apply {
     plugin("com.diffplug.spotless")
     plugin("fr.brouillard.oss.gradle.jgitver")
@@ -18,9 +17,9 @@ allprojects {
     plugin("maven-publish")
   }
   dependencies {
-    compileOnly(
+    implementation(
         platform("de.codecentric:spring-boot-admin-dependencies:$jkleeSpringBootAdminVersion"))
-    compileOnly(
+    implementation(
         platform("org.springframework.boot:spring-boot-dependencies:$jkleeSpringBootVersion"))
     testImplementation(
         platform("org.springframework.boot:spring-boot-dependencies:$jkleeSpringBootVersion"))
@@ -32,7 +31,7 @@ allprojects {
 
   spotless {
     java {
-      googleJavaFormat("1.15.0")
+      googleJavaFormat("1.16.0")
       targetExclude("src/main/java/one/profiler/**/*.java")
     }
     kotlinGradle { ktfmt() }
@@ -45,11 +44,11 @@ allprojects {
   java { withSourcesJar() }
 
   tasks.withType<JavaCompile>().configureEach {
-    options.release.set(11)
+    options.release.set(17)
     options.compilerArgs.add("-parameters")
   }
 
-  tasks.named<Test>("test") { useJUnitPlatform() }
+  tasks.withType<Test> { useJUnitPlatform() }
 
   publishing {
     publications {

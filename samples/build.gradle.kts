@@ -1,5 +1,3 @@
-import org.springframework.boot.gradle.tasks.run.BootRun
-
 plugins { id("org.springframework.boot") }
 
 dependencies {
@@ -11,13 +9,4 @@ dependencies {
 
   implementation(project(":spring-boot"))
   implementation(project(":spring-boot-admin"))
-}
-
-tasks.named<BootRun>("bootRun") {
-  // when running with bootRun, user.dir property will be set to "samples" dir, but when running
-  // inside an IDE it will be usually set to project.rootDir, so to preserve consistency we set
-  // the property here.
-  systemProperty(
-      "spring.boot.admin.ui.extension-resource-locations",
-      "file:${project.rootDir}/spring-boot-admin/build/resources/main/META-INF/spring-boot-admin-server-ui/extensions/custom/")
 }

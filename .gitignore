@@ -1,5 +1,6 @@
 .DS_Store
 .gradle
+.gradle-home
 .idea
 build
 spring-boot-admin/node

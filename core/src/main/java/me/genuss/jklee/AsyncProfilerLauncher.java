@@ -11,6 +11,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import me.genuss.jklee.Jklee.ProfilingRequest;
+import me.genuss.jklee.Jklee.ProfilingResult;
 import one.profiler.AsyncProfiler;
 
 @Log
@@ -95,20 +97,26 @@ class AsyncProfilerLauncher {
     }
   }
 
-  public List<String> getAvailableProfilingResults() {
+  public List<ProfilingResult> getAvailableProfilingResults() {
     if (isNotLoaded()) {
       return List.of();
     }
     try (var stream = Files.find(resultsDir, 1, this::isDir)) {
       return stream
           .filter(not(resultsDir::equals))
-          .map(Path::getFileName)
-          .map(Path::toString)
+          .map(this::toProfilingResult)
           .sorted()
           .collect(Collectors.toList());
     } catch (IOException e) {
       return List.of();
     }
+  }
+
+  private ProfilingResult toProfilingResult(Path path) {
+    return ProfilingResult.builder()
+        .name(path.getFileName().toString())
+        .endedAt(Instant.ofEpochMilli(path.toFile().lastModified()))
+        .build();
   }
 
   public Path getProfilingResult(String sessionName) {
