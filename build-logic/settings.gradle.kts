@@ -1,18 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
-rootProject.name = "jklee"
-
-include("core")
-
-include("spring-boot")
-
-include("samples")
-
-include("spring-boot-admin")
+rootProject.name = "build-logic"
 
 pluginManagement {
-  includeBuild("build-logic")
-
   val credentials: (PasswordCredentials).() -> Unit = {
     username = System.getenv("NEXUS_USER") ?: System.getProperty("NEXUS_USER")
     password = System.getenv("NEXUS_PASS") ?: System.getProperty("NEXUS_PASS")
@@ -29,5 +19,7 @@ dependencyResolutionManagement {
   }
   repositories {
     maven("https://nexus.px019.net/repository/maven-central/") { credentials(credentials) }
+    maven("https://nexus.px019.net/repository/plugins.gradle.org/") { credentials(credentials) }
   }
+  versionCatalogs.create("libs").from(files("../gradle/libs.versions.toml"))
 }

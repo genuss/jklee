@@ -1,6 +1,5 @@
 variables:
-  BUILDER_IMAGE: $DOCKER_REGISTRY_DEV/devops/processing-java-builder:j18.0.2-10-i1
-  DOCKER_REGISTRY_DEV: 560755210414.dkr.ecr.eu-central-1.amazonaws.com
+  BUILDER_IMAGE: 560755210414.dkr.ecr.eu-central-1.amazonaws.com/devops/processing-java-builder:j17.0.8-p555767
   GRADLE_USER_HOME: .gradle-home
 
   ARTIFACT_COMPRESSION_LEVEL: fastest
@@ -22,6 +21,7 @@ populate-gradle-cache:
         - $GRADLE_USER_HOME/caches/transforms-3
         - $GRADLE_USER_HOME/notifications
         - $GRADLE_USER_HOME/wrapper
+        - spring-boot-admin/.frontend-gradle-plugin
         - spring-boot-admin/node
         - spring-boot-admin/node_modules
   image: $BUILDER_IMAGE
@@ -29,20 +29,19 @@ populate-gradle-cache:
     refs:
       - master
       - vivid
-    variables:
-      - $GRADLE_POPULATE_CACHE == "true"
     changes:
-      - build.gradle.kts
+      - '*/build.gradle.kts'
+      - '*/settings.gradle.kts'
+      - build-logic/**/*
+      - gradle/libs.versions.toml
       - gradle/wrapper/gradle-wrapper.properties
       - settings.gradle.kts
       - spring-boot-admin/package-lock.json
       - spring-boot-admin/package.json
   script:
     - env | sort
-    - ./gradlew clean dependencies --parallel
-    - ./gradlew installNode
-    - PATH=$PATH:spring-boot-admin/node/bin npm set registry https://nexus.px019.net/repository/registry.npmjs.org
-    - ./gradlew installFrontend
+    - echo https://nexus.px019.net/repository/registry.npmjs.org/_auth=$NEXUS_USER:$(echo $NEXUS_PASS | base64) >> ~/.npmrc
+    - ./gradlew clean dependencies installNode installFrontend --parallel
   stage: cache-build
   tags: [ build ]
 
@@ -66,7 +65,7 @@ gradle-build:
   image: $BUILDER_IMAGE
   script:
     - env | sort
-    - PATH=$PATH:spring-boot-admin/node/bin npm set registry https://nexus.px019.net/repository/registry.npmjs.org
-    - ./gradlew build publish version --parallel --build-cache -Dorg.gradle.jvmargs=-Xmx2g
+    - echo registry=https://nexus.px019.net/repository/registry.npmjs.org > ~/.npmrc
+    - ./gradlew build assembleFrontend publish version --parallel -Dorg.gradle.jvmargs=-Xmx2g
   stage: source-build
   tags: [ build ]
