@@ -48,8 +48,8 @@ spotless {
 
 
 tasks.withType<JavaCompile> {
-  options.release.set(17)
-  options.compilerArgs.add("-parameters")
+  options.release = 17
+  options.compilerArgs = listOf("-Werror", "-parameters")
   targetCompatibility = JavaVersion.VERSION_17.toString()
   sourceCompatibility = JavaVersion.VERSION_17.toString()
 }
