@@ -19,11 +19,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
 import me.genuss.jklee.Jklee.ProfilingRequest;
 import me.genuss.jklee.Jklee.ProfilingResult;
 import one.profiler.AsyncProfiler;
 
+@Accessors(fluent = true)
+@Getter
 @Log
 class AsyncProfilerLauncher {
 
@@ -70,7 +74,7 @@ class AsyncProfilerLauncher {
   }
 
   public void execute(ProfilingRequest request) throws Exception {
-    if (isNotLoaded()) {
+    if (!isLoaded()) {
       throw new JkleeInactiveException("Async profiler is not loaded");
     }
     validate(request);
@@ -83,6 +87,39 @@ class AsyncProfilerLauncher {
     if (request.duration() != null) {
       POOL.schedule(() -> stop(request), request.duration().toMillis(), TimeUnit.MILLISECONDS);
     }
+  }
+
+  public List<ProfilingResult> getAvailableProfilingResults() {
+    if (!isLoaded()) {
+      return List.of();
+    }
+    try (var stream = Files.find(resultsDir, 1, this::isDir)) {
+      return stream
+          .filter(not(resultsDir::equals))
+          .map(this::toProfilingResult)
+          .sorted(Comparator.comparing(ProfilingResult::endedAt).reversed())
+          .collect(Collectors.toList());
+    } catch (IOException e) {
+      return List.of();
+    }
+  }
+
+  public Path getProfilingResult(String sessionName) {
+    if (!isLoaded()) {
+      return null;
+    }
+    try (var stream = Files.find(getSessionDir(sessionName), 1, this::isFile)) {
+      return stream
+          .filter(path -> path.getFileName().toString().startsWith(FILENAME_RESULT))
+          .findAny()
+          .orElse(null);
+    } catch (IOException e) {
+      return null;
+    }
+  }
+
+  public boolean isLoaded() {
+    return asyncProfiler != null;
   }
 
   private void stop(ProfilingRequest request) {
@@ -98,40 +135,11 @@ class AsyncProfilerLauncher {
     }
   }
 
-  public List<ProfilingResult> getAvailableProfilingResults() {
-    if (isNotLoaded()) {
-      return List.of();
-    }
-    try (var stream = Files.find(resultsDir, 1, this::isDir)) {
-      return stream
-          .filter(not(resultsDir::equals))
-          .map(this::toProfilingResult)
-          .sorted(Comparator.comparing(ProfilingResult::endedAt).reversed())
-          .collect(Collectors.toList());
-    } catch (IOException e) {
-      return List.of();
-    }
-  }
-
   private ProfilingResult toProfilingResult(Path path) {
     return ProfilingResult.builder()
         .name(path.getFileName().toString())
         .endedAt(Instant.ofEpochMilli(path.toFile().lastModified()))
         .build();
-  }
-
-  public Path getProfilingResult(String sessionName) {
-    if (isNotLoaded()) {
-      return null;
-    }
-    try (var stream = Files.find(getSessionDir(sessionName), 1, this::isFile)) {
-      return stream
-          .filter(path -> path.getFileName().toString().startsWith(FILENAME_RESULT))
-          .findAny()
-          .orElse(null);
-    } catch (IOException e) {
-      return null;
-    }
   }
 
   private AsyncProfiler tryLoad(Path path) {
@@ -158,10 +166,6 @@ class AsyncProfilerLauncher {
                 "Loaded async profiler native library from '%s'. Version: %s",
                 realPath, asyncProfiler.getVersion()));
     return asyncProfiler;
-  }
-
-  private boolean isNotLoaded() {
-    return asyncProfiler == null;
   }
 
   private void validate(ProfilingRequest request) {

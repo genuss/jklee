@@ -22,7 +22,6 @@
   });
 };
 
-  const jklee_vue_vue_type_style_index_0_lang = "";
   const _export_sfc = (sfc, props) => {
     const target = sfc.__vccOpts || sfc;
     for (const [key, val] of props) {
@@ -38,7 +37,9 @@
       }
     },
     data: () => ({
-      settings: "d",
+      error: null,
+      hasLoaded: false,
+      settings: [],
       results: [],
       profileRawArguments: "start,event=itimer,interval=1ms",
       profileSessionName: "test",
@@ -76,8 +77,14 @@
     },
     created() {
       return __async(this, null, function* () {
-        const response = yield this.instance.axios.get("actuator/jklee-settings");
-        this.settings = response.data;
+        try {
+          const response = yield this.instance.axios.get("actuator/jklee-settings");
+          this.settings = response.data.settings;
+        } catch (error) {
+          this.error = error;
+        } finally {
+          this.hasLoaded = true;
+        }
         yield this.updateResultsList();
       });
     }
@@ -97,8 +104,8 @@
     }
     return millis;
   }
-  const _hoisted_1 = { class: "jklee" };
-  const _hoisted_2 = /* @__PURE__ */ vue.createElementVNode("br", null, null, -1);
+  const _hoisted_1 = { class: "flex-1 sm:break-all" };
+  const _hoisted_2 = ["textContent"];
   const _hoisted_3 = ["textContent"];
   const _hoisted_4 = { class: "content info" };
   const _hoisted_5 = { class: "table" };
@@ -120,93 +127,120 @@
     const _component_sba_panel = vue.resolveComponent("sba-panel");
     const _component_font_awesome_icon = vue.resolveComponent("font-awesome-icon");
     const _component_sba_button = vue.resolveComponent("sba-button");
-    return vue.openBlock(), vue.createElementBlock("div", _hoisted_1, [
-      vue.createElementVNode("pre", null, [
-        vue.createTextVNode("Raw settings:"),
-        _hoisted_2,
-        vue.createElementVNode("span", {
-          textContent: vue.toDisplayString(_ctx.settings)
-        }, null, 8, _hoisted_3)
-      ]),
-      vue.createVNode(_component_sba_panel, { title: "Profiling results" }, {
-        default: vue.withCtx(() => [
-          vue.createElementVNode("div", _hoisted_4, [
-            vue.createElementVNode("table", _hoisted_5, [
-              (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.results, (result) => {
-                return vue.openBlock(), vue.createElementBlock("tr", {
-                  key: result.name
-                }, [
-                  vue.createElementVNode("td", _hoisted_6, [
-                    vue.createElementVNode("a", {
-                      class: "btn btn-primary",
-                      href: `instances/${$props.instance.id}/actuator/jklee-files/${result.name}`
-                    }, [
-                      _hoisted_8,
-                      vue.createTextVNode("  "),
-                      vue.createElementVNode("span", {
-                        textContent: vue.toDisplayString(result.name)
-                      }, null, 8, _hoisted_9)
-                    ], 8, _hoisted_7)
-                  ]),
-                  vue.createElementVNode("td", {
-                    class: "info__key",
-                    textContent: vue.toDisplayString(result.endedAt)
-                  }, null, 8, _hoisted_10)
-                ]);
-              }), 128))
-            ])
-          ])
-        ]),
-        _: 1
-      }),
-      vue.createElementVNode("div", null, [
-        vue.createTextVNode(" sessionName: "),
-        vue.withDirectives(vue.createElementVNode("input", {
-          type: "text",
-          "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.profileSessionName = $event)
-        }, null, 512), [
-          [vue.vModelText, _ctx.profileSessionName]
-        ]),
-        _hoisted_11,
-        vue.createTextVNode(" rawArguments: "),
-        vue.withDirectives(vue.createElementVNode("input", {
-          type: "text",
-          "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.profileRawArguments = $event)
-        }, null, 512), [
-          [vue.vModelText, _ctx.profileRawArguments]
-        ]),
-        _hoisted_12,
-        vue.createTextVNode(" profileFormat: "),
-        vue.withDirectives(vue.createElementVNode("input", {
-          type: "text",
-          "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => _ctx.profileFormat = $event)
-        }, null, 512), [
-          [vue.vModelText, _ctx.profileFormat]
-        ]),
-        _hoisted_13,
-        vue.createTextVNode(" profileDuration: "),
-        vue.withDirectives(vue.createElementVNode("input", {
-          type: "text",
-          "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => _ctx.profileDuration = $event)
-        }, null, 512), [
-          [vue.vModelText, _ctx.profileDuration]
-        ]),
-        _hoisted_14,
-        vue.createVNode(_component_sba_button, {
-          disabled: _ctx.profiling,
-          onClick: _cache[4] || (_cache[4] = ($event) => $options.profile(_ctx.profileSessionName, _ctx.profileRawArguments, _ctx.profileDuration, _ctx.profileFormat))
-        }, {
+    const _component_sba_instance_section = vue.resolveComponent("sba-instance-section");
+    return vue.openBlock(), vue.createBlock(_component_sba_instance_section, {
+      error: _ctx.error,
+      loading: !_ctx.hasLoaded
+    }, {
+      default: vue.withCtx(() => [
+        vue.createVNode(_component_sba_panel, { title: "Settings" }, {
           default: vue.withCtx(() => [
-            !_ctx.profiling ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
-              vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
-              vue.createTextVNode("  "),
-              _hoisted_15
-            ], 64)) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_16, "Profiling..."))
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.settings, (setting, index) => {
+              return vue.openBlock(), vue.createElementBlock("div", {
+                key: _ctx.settings.name
+              }, [
+                vue.createElementVNode("div", {
+                  class: vue.normalizeClass(["flex items-center px-4 py-3", {
+                    "bg-gray-50": index % 2 === 0
+                  }])
+                }, [
+                  vue.createElementVNode("div", _hoisted_1, [
+                    vue.createElementVNode("span", {
+                      textContent: vue.toDisplayString(setting.name)
+                    }, null, 8, _hoisted_2)
+                  ]),
+                  vue.createElementVNode("div", null, [
+                    vue.createElementVNode("span", {
+                      textContent: vue.toDisplayString(setting.value)
+                    }, null, 8, _hoisted_3)
+                  ])
+                ], 2)
+              ]);
+            }), 128))
           ]),
           _: 1
-        }, 8, ["disabled"])
-      ])
-    ]);
+        }),
+        vue.createVNode(_component_sba_panel, { title: "Profiling results" }, {
+          default: vue.withCtx(() => [
+            vue.createElementVNode("div", _hoisted_4, [
+              vue.createElementVNode("table", _hoisted_5, [
+                (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.results, (result) => {
+                  return vue.openBlock(), vue.createElementBlock("tr", {
+                    key: result.name
+                  }, [
+                    vue.createElementVNode("td", _hoisted_6, [
+                      vue.createElementVNode("a", {
+                        class: "btn btn-primary",
+                        href: `instances/${$props.instance.id}/actuator/jklee-files/${result.name}`
+                      }, [
+                        _hoisted_8,
+                        vue.createTextVNode("  "),
+                        vue.createElementVNode("span", {
+                          textContent: vue.toDisplayString(result.name)
+                        }, null, 8, _hoisted_9)
+                      ], 8, _hoisted_7)
+                    ]),
+                    vue.createElementVNode("td", {
+                      class: "info__key",
+                      textContent: vue.toDisplayString(result.endedAt)
+                    }, null, 8, _hoisted_10)
+                  ]);
+                }), 128))
+              ])
+            ])
+          ]),
+          _: 1
+        }),
+        vue.createElementVNode("div", null, [
+          vue.createTextVNode(" sessionName: "),
+          vue.withDirectives(vue.createElementVNode("input", {
+            type: "text",
+            "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.profileSessionName = $event)
+          }, null, 512), [
+            [vue.vModelText, _ctx.profileSessionName]
+          ]),
+          _hoisted_11,
+          vue.createTextVNode(" rawArguments: "),
+          vue.withDirectives(vue.createElementVNode("input", {
+            type: "text",
+            "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.profileRawArguments = $event)
+          }, null, 512), [
+            [vue.vModelText, _ctx.profileRawArguments]
+          ]),
+          _hoisted_12,
+          vue.createTextVNode(" profileFormat: "),
+          vue.withDirectives(vue.createElementVNode("input", {
+            type: "text",
+            "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => _ctx.profileFormat = $event)
+          }, null, 512), [
+            [vue.vModelText, _ctx.profileFormat]
+          ]),
+          _hoisted_13,
+          vue.createTextVNode(" profileDuration: "),
+          vue.withDirectives(vue.createElementVNode("input", {
+            type: "text",
+            "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => _ctx.profileDuration = $event)
+          }, null, 512), [
+            [vue.vModelText, _ctx.profileDuration]
+          ]),
+          _hoisted_14,
+          vue.createVNode(_component_sba_button, {
+            disabled: _ctx.profiling,
+            onClick: _cache[4] || (_cache[4] = ($event) => $options.profile(_ctx.profileSessionName, _ctx.profileRawArguments, _ctx.profileDuration, _ctx.profileFormat))
+          }, {
+            default: vue.withCtx(() => [
+              !_ctx.profiling ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
+                vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
+                vue.createTextVNode("  "),
+                _hoisted_15
+              ], 64)) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_16, "Profiling..."))
+            ]),
+            _: 1
+          }, 8, ["disabled"])
+        ])
+      ]),
+      _: 1
+    }, 8, ["error", "loading"]);
   }
   const jkleeEndpoint = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
   SBA.viewRegistry.addView({

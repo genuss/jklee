@@ -7,8 +7,24 @@
 
 -->
 <template>
-  <div class="jklee">
-    <pre>Raw settings:<br><span v-text="settings"/></pre>
+  <sba-instance-section :error="error" :loading="!hasLoaded">
+    <sba-panel :title="'Settings'">
+      <template v-for="(setting, index) in settings" :key="settings.name">
+        <div>
+          <div class="flex items-center px-4 py-3" :class="{
+            'bg-gray-50': index % 2 === 0,
+          }">
+            <div class="flex-1 sm:break-all">
+              <span v-text="setting.name"/>
+            </div>
+            <div>
+              <span v-text="setting.value"/>
+            </div>
+          </div>
+        </div>
+      </template>
+    </sba-panel>
+
 
     <sba-panel :title="'Profiling results'">
       <div class="content info">
@@ -71,7 +87,8 @@
         </template>
       </sba-button>
     </div>
-  </div>
+  </sba-instance-section>
+
 </template>
 
 <script>
@@ -83,7 +100,9 @@ export default {
     }
   },
   data: () => ({
-    settings: 'd',
+    error: null,
+    hasLoaded: false,
+    settings: [],
     results: [],
     profileRawArguments: 'start,event=itimer,interval=1ms',
     profileSessionName: 'test',
@@ -118,8 +137,14 @@ export default {
     }
   },
   async created() {
-    const response = await this.instance.axios.get('actuator/jklee-settings');
-    this.settings = response.data;
+    try {
+      const response = await this.instance.axios.get('actuator/jklee-settings');
+      this.settings = response.data.settings;
+    } catch (error) {
+      this.error = error
+    } finally {
+      this.hasLoaded = true;
+    }
     await this.updateResultsList()
   }
 };
@@ -142,10 +167,3 @@ function parseToMillis(timeString) {
   return millis;
 }
 </script>
-
-<style>
-.jklee {
-  font-size: 12pt;
-  width: 80%;
-}
-</style>

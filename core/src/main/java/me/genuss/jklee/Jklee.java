@@ -37,8 +37,24 @@ public class Jklee {
     }
   }
 
-  public JkleeSettings getSettings() {
-    return settings;
+  public EffectiveProperties getSettings() {
+    if (asyncProfiler.isLoaded()) {
+      return EffectiveProperties.builder()
+          .agentPathCandidates(settings.asyncProfiler().agentPathCandidates())
+          .resultsDir(String.valueOf(asyncProfiler.resultsDir()))
+          .cleanResultsDirOnStart(settings.cleanResultsDirOnStart())
+          .enabled(settings.enabled())
+          .failOnInitErrors(settings.failOnInitErrors())
+          .loaded(asyncProfiler.isLoaded())
+          .build();
+    }
+
+    return EffectiveProperties.builder()
+        .agentPathCandidates(settings.asyncProfiler().agentPathCandidates())
+        .enabled(settings.enabled())
+        .failOnInitErrors(settings.failOnInitErrors())
+        .loaded(asyncProfiler.isLoaded())
+        .build();
   }
 
   public ProfilingResponse start(ProfilingRequest request) {
@@ -164,6 +180,18 @@ public class Jklee {
     ASYNC_PROFILER_ERROR,
     INVALID_COMMAND,
     UNKNOWN,
+  }
+
+  @Builder
+  @Value
+  @Accessors(fluent = true)
+  public static class EffectiveProperties {
+    List<String> agentPathCandidates;
+    String resultsDir;
+    boolean cleanResultsDirOnStart;
+    boolean enabled;
+    boolean failOnInitErrors;
+    boolean loaded;
   }
 }
 
