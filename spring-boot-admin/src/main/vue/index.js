@@ -1,16 +1,24 @@
 import jkleeEndpoint from './jklee.vue';
+import en from './i18n.en.json';
+import de from './i18n.de.json';
 
-SBA.viewRegistry.addView({
-  group: "jklee",
-  name: "instances/jklee",
-  parent: "instances",
-  path: "jklee",
-  component: jkleeEndpoint,
-  label: "jklee",
-  isEnabled: ({ instance }) => {
-    return instance.hasEndpoint("jkleeSettings");
+SBA.use({
+  install({ viewRegistry, i18n }) {
+    viewRegistry.addView({
+      group: "jklee",
+      name: "instances/jklee",
+      parent: "instances",
+      path: "jklee",
+      component: jkleeEndpoint,
+      label: "jklee",
+      isEnabled: ({ instance }) => {
+        return instance.hasEndpoint("jkleeSettings");
+      },
+    });
+    i18n.mergeLocaleMessage("en", en);
+    i18n.mergeLocaleMessage("de", de);
   },
-})
+});
 
 // Icon taken from https://www.svgrepo.com/svg/258533/clover under CC0 license
 SBA.viewRegistry.setGroupIcon(

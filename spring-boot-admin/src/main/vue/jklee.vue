@@ -1,15 +1,74 @@
-<!--
-  - Show raw settings string for current instance
-  - Show settings pretty-printed
-  - Show list of currently available VM log files as links to download them
-  - Form to update settings (in separate view most certainly)
-  -
-
--->
 <template>
   <sba-instance-section :error="error" :loading="!hasLoaded">
-    <sba-panel :title="'Settings'">
-      <template v-for="(setting, index) in settings" :key="settings.name">
+    <sba-panel :title="$t('jklee.ui.results')">
+      <div class="grid grid-cols-2 gap-4">
+        <template v-for="result in results">
+          <div class="border p-2 flex">
+            <div class="w-1/2 pr-2">
+              <a :href="`instances/${instance.id}/actuator/jkleeFiles/${result.name}`">
+                <font-awesome-icon icon="download" class="mr-2"/>
+                <span v-text="result.name"/>
+              </a>
+            </div>
+            <div class="w-1/2" v-text="result.endedAt"/>
+          </div>
+        </template>
+      </div>
+
+    </sba-panel>
+
+    <sba-panel :title="$t('jklee.ui.session.title')">
+      <div class="flex gap-6 flex-col lg:flex-row">
+        <div class="flex-1">
+          <sba-input
+            v-model="profileRequest.sessionName"
+            :label="$t('jklee.ui.session.name')"
+            :placeholder="$t('jklee.ui.session.name')"
+          />
+        </div>
+        <div class="flex-1">
+          <sba-select
+            :name="$t('jklee.ui.session.format')"
+            :label="$t('jklee.ui.session.format')"
+            :options="profileProperties.formats"
+            v-model="profileRequest.format"
+            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+          >
+          </sba-select>
+        </div>
+        <div class="flex-1">
+          <sba-input
+            :label="$t('jklee.ui.session.duration')"
+            v-model="profileRequest.duration"
+            :placeholder="$t('jklee.ui.session.duration')"
+          />
+        </div>
+      </div>
+      <div class="flex">
+        <div class="flex-1 mr-4">
+          <sba-input
+            v-model="profileRequest.rawArguments"
+            :label="$t('jklee.ui.session.arguments')"
+            :placeholder="$t('jklee.ui.session.arguments')"/>
+        </div>
+        <sba-button
+          :disabled="profiling"
+          @click="profile(profileRequest)"
+        >
+          <template v-if="!profiling">
+            <font-awesome-icon icon="download"/>
+            <span v-text="$t('jklee.ui.session.start')"/>
+          </template>
+          <template v-else>
+            <span v-text="$t('jklee.ui.session.profiling')"/>
+          </template>
+        </sba-button>
+      </div>
+
+    </sba-panel>
+
+    <sba-panel :title="$t('jklee.ui.settings')">
+      <template v-for="(setting, index) in settings.data" :key="setting.name">
         <div>
           <div class="flex items-center px-4 py-3" :class="{
             'bg-gray-50': index % 2 === 0,
@@ -24,69 +83,6 @@
         </div>
       </template>
     </sba-panel>
-
-
-    <sba-panel :title="'Profiling results'">
-      <div class="content info">
-        <table class="table">
-          <tr
-            v-for="result in results"
-            :key="result.name"
-          >
-            <td class="info__key">
-              <a
-                class="btn btn-primary"
-                :href="`instances/${instance.id}/actuator/jkleeFiles/${result.name}`"
-              >
-                <i class="fa fa-download"></i>&nbsp;
-                <span v-text="result.name"/>
-              </a>
-            </td>
-            <td class="info__key" v-text="result.endedAt"/>
-          </tr>
-        </table>
-      </div>
-    </sba-panel>
-
-    <div>
-      sessionName:
-      <input
-        type="text"
-        v-model="profileSessionName"
-      >
-      <br>
-      rawArguments:
-      <input
-        type="text"
-        v-model="profileRawArguments"
-      >
-      <br>
-      profileFormat:
-      <input
-        type="text"
-        v-model="profileFormat"
-      >
-      <br>
-      profileDuration:
-      <input
-        type="text"
-        v-model="profileDuration"
-      >
-      <br>
-
-      <sba-button
-        :disabled="profiling"
-        @click="profile(profileSessionName, profileRawArguments, profileDuration, profileFormat)"
-      >
-        <template v-if="!profiling">
-          <font-awesome-icon icon="download"/>&nbsp;
-          <span>Start profiling</span>
-        </template>
-        <template v-else>
-          <div class="loader">Profiling...</div>
-        </template>
-      </sba-button>
-    </div>
   </sba-instance-section>
 
 </template>
@@ -102,29 +98,34 @@ export default {
   data: () => ({
     error: null,
     hasLoaded: false,
-    settings: [],
+    settings: {
+      data: [],
+    },
+    profileProperties: {},
+    profileRequest: {
+      sessionName: 'test',
+      rawArguments: 'start,event=itimer,interval=1ms',
+      duration: '2s',
+      format: 'FLAMEGRAPH',
+    },
     results: [],
-    profileRawArguments: 'start,event=itimer,interval=1ms',
-    profileSessionName: 'test',
-    profileDuration: '2s',
-    profileFormat: 'FLAMEGRAPH',
     profiling: false,
   }),
   methods: {
-    async profile(sessionName, rawArguments, profileDuration, profileFormat) {
+    async profile(profileRequest) {
       this.profiling = true;
-      const durationInMillis = parseToMillis(profileDuration);
+      const durationInMillis = parseToMillis(profileRequest.duration);
       setTimeout(() => {
         this.profiling = false;
         this.updateResultsList()
       }, durationInMillis)
 
       await this.instance.axios.post(
-        `actuator/jkleeProfile/${sessionName}`,
+        `actuator/jkleeProfile/${profileRequest.sessionName}`,
         {
-          rawArguments: rawArguments,
-          duration: profileDuration,
-          format: profileFormat,
+          rawArguments: profileRequest.rawArguments,
+          duration: profileRequest.duration,
+          format: profileRequest.format,
         }
       )
       .then((response) => {
@@ -138,8 +139,12 @@ export default {
   },
   async created() {
     try {
-      const response = await this.instance.axios.get('actuator/jkleeSettings');
-      this.settings = response.data.settings;
+      const settingsResponse = await this.instance.axios.get('actuator/jkleeSettings');
+      this.settings.data = settingsResponse.data.settings;
+
+      const profileResponse = await this.instance.axios.get('actuator/jkleeProfile');
+      this.profileProperties = profileResponse.data;
+
     } catch (error) {
       this.error = error
     } finally {
