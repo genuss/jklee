@@ -36,7 +36,7 @@
             <td class="info__key">
               <a
                 class="btn btn-primary"
-                :href="`instances/${instance.id}/actuator/jklee-files/${result.name}`"
+                :href="`instances/${instance.id}/actuator/jkleeFiles/${result.name}`"
               >
                 <i class="fa fa-download"></i>&nbsp;
                 <span v-text="result.name"/>
@@ -120,7 +120,7 @@ export default {
       }, durationInMillis)
 
       await this.instance.axios.post(
-        `actuator/jklee-profile/${sessionName}`,
+        `actuator/jkleeProfile/${sessionName}`,
         {
           rawArguments: rawArguments,
           duration: profileDuration,
@@ -132,13 +132,13 @@ export default {
       })
     },
     async updateResultsList() {
-      const response = await this.instance.axios.get('actuator/jklee-files');
+      const response = await this.instance.axios.get('actuator/jkleeFiles');
       this.results = response.data.results;
     }
   },
   async created() {
     try {
-      const response = await this.instance.axios.get('actuator/jklee-settings');
+      const response = await this.instance.axios.get('actuator/jkleeSettings');
       this.settings = response.data.settings;
     } catch (error) {
       this.error = error

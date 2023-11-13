@@ -57,7 +57,7 @@
             this.updateResultsList();
           }, durationInMillis);
           yield this.instance.axios.post(
-            `actuator/jklee-profile/${sessionName}`,
+            `actuator/jkleeProfile/${sessionName}`,
             {
               rawArguments,
               duration: profileDuration,
@@ -70,7 +70,7 @@
       },
       updateResultsList() {
         return __async(this, null, function* () {
-          const response = yield this.instance.axios.get("actuator/jklee-files");
+          const response = yield this.instance.axios.get("actuator/jkleeFiles");
           this.results = response.data.results;
         });
       }
@@ -78,7 +78,7 @@
     created() {
       return __async(this, null, function* () {
         try {
-          const response = yield this.instance.axios.get("actuator/jklee-settings");
+          const response = yield this.instance.axios.get("actuator/jkleeSettings");
           this.settings = response.data.settings;
         } catch (error) {
           this.error = error;
@@ -171,7 +171,7 @@
                     vue.createElementVNode("td", _hoisted_6, [
                       vue.createElementVNode("a", {
                         class: "btn btn-primary",
-                        href: `instances/${$props.instance.id}/actuator/jklee-files/${result.name}`
+                        href: `instances/${$props.instance.id}/actuator/jkleeFiles/${result.name}`
                       }, [
                         _hoisted_8,
                         vue.createTextVNode("  "),
@@ -250,7 +250,7 @@
     component: jkleeEndpoint,
     label: "jklee",
     isEnabled: ({ instance }) => {
-      return instance.hasEndpoint("jklee-settings");
+      return instance.hasEndpoint("jkleeSettings");
     }
   });
 });

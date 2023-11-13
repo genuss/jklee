@@ -7,6 +7,6 @@ SBA.viewRegistry.addView({
   component: jkleeEndpoint,
   label: "jklee",
   isEnabled: ({ instance }) => {
-    return instance.hasEndpoint("jklee-settings");
+    return instance.hasEndpoint("jkleeSettings");
   },
 })

@@ -7,7 +7,7 @@ import me.genuss.jklee.JkleeSettingsEndpoint.ConfigResponse.ConfigEntry;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
-@Endpoint(id = "jklee-settings")
+@Endpoint(id = "jkleeSettings")
 public class JkleeSettingsEndpoint {
 
   private final Jklee jklee;

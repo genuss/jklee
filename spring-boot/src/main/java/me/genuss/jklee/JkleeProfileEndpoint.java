@@ -9,7 +9,7 @@ import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 
-@Endpoint(id = "jklee-profile")
+@Endpoint(id = "jkleeProfile")
 public class JkleeProfileEndpoint {
 
   private final Jklee jklee;

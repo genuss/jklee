@@ -11,7 +11,7 @@ import org.springframework.boot.actuate.endpoint.web.WebEndpointResponse;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-@Endpoint(id = "jklee-files")
+@Endpoint(id = "jkleeFiles")
 public class JkleeFilesEndpoint {
 
   private final Jklee jklee;
