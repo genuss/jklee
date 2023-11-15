@@ -153,7 +153,7 @@ class AsyncProfilerLauncher {
     AsyncProfiler asyncProfiler;
     try {
       asyncProfiler = AsyncProfiler.getInstance(realPath.toString());
-    } catch (Exception e) {
+    } catch (Exception | UnsatisfiedLinkError e) {
       log.fine(
           () ->
               format(
