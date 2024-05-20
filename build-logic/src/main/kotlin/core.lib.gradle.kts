@@ -16,18 +16,6 @@ jgitver {
   useDirty = true
 }
 
-publishing {
-  publications {
-    create<MavenPublication>("jklee") {
-      from(components["java"])
-      groupId = project.group.toString()
-    }
-  }
-  repositories {
-    mavenCentral()
-  }
-}
-
 spotless {
   java {
     googleJavaFormat("1.16.0")
