@@ -6,10 +6,12 @@ plugins {
   id("maven-publish")
 }
 
-
 group = "me.genuss.jklee"
 
-java { withSourcesJar() }
+java {
+  withJavadocJar()
+  withSourcesJar()
+}
 
 jgitver {
   failIfDirty = (System.getenv("CI") ?: "false").toBooleanStrict()
@@ -27,7 +29,6 @@ spotless {
     gson().sortByKeys().indentWithSpaces(2)
   }
 }
-
 
 tasks.withType<JavaCompile> {
   options.release = 17
