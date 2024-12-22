@@ -1,4 +1,5 @@
 [versions]
+java = "17"
 jgitver = "0.9.1"
 siouanFrontend = "6.0.0"
 spotless = "6.22.0"

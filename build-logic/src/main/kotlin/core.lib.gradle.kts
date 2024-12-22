@@ -5,6 +5,8 @@ plugins {
   id("maven-publish")
 }
 
+val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
 group = "me.genuss.jklee"
 
 jgitver {
@@ -21,10 +23,8 @@ spotless {
 }
 
 tasks.withType<JavaCompile> {
-  options.release = 17
+  options.release = libs.findVersion("java").get().requiredVersion.toInt()
   options.compilerArgs = listOf("-Werror", "-parameters")
-  targetCompatibility = JavaVersion.VERSION_17.toString()
-  sourceCompatibility = JavaVersion.VERSION_17.toString()
 }
 
 tasks.withType<Test> { useJUnitPlatform() }

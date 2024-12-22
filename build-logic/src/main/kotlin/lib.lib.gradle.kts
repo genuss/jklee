@@ -3,7 +3,10 @@ plugins {
   id("java-library")
 }
 
+val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
 java {
+  toolchain { languageVersion = JavaLanguageVersion.of(libs.findVersion("java").get().requiredVersion) }
   withJavadocJar()
   withSourcesJar()
 }

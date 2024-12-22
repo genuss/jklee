@@ -10,10 +10,4 @@ dependencies {
   implementation(libs.springBoot.gradlePlugin)
 }
 
-spotless {
-  kotlin {
-    ktfmt()
-    target("src/**/*.kt")
-  }
-  kotlinGradle { ktfmt() }
-}
+spotless { kotlinGradle { ktfmt() } }
