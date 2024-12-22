@@ -2,11 +2,7 @@
 
 rootProject.name = "build-logic"
 
-pluginManagement {
-  repositories {
-    gradlePluginPortal()
-  }
-}
+pluginManagement { repositories { gradlePluginPortal() } }
 
 dependencyResolutionManagement {
   repositories {

@@ -1,4 +1,7 @@
-plugins { id("core.lib") }
+plugins {
+  id("core.lib")
+  id("lib.lib")
+}
 
 dependencies {
   annotationProcessor("org.projectlombok:lombok")

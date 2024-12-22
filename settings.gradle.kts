@@ -2,6 +2,8 @@
 
 rootProject.name = "jklee"
 
+include("bom")
+
 include("core")
 
 include("spring-boot")

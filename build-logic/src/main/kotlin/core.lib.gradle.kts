@@ -2,16 +2,10 @@ plugins {
   id("com.diffplug.spotless")
   id("fr.brouillard.oss.gradle.jgitver")
   id("idea")
-  id("java-library")
   id("maven-publish")
 }
 
 group = "me.genuss.jklee"
-
-java {
-  withJavadocJar()
-  withSourcesJar()
-}
 
 jgitver {
   failIfDirty = (System.getenv("CI") ?: "false").toBooleanStrict()
@@ -19,10 +13,6 @@ jgitver {
 }
 
 spotless {
-  java {
-    googleJavaFormat("1.16.0")
-    targetExclude("src/main/java/one/profiler/**/*.java")
-  }
   kotlinGradle { ktfmt() }
   json {
     target("src/**/*.json")
