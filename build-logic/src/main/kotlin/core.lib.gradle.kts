@@ -17,16 +17,15 @@ jgitver {
 publishing {
   repositories {
     maven {
-      name = "Github Packages"
+      name = "GithubPackages"
       url = uri("https://maven.pkg.github.com/genuss/jklee")
       credentials {
-        username = providers.environmentVariable("GITHUB_ACTOR").get()
-        password = providers.environmentVariable("GITHUB_TOKEN").get()
+        username = providers.environmentVariable("GITHUB_ACTOR").getOrElse("anonymous")
+        password = providers.environmentVariable("GITHUB_TOKEN").getOrElse("anonymous")
       }
     }
   }
 }
-
 
 spotless {
   kotlinGradle { ktfmt() }

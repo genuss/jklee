@@ -20,8 +20,8 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           build-scan-publish: true
-          build-scan-terms-of-use-agree: "yes"
-          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-use-agree: true
+          build-scan-terms-of-use-url: https://gradle.com/terms-of-service
       - name: Build with Gradle
         run: ./gradlew build-logic:build build
       - name: Publish snapshot
