@@ -1,7 +1,4 @@
-plugins {
-  id("org.siouan.frontend-jdk11")
-}
-
+plugins { id("org.siouan.frontend-jdk11") }
 
 frontend {
   nodeVersion = "18.16.0"

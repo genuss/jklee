@@ -6,11 +6,12 @@ plugins {
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 java {
-  toolchain { languageVersion = JavaLanguageVersion.of(libs.findVersion("java").get().requiredVersion) }
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(libs.findVersion("java").get().requiredVersion)
+  }
   withJavadocJar()
   withSourcesJar()
 }
-
 
 publishing {
   publications {

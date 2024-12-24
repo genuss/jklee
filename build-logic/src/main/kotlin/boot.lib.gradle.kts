@@ -1,3 +1,1 @@
-plugins {
-  id("org.springframework.boot")
-}
+plugins { id("org.springframework.boot") }
