@@ -18,10 +18,10 @@ publishing {
   repositories {
     maven {
       name = "GithubPackages"
-      url = uri("https://s01.oss.sonatype.org/service/local")
+      url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots")
       credentials {
-        username = providers.environmentVariable("GITHUB_ACTOR").getOrElse("anonymous")
-        password = providers.environmentVariable("GITHUB_TOKEN").getOrElse("anonymous")
+        username = providers.environmentVariable("OSS_SONATYPE_USER").getOrElse("anonymous")
+        password = providers.environmentVariable("OSS_SONATYPE_PASSWORD").getOrElse("anonymous")
       }
     }
   }
