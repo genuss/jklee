@@ -14,6 +14,20 @@ jgitver {
   useDirty = true
 }
 
+publishing {
+  repositories {
+    maven {
+      name = "Github Packages"
+      url = uri("https://maven.pkg.github.com/genuss/jklee")
+      credentials {
+        username = providers.environmentVariable("GITHUB_ACTOR").get()
+        password = providers.environmentVariable("GITHUB_TOKEN").get()
+      }
+    }
+  }
+}
+
+
 spotless {
   kotlinGradle { ktfmt() }
   json {

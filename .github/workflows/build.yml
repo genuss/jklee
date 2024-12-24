@@ -4,6 +4,8 @@ on: [ push ]
 
 jobs:
   build:
+    permissions:
+      packages: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -21,3 +23,7 @@ jobs:
           build-scan-terms-of-use-agree: "yes"
       - name: Build with Gradle
         run: ./gradlew build-logic:build build
+      - name: Publish snapshot
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
