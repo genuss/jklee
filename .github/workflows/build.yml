@@ -28,5 +28,6 @@ jobs:
         run: ./gradlew build-logic:build build
       - name: Publish snapshot
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OSS_SONATYPE_USER: ${{ secrets.OSS_SONATYPE_USER }}
+          OSS_SONATYPE_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
         run: ./gradlew publish
