@@ -18,7 +18,7 @@ publishing {
   repositories {
     maven {
       name = "GithubPackages"
-      url = uri("https://maven.pkg.github.com/genuss/jklee")
+      url = uri("https://s01.oss.sonatype.org/service/local")
       credentials {
         username = providers.environmentVariable("GITHUB_ACTOR").getOrElse("anonymous")
         password = providers.environmentVariable("GITHUB_TOKEN").getOrElse("anonymous")
