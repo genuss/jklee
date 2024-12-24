@@ -10,7 +10,7 @@ val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 group = "me.genuss.jklee"
 
 jgitver {
-  failIfDirty = (System.getenv("CI") ?: "false").toBooleanStrict()
+  failIfDirty = providers.environmentVariable("CI").map { it.toBooleanStrict() }.orElse(false).get()
   useDirty = true
 }
 
