@@ -1,5 +1,5 @@
 plugins {
-  id("core.lib")
-  id("frontend.lib")
-  id("lib.lib")
+  id("core")
+  id("frontend")
+  id("lib")
 }

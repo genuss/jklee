@@ -6,6 +6,8 @@ include("bom")
 
 include("core")
 
+include("jreleaser")
+
 include("spring-boot")
 
 include("samples")
@@ -15,13 +17,7 @@ include("spring-boot-admin")
 pluginManagement {
   includeBuild("build-logic")
 
-  repositories {
-    gradlePluginPortal()
-  }
+  repositories { gradlePluginPortal() }
 }
 
-dependencyResolutionManagement {
-  repositories {
-    mavenCentral()
-  }
-}
+dependencyResolutionManagement { repositories { mavenCentral() } }

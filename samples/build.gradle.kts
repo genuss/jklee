@@ -1,7 +1,7 @@
 plugins {
-  id("boot.lib")
-  id("core.lib")
-  id("lib.lib")
+  id("boot")
+  id("core")
+  id("lib")
 }
 
 dependencies {

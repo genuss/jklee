@@ -1,9 +1,7 @@
 plugins {
-  id("core.lib")
-  id("java-platform")
+  id("core")
+  id("platform")
 }
-
-javaPlatform { allowDependencies() }
 
 dependencies {
   constraints {
@@ -12,8 +10,4 @@ dependencies {
     api(project(":spring-boot"))
     api(project(":spring-boot-admin"))
   }
-}
-
-publishing {
-  publications { create<MavenPublication>("jklee") { from(components["javaPlatform"]) } }
 }
