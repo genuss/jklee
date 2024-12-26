@@ -4,8 +4,6 @@ plugins {
   id("pl.allegro.tech.build.axion-release")
 }
 
-group = "me.genuss.jklee"
-
 scmVersion {
   snapshotCreator { _, _ -> "" }
   versionCreator {
@@ -31,5 +29,9 @@ scmVersion {
     "$versionFromTag$dirtySuffix"
   }
 }
+
+group = "me.genuss.jklee"
+
+version = scmVersion.version
 
 spotless { kotlinGradle { ktfmt() } }

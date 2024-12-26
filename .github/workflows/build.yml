@@ -12,8 +12,8 @@ jobs:
   build:
     permissions:
       contents: write
-      packages: write
       issues: read
+      packages: write
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout sources
@@ -33,13 +33,11 @@ jobs:
           build-scan-terms-of-use-url: https://gradle.com/terms-of-service
       - name: Build with Gradle
         run: ./gradlew build-logic:build build --parallel
-      - name: Publish artifacts and create release
+      - name: Publish to Github Packages
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
-          JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
-          JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.OSS_SONATYPE_USER }}
         run: ./gradlew publish currentVersion jreleaserRelease
