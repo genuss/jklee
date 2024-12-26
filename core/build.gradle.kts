@@ -1,6 +1,6 @@
 plugins {
-  id("core.lib")
-  id("lib.lib")
+  id("core")
+  id("lib")
 }
 
 dependencies {

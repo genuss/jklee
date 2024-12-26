@@ -7,3 +7,4 @@ build
 spring-boot-admin/.frontend-gradle-plugin
 spring-boot-admin/node
 spring-boot-admin/node_modules
+staging-repo

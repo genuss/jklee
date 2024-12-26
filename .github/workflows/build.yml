@@ -4,10 +4,16 @@ on: [ push ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      issues: read
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -17,7 +23,17 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           build-scan-publish: true
-          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
-          build-scan-terms-of-use-agree: "yes"
+          build-scan-terms-of-use-agree: 'yes'
+          build-scan-terms-of-use-url: https://gradle.com/terms-of-service
       - name: Build with Gradle
-        run: ./gradlew build-logic:build build
+        run: ./gradlew build-logic:build build --parallel
+      - name: Publish artifacts and create release
+        env:
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
+          JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
+          JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.OSS_SONATYPE_USER }}
+        run: ./gradlew publish jreleaserRelease

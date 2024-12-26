@@ -15,13 +15,7 @@ include("spring-boot-admin")
 pluginManagement {
   includeBuild("build-logic")
 
-  repositories {
-    gradlePluginPortal()
-  }
+  repositories { gradlePluginPortal() }
 }
 
-dependencyResolutionManagement {
-  repositories {
-    mavenCentral()
-  }
-}
+dependencyResolutionManagement { repositories { mavenCentral() } }
