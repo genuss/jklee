@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.jgitver.gradlePlugin)
+  implementation(libs.axionRelease.gradlePlugin)
   implementation(libs.siouanFrontend.gradlePlugin)
   implementation(libs.spotless.gradlePlugin)
   implementation(libs.springBoot.gradlePlugin)

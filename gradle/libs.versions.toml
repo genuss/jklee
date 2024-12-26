@@ -1,13 +1,13 @@
 [versions]
+axion = "1.18.16"
 java = "17"
-jgitver = "0.9.1"
 siouanFrontend = "6.0.0"
 spotless = "6.22.0"
 springBoot = "3.1.5"
 springBootAdmin = "3.1.7"
 
 [libraries]
-jgitver-gradlePlugin = { module = "fr.brouillard.oss.gradle.jgitver:fr.brouillard.oss.gradle.jgitver.gradle.plugin", version.ref = "jgitver" }
+axionRelease-gradlePlugin = { module = "pl.allegro.tech.build.axion-release:pl.allegro.tech.build.axion-release.gradle.plugin", version.ref = "axion" }
 siouanFrontend-gradlePlugin = { module = "org.siouan:frontend-gradle-plugin-jdk11  ", version.ref = "siouanFrontend" }
 spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 springBoot = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot" }

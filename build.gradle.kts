@@ -24,8 +24,9 @@ jreleaser {
   }
   release {
     github {
-      version = "0.0.0-dev"
       overwrite = true
+      draft = true
+      prerelease { enabled = true }
       signatures = true
       update { skipTag = true }
       sign = true
