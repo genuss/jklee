@@ -25,7 +25,6 @@ jreleaser {
   release {
     github {
       version = "0.0.0-dev"
-      name = "Test Release"
       overwrite = true
       signatures = true
       update { skipTag = true }
