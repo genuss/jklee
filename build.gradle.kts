@@ -28,9 +28,7 @@ jreleaser {
       name = "Test Release"
       overwrite = true
       signatures = true
-      update {
-        skipTag = true
-      }
+      update { skipTag = true }
       sign = true
     }
   }
