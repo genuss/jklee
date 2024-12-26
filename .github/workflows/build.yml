@@ -1,6 +1,12 @@
 name: Build
 
-on: [ push ]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
   build:
@@ -36,4 +42,4 @@ jobs:
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
           JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
           JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.OSS_SONATYPE_USER }}
-        run: ./gradlew publish jreleaserRelease
+        run: ./gradlew publish currentVersion jreleaserRelease

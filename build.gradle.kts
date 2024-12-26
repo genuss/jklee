@@ -25,7 +25,6 @@ jreleaser {
   release {
     github {
       overwrite = true
-      draft = true
       prerelease { enabled = true }
       signatures = true
       update { skipTag = true }
@@ -45,7 +44,7 @@ jreleaser {
       }
       mavenCentral {
         create("jklee") {
-          active = org.jreleaser.model.Active.ALWAYS
+          active = org.jreleaser.model.Active.RELEASE
           sign = true
           stage = org.jreleaser.model.api.deploy.maven.MavenCentralMavenDeployer.Stage.UPLOAD
           stagingRepository(stageRepoPath)
