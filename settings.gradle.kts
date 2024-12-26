@@ -6,8 +6,6 @@ include("bom")
 
 include("core")
 
-include("jreleaser")
-
 include("spring-boot")
 
 include("samples")

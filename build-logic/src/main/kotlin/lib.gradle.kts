@@ -30,16 +30,19 @@ publishing {
         licenses {
           license {
             name = "MIT License"
-            url = "https://opensource.org/licenses/MIT"
+            url = "https://opensource.org/license/MIT"
           }
         }
-        scm { connection = "scm:git:git://github.com/genuss/jklee.git" }
+        scm {
+          connection = "scm:git:https://github.com/genuss/jklee.git"
+          url = "https://github.com/genuss/jklee"
+        }
         url = "https://github.com/genuss/jklee"
       }
     }
   }
   repositories {
-    maven { url = rootProject.layout.buildDirectory.dir("stage-repo").get().asFile.toURI() }
+    maven { url = rootProject.layout.projectDirectory.dir("staging-repo").asFile.toURI() }
   }
 }
 
@@ -49,7 +52,7 @@ tasks {
     options.release = libs.findVersion("java").get().requiredVersion.toInt()
     options.compilerArgs = listOf("-Werror", "-parameters")
   }
-  withType<Javadoc> { (options as CoreJavadocOptions).addStringOption("Xdoclint:none") }
+  withType<Javadoc> { (options as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet") }
 }
 
 spotless {
