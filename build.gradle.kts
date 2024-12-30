@@ -46,14 +46,9 @@ jreleaser {
   release {
     github {
       overwrite = true
-      prerelease {
-        enabled = true
-        pattern = ".+\\b[0-9a-f]{40}\\b.+"
-      }
       previousTagName = scmVersion.previousVersion
       sign = true
       signatures = true
-      skipTag = true
       tagName = scmVersion.version
     }
   }
@@ -75,7 +70,6 @@ jreleaser {
       mavenCentral {
         create("jklee") {
           active = org.jreleaser.model.Active.ALWAYS
-          sign = true
           stage = org.jreleaser.model.api.deploy.maven.MavenCentralMavenDeployer.Stage.UPLOAD
           stagingRepository(stageRepoPath)
           url = "https://central.sonatype.com/api/v1/publisher"
