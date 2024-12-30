@@ -21,15 +21,11 @@ public class Jklee {
   private final JkleeSettings settings;
   private final AsyncProfilerLauncher asyncProfiler;
 
-  public Jklee() {
-    this(JkleeSettings.defaults());
-  }
-
   public Jklee(JkleeSettings settings) {
     this(settings, new AsyncProfilerLauncher(settings));
   }
 
-  public Jklee(JkleeSettings settings, AsyncProfilerLauncher asyncProfiler) {
+  Jklee(JkleeSettings settings, AsyncProfilerLauncher asyncProfiler) {
     this.settings = settings;
     this.asyncProfiler = asyncProfiler;
     if (!settings.enabled()) {
@@ -108,25 +104,6 @@ public class Jklee {
     String rawArguments;
     @Builder.Default Format format = Format.TEXT;
     Duration duration;
-
-    @Getter
-    @Accessors(fluent = true)
-    public enum Command {
-      START("start"),
-      RESUME("resume"),
-      STOP("stop"),
-      DUMP("dump"),
-      CHECK("check"),
-      STATUS("status"),
-      LIST("list"),
-      ;
-
-      private final String command;
-
-      Command(String command) {
-        this.command = command;
-      }
-    }
 
     @Getter
     @Accessors(fluent = true)

@@ -20,10 +20,6 @@ public class JkleeSettings {
 
   @Builder.Default @NonNull AsyncProfiler asyncProfiler = AsyncProfiler.builder().build();
 
-  public static JkleeSettings defaults() {
-    return JkleeSettings.builder().build();
-  }
-
   @Builder
   @Value
   @Accessors(fluent = true)
