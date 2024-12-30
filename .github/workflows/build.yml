@@ -35,7 +35,6 @@ jobs:
         run: ./gradlew build-logic:build build publish --parallel
       - env:
           JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
-          JRELEASER_FEIGN_LOGGER_LEVEL: FULL
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ github.actor }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
@@ -48,7 +47,6 @@ jobs:
         run: ./gradlew jreleaserDeploy --deployer github
       - env:
           JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
-          JRELEASER_FEIGN_LOGGER_LEVEL: FULL
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ github.actor }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}

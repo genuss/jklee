@@ -9,12 +9,6 @@ val stageRepoPath: String =
 
 scmVersion {
   snapshotCreator { _, _ -> "" }
-  versionIncrementer { ctx ->
-    when (ctx.scmPosition.branch) {
-      "master" -> ctx.currentVersion.incrementPatchVersion()
-      else -> com.github.zafarkhaja.semver.Version.valueOf(ctx.currentVersion.normalVersion)
-    }
-  }
   versionCreator { versionFromTag, position ->
     if (!position.isClean &&
         providers.environmentVariable("CI").map(String::toBoolean).getOrElse(false)) {
@@ -71,7 +65,11 @@ jreleaser {
           applyMavenCentralRules = true
           sign = true
           stagingRepository(stageRepoPath)
-          url = "https://maven.pkg.github.com/genuss/jklee"
+          url =
+              providers
+                  .environmentVariable("GITHUB_REPOSITORY")
+                  .map { "https://maven.pkg.github.com/$it" }
+                  .getOrElse("https://maven.pkg.github.com/genuss/jklee")
         }
       }
       mavenCentral {

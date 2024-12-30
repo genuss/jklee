@@ -1,15 +1,16 @@
 Release flow
 
 Every commit in a PR built is uploaded to GitHub packages repository. The version pattern is this
-    <next version>-<GITHUB_RUN_NUMBER var><commit sha>.
+    <next version>-<GITHUB_RUN_NUMBER><GITHUB_SHA>.
 Every commit in the default branch is considered a release and uploaded to both GitHub packages and Maven Central.
-The version patter is:
+For every commit a release is also created in GitHub.
+The version pattern is:
   <next version>
-Despite the fact, the package is uploaded to Maven Central, it's not published by default (i.e. visible by consumers).
-This process is made manually by the project owner at the moment.
 Every commit in the default branch increments a patch part. In case if a minor or major change is
 required, the following must be done:
-- Push a commit with a version change.
-- Drop the release in Maven Central.
-- Push a tag with the new version. Tag Format is 'v1.2.3'.
-- After the new artifacts are uploaded to Maven Central, publish the release.
+- Push a commit with a change (e.g. by merging a PR).
+- Push a tag pointing to the just created commit with the new version to the default branch. Tag Format is 'v1.2.3'.
+- Drop the publication made by the first workflow run.
+- Publish the publication with the updated version.
+
+In case if minor or major change isn't required, the publication must be done manually by the project owner anyway.
