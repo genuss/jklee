@@ -55,3 +55,11 @@ jobs:
         if: github.ref == 'refs/heads/master'
         name: Publish to Github Packages and Maven Central
         run: ./gradlew jreleaserRelease
+      - if: always()
+        name: JReleaser debug info
+        uses: actions/upload-artifact@v4
+        with:
+          name: jreleaser-release
+          path: |
+            build/jreleaser/output.properties
+            build/jreleaser/trace.log
