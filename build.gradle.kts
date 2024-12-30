@@ -44,7 +44,7 @@ jreleaser {
       }
       mavenCentral {
         create("jklee") {
-          active = org.jreleaser.model.Active.RELEASE
+          active = org.jreleaser.model.Active.ALWAYS
           sign = true
           stage = org.jreleaser.model.api.deploy.maven.MavenCentralMavenDeployer.Stage.UPLOAD
           stagingRepository(stageRepoPath)

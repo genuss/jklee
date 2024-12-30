@@ -34,7 +34,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build-logic:build build publish currentVersion --parallel
       - env:
-          JRELEASER_DEPLOY_MAVEN_MAVENCENTRAL_ACTIVE: NEVER
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
@@ -44,7 +43,7 @@ jobs:
           JRELEASER_MAVENCENTRAL_USERNAME: placeholder
         if: github.ref != 'refs/heads/master'
         name: Publish to Github Packages
-        run: ./gradlew jreleaserRelease
+        run: ./gradlew jreleaserRelease --deployer github
       - env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
