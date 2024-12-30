@@ -15,7 +15,11 @@ scmVersion {
       throw IllegalStateException("Cannot release dirty version in CI")
     }
     val revision =
-        providers.environmentVariable("GITHUB_SHA").orElse(position.revision).getOrElse("unknown")
+        providers
+            .environmentVariable("GITHUB_SHA")
+            .orElse(position.revision)
+            .map { it.substring(0, 7) }
+            .getOrElse("unknown")
     val revisionSuffix = "-$revision"
     val dirtySuffix = if (position.isClean) "" else "-dirty"
     val runNumber = providers.environmentVariable("GITHUB_RUN_NUMBER").getOrElse("000000")
