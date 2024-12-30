@@ -57,6 +57,12 @@ jreleaser {
 
 scmVersion {
   snapshotCreator { _, _ -> "" }
+  versionIncrementer { ctx ->
+    when (ctx.scmPosition.branch) {
+      "master" -> ctx.currentVersion.incrementPatchVersion()
+      else -> com.github.zafarkhaja.semver.Version.valueOf(ctx.currentVersion.normalVersion)
+    }
+  }
   versionCreator { versionFromTag, position ->
     if (!position.isClean &&
         providers.environmentVariable("CI").map(String::toBoolean).getOrElse(false)) {
@@ -76,6 +82,11 @@ scmVersion {
   }
 }
 
+group = "me.genuss.jklee"
+
 version = scmVersion.version
 
-allprojects { project.version = rootProject.version }
+allprojects {
+  project.group = rootProject.group
+  project.version = rootProject.version
+}

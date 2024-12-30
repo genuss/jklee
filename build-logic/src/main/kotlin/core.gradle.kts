@@ -3,6 +3,4 @@ plugins {
   id("idea")
 }
 
-group = "me.genuss.jklee"
-
 spotless { kotlinGradle { ktfmt() } }
