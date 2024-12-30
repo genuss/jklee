@@ -1,4 +1,4 @@
-# ![Logo](logo.png) Jklee
+# ![Logo](logo.svg) Jklee
 
 
 Jklee is a Java library that provides a convenient wrapper
