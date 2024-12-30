@@ -50,10 +50,10 @@ jreleaser {
   release {
     github {
       overwrite = true
-      previousTagName = scmVersion.previousVersion
+      previousTagName = "v${scmVersion.previousVersion}"
       sign = true
       signatures = true
-      tagName = scmVersion.version
+      tagName = "v${scmVersion.version}"
     }
   }
   deploy {
