@@ -1,13 +1,19 @@
 name: Build
 
-on: [ push ]
+on:
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - master
 
 jobs:
   build:
     permissions:
       contents: write
-      packages: write
       issues: read
+      packages: write
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout sources
@@ -26,14 +32,36 @@ jobs:
           build-scan-terms-of-use-agree: 'yes'
           build-scan-terms-of-use-url: https://gradle.com/terms-of-service
       - name: Build with Gradle
-        run: ./gradlew build-logic:build build --parallel
-      - name: Publish artifacts and create release
-        env:
+        run: ./gradlew build-logic:build build publish --parallel
+      - env:
+          JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
+          JRELEASER_GITHUB_USERNAME: ${{ github.actor }}
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
+          JRELEASER_MAVENCENTRAL_PASSWORD: placeholder
+          JRELEASER_MAVENCENTRAL_USERNAME: placeholder
+        if: github.ref != 'refs/heads/master'
+        name: Publish to Github Packages
+        run: ./gradlew jreleaserDeploy --deployer github
+      - env:
+          JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JRELEASER_GITHUB_USERNAME: ${{ github.actor }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
           JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
           JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.OSS_SONATYPE_USER }}
-        run: ./gradlew publish jreleaserRelease
+        if: github.ref == 'refs/heads/master'
+        name: Publish to Github Packages and Maven Central
+        run: ./gradlew jreleaserRelease
+      - if: always()
+        name: JReleaser debug info
+        uses: actions/upload-artifact@v4
+        with:
+          name: jreleaser-release
+          path: |
+            build/jreleaser/output.properties
+            build/jreleaser/trace.log
