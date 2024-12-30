@@ -1,4 +1,4 @@
-# ![Logo](logo.svg) Jklee
+# Jklee
 
 Jklee is a Java library that provides a convenient wrapper
 around [async-profiler](https://github.com/async-profiler/async-profiler), allowing you to easily
