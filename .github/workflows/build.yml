@@ -34,6 +34,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build-logic:build build publish --parallel
       - env:
+          JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
           JRELEASER_FEIGN_LOGGER_LEVEL: FULL
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
@@ -46,6 +47,7 @@ jobs:
         name: Publish to Github Packages
         run: ./gradlew jreleaserRelease --deployer github
       - env:
+          JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
           JRELEASER_FEIGN_LOGGER_LEVEL: FULL
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
