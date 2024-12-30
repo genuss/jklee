@@ -25,10 +25,13 @@ jreleaser {
   release {
     github {
       overwrite = true
-      prerelease { enabled = true }
+      prerelease {
+        enabled = true
+        pattern = ".+\\b[0-9a-f]{40}\\b.+"
+      }
+      sign = true
       signatures = true
       skipTag = true
-      sign = true
     }
   }
   deploy {
