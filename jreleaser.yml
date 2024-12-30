@@ -1,5 +1,5 @@
 signing:
-  active: NEVER
+  active: ALWAYS
   armored: true
   checksums: false
   mode: MEMORY
@@ -27,14 +27,13 @@ deploy:
       jklee:
         active: ALWAYS
         applyMavenCentralRules: true
-        sign: false
+        sign: true
         stagingRepositories:
           - staging-repo
         url: https://maven.pkg.github.com/genuss/jklee
     mavenCentral:
       jklee:
         active: ALWAYS
-        sign: false
         stage: UPLOAD
         stagingRepositories:
           - staging-repo

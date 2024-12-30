@@ -32,16 +32,20 @@ jobs:
           build-scan-terms-of-use-agree: 'yes'
           build-scan-terms-of-use-url: https://gradle.com/terms-of-service
       - name: Build with Gradle
-        run: ./gradlew build-logic:build build publish --parallel
+        run: ./gradlew build-logic:build build publish :bom:currentVersion --parallel
       - env:
+          JRELEASER_DEPLOY_MAVEN_MAVENCENTRAL_ACTIVE: NEVER
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
+          JRELEASER_MAVENCENTRAL_PASSWORD: placeholder
+          JRELEASER_MAVENCENTRAL_USERNAME: placeholder
         name: Publish to Github Packages
         run: ./gradlew jreleaserRelease
       - env:
+          JRELEASER_DEPLOY_MAVEN_GITHUB_ACTIVE: NEVER
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
