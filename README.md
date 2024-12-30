@@ -1,8 +1,11 @@
-# Jklee
+# <img src="logo.png" style="width: 100, height:100"> Jklee
+
 
 Jklee is a Java library that provides a convenient wrapper
 around [async-profiler](https://github.com/async-profiler/async-profiler), allowing you to easily
 invoke it from within a JVM-based application.
+
+The name _jklee_ comes from the German word Klee, which means clover.
 
 ## Features
 
