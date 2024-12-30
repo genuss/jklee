@@ -1,12 +1,12 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - '**'
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -32,12 +32,21 @@ jobs:
           build-scan-terms-of-use-agree: 'yes'
           build-scan-terms-of-use-url: https://gradle.com/terms-of-service
       - name: Build with Gradle
-        run: ./gradlew build-logic:build build --parallel
-      - name: Publish to Github Packages
-        env:
+        run: ./gradlew build-logic:build build publish --parallel
+      - env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
-        run: ./gradlew publish currentVersion jreleaserRelease
+        name: Publish to Github Packages
+        run: ./gradlew jreleaserRelease
+      - env:
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
+          JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
+          JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.OSS_SONATYPE_USER }}
+        if: github.ref == 'refs/heads/master'
+        name: Publish to Maven Central
+        run: ./gradlew jreleaserRelease
