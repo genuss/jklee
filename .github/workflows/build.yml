@@ -37,7 +37,7 @@ jobs:
           JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
           JRELEASER_FEIGN_LOGGER_LEVEL: FULL
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
+          JRELEASER_GITHUB_USERNAME: ${{ github.actor }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
@@ -45,12 +45,12 @@ jobs:
           JRELEASER_MAVENCENTRAL_USERNAME: placeholder
         if: github.ref != 'refs/heads/master'
         name: Publish to Github Packages
-        run: ./gradlew jreleaserRelease --deployer github
+        run: ./gradlew jreleaserDeploy --deployer github
       - env:
           JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
           JRELEASER_FEIGN_LOGGER_LEVEL: FULL
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JRELEASER_GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
+          JRELEASER_GITHUB_USERNAME: ${{ github.actor }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
