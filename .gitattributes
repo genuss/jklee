@@ -1,2 +1,7 @@
-*.bat           text eol=crlf
-
+* text=auto eol=lf
+*.bat text eol=crlf
+*.lockfile -diff
+gradlew -diff
+gradlew.bat -diff
+spring-boot-admin/src/main/resources/META-INF/spring-boot-admin-server-ui/extensions/jklee/jklee.js -diff
+spring-boot-admin/src/main/resources/META-INF/spring-boot-admin-server-ui/extensions/jklee/jklee.js.map -diff

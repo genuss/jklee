@@ -54,13 +54,16 @@
         <sba-button
           :disabled="profiling"
           @click="profile(profileRequest)"
+          class="relative overflow-hidden"
         >
           <template v-if="!profiling">
             <font-awesome-icon icon="download"/>
             <span v-text="$t('jklee.ui.session.start')"/>
           </template>
           <template v-else>
-            <span v-text="$t('jklee.ui.session.profiling')"/>
+            <div class="flex items-center">
+              <span>{{ Math.floor(progressPercentage) }}%</span>
+            </div>
           </template>
         </sba-button>
       </div>
@@ -110,7 +113,19 @@ export default {
     },
     results: [],
     profiling: false,
+    profilingStartTime: null,
+    profilingDuration: 0,
+    elapsedTime: 0,
+    progressTimer: null
   }),
+  computed: {
+    progressPercentage() {
+      if (!this.profiling || this.profilingDuration === 0) {
+        return 0;
+      }
+      return Math.min(100, (this.elapsedTime / this.profilingDuration) * 100);
+    },
+  },
   methods: {
     parseToMillis(timeString) {
       if (!timeString) return 0;
@@ -132,6 +147,12 @@ export default {
       this.profiling = true;
       try {
         const durationInMillis = this.parseToMillis(profileRequest.duration);
+        this.profilingDuration = durationInMillis;
+        this.profilingStartTime = Date.now();
+        this.elapsedTime = 0;
+
+        // Start the progress timer
+        this.startProgressTimer();
 
         // Start the profiling request
         await this.instance.axios.post(
@@ -145,12 +166,25 @@ export default {
 
         // Set a timeout to update the UI when profiling is expected to complete
         setTimeout(() => {
+          this.stopProgressTimer();
           this.profiling = false;
           this.updateResultsList();
         }, durationInMillis);
       } catch (error) {
+        this.stopProgressTimer();
         this.profiling = false;
         this.error = error;
+      }
+    },
+    startProgressTimer() {
+      this.progressTimer = setInterval(() => {
+        this.elapsedTime = Date.now() - this.profilingStartTime;
+      }, 100); // Update every 100ms for smoother progress
+    },
+    stopProgressTimer() {
+      if (this.progressTimer) {
+        clearInterval(this.progressTimer);
+        this.progressTimer = null;
       }
     },
     async updateResultsList() {
@@ -176,6 +210,9 @@ export default {
       this.hasLoaded = true;
     }
     await this.updateResultsList()
+  },
+  beforeUnmount() {
+    this.stopProgressTimer();
   }
 };
 </script>
