@@ -2,7 +2,7 @@
   <sba-instance-section :error="error" :loading="!hasLoaded">
     <sba-panel :title="$t('jklee.ui.results')">
       <div class="grid grid-cols-2 gap-4">
-        <template v-for="result in results">
+        <template v-for="result in results" :key="result.name">
           <div class="border p-2 flex">
             <div class="w-1/2 pr-2">
               <a :href="`instances/${instance.id}/actuator/jkleeFiles/${result.name}`">
@@ -112,29 +112,54 @@ export default {
     profiling: false,
   }),
   methods: {
+    parseToMillis(timeString) {
+      if (!timeString) return 0;
+
+      const value = parseInt(timeString, 10);
+      if (isNaN(value)) return 0;
+
+      const unit = timeString.slice(-1);
+
+      switch(unit) {
+        case 's': return value * 1000;
+        case 'm': return value * 60 * 1000;
+        case 'h': return value * 60 * 60 * 1000;
+        case 'd': return value * 60 * 60 * 24 * 1000;
+        default: return value; // Assume milliseconds if no unit
+      }
+    },
     async profile(profileRequest) {
       this.profiling = true;
-      const durationInMillis = parseToMillis(profileRequest.duration);
-      setTimeout(() => {
-        this.profiling = false;
-        this.updateResultsList()
-      }, durationInMillis)
+      try {
+        const durationInMillis = this.parseToMillis(profileRequest.duration);
 
-      await this.instance.axios.post(
-        `actuator/jkleeProfile/${profileRequest.sessionName}`,
-        {
-          rawArguments: profileRequest.rawArguments,
-          duration: profileRequest.duration,
-          format: profileRequest.format,
-        }
-      )
-      .then((response) => {
-        console.log(response)
-      })
+        // Start the profiling request
+        await this.instance.axios.post(
+          `actuator/jkleeProfile/${profileRequest.sessionName}`,
+          {
+            rawArguments: profileRequest.rawArguments,
+            duration: profileRequest.duration,
+            format: profileRequest.format,
+          }
+        );
+
+        // Set a timeout to update the UI when profiling is expected to complete
+        setTimeout(() => {
+          this.profiling = false;
+          this.updateResultsList();
+        }, durationInMillis);
+      } catch (error) {
+        this.profiling = false;
+        this.error = error;
+      }
     },
     async updateResultsList() {
-      const response = await this.instance.axios.get('actuator/jkleeFiles');
-      this.results = response.data.results;
+      try {
+        const response = await this.instance.axios.get('actuator/jkleeFiles');
+        this.results = response.data.results;
+      } catch (error) {
+        this.error = error;
+      }
     }
   },
   async created() {
@@ -153,22 +178,4 @@ export default {
     await this.updateResultsList()
   }
 };
-
-function parseToMillis(timeString) {
-  let value = parseInt(timeString, 10);
-  let unit = timeString.slice(-1);
-  let millis = 0;
-
-  if (unit === 's') {
-    millis = value * 1000;
-  } else if (unit === 'm') {
-    millis = value * 60 * 1000;
-  } else if (unit === 'h') {
-    millis = value * 60 * 60 * 1000;
-  } else if (unit === 'd') {
-    millis = value * 60 * 60 * 24 * 1000;
-  }
-
-  return millis;
-}
 </script>
