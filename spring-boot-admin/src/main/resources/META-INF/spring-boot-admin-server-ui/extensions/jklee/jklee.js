@@ -50,8 +50,20 @@
         format: "FLAMEGRAPH"
       },
       results: [],
-      profiling: false
+      profiling: false,
+      profilingStartTime: null,
+      profilingDuration: 0,
+      elapsedTime: 0,
+      progressTimer: null
     }),
+    computed: {
+      progressPercentage() {
+        if (!this.profiling || this.profilingDuration === 0) {
+          return 0;
+        }
+        return Math.min(100, this.elapsedTime / this.profilingDuration * 100);
+      }
+    },
     methods: {
       parseToMillis(timeString) {
         if (!timeString)
@@ -78,6 +90,10 @@
           this.profiling = true;
           try {
             const durationInMillis = this.parseToMillis(profileRequest.duration);
+            this.profilingDuration = durationInMillis;
+            this.profilingStartTime = Date.now();
+            this.elapsedTime = 0;
+            this.startProgressTimer();
             yield this.instance.axios.post(
               `actuator/jkleeProfile/${profileRequest.sessionName}`,
               {
@@ -87,14 +103,27 @@
               }
             );
             setTimeout(() => {
+              this.stopProgressTimer();
               this.profiling = false;
               this.updateResultsList();
             }, durationInMillis);
           } catch (error) {
+            this.stopProgressTimer();
             this.profiling = false;
             this.error = error;
           }
         });
+      },
+      startProgressTimer() {
+        this.progressTimer = setInterval(() => {
+          this.elapsedTime = Date.now() - this.profilingStartTime;
+        }, 100);
+      },
+      stopProgressTimer() {
+        if (this.progressTimer) {
+          clearInterval(this.progressTimer);
+          this.progressTimer = null;
+        }
       },
       updateResultsList() {
         return __async(this, null, function* () {
@@ -121,6 +150,9 @@
         }
         yield this.updateResultsList();
       });
+    },
+    beforeUnmount() {
+      this.stopProgressTimer();
     }
   };
   const _hoisted_1 = { class: "grid grid-cols-2 gap-4" };
@@ -135,7 +167,10 @@
   const _hoisted_10 = { class: "flex" };
   const _hoisted_11 = { class: "flex-1 mr-4" };
   const _hoisted_12 = ["textContent"];
-  const _hoisted_13 = ["textContent"];
+  const _hoisted_13 = {
+    key: 1,
+    class: "flex items-center"
+  };
   const _hoisted_14 = { class: "flex-1 sm:break-all" };
   const _hoisted_15 = ["textContent"];
   const _hoisted_16 = ["textContent"];
@@ -156,40 +191,33 @@
         }, {
           default: vue.withCtx(() => [
             vue.createElementVNode("div", _hoisted_1, [
-              (vue.openBlock(true), vue.createElementBlock(
-                vue.Fragment,
-                null,
-                vue.renderList(_ctx.results, (result) => {
-                  return vue.openBlock(), vue.createElementBlock("div", {
-                    key: result.name,
-                    class: "border p-2 flex"
-                  }, [
-                    vue.createElementVNode("div", _hoisted_2, [
-                      vue.createElementVNode("a", {
-                        href: `instances/${$props.instance.id}/actuator/jkleeFiles/${result.name}`
-                      }, [
-                        vue.createVNode(_component_font_awesome_icon, {
-                          icon: "download",
-                          class: "mr-2"
-                        }),
-                        vue.createElementVNode("span", {
-                          textContent: vue.toDisplayString(result.name)
-                        }, null, 8, _hoisted_4)
-                      ], 8, _hoisted_3)
-                    ]),
-                    vue.createElementVNode("div", {
-                      class: "w-1/2",
-                      textContent: vue.toDisplayString(result.endedAt)
-                    }, null, 8, _hoisted_5)
-                  ]);
-                }),
-                128
-                /* KEYED_FRAGMENT */
-              ))
+              (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.results, (result) => {
+                return vue.openBlock(), vue.createElementBlock("div", {
+                  key: result.name,
+                  class: "border p-2 flex"
+                }, [
+                  vue.createElementVNode("div", _hoisted_2, [
+                    vue.createElementVNode("a", {
+                      href: `instances/${$props.instance.id}/actuator/jkleeFiles/${result.name}`
+                    }, [
+                      vue.createVNode(_component_font_awesome_icon, {
+                        icon: "download",
+                        class: "mr-2"
+                      }),
+                      vue.createElementVNode("span", {
+                        textContent: vue.toDisplayString(result.name)
+                      }, null, 8, _hoisted_4)
+                    ], 8, _hoisted_3)
+                  ]),
+                  vue.createElementVNode("div", {
+                    class: "w-1/2",
+                    textContent: vue.toDisplayString(result.endedAt)
+                  }, null, 8, _hoisted_5)
+                ]);
+              }), 128))
             ])
           ]),
           _: 1
-          /* STABLE */
         }, 8, ["title"]),
         vue.createVNode(_component_sba_panel, {
           title: _ctx.$t("jklee.ui.session.title")
@@ -234,81 +262,59 @@
               ]),
               vue.createVNode(_component_sba_button, {
                 disabled: _ctx.profiling,
-                onClick: _cache[4] || (_cache[4] = ($event) => $options.profile(_ctx.profileRequest))
+                onClick: _cache[4] || (_cache[4] = ($event) => $options.profile(_ctx.profileRequest)),
+                class: "relative overflow-hidden"
               }, {
                 default: vue.withCtx(() => [
-                  !_ctx.profiling ? (vue.openBlock(), vue.createElementBlock(
-                    vue.Fragment,
-                    { key: 0 },
-                    [
-                      vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
-                      vue.createElementVNode("span", {
-                        textContent: vue.toDisplayString(_ctx.$t("jklee.ui.session.start"))
-                      }, null, 8, _hoisted_12)
-                    ],
-                    64
-                    /* STABLE_FRAGMENT */
-                  )) : (vue.openBlock(), vue.createElementBlock("span", {
-                    key: 1,
-                    textContent: vue.toDisplayString(_ctx.$t("jklee.ui.session.profiling"))
-                  }, null, 8, _hoisted_13))
+                  !_ctx.profiling ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
+                    vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
+                    vue.createElementVNode("span", {
+                      textContent: vue.toDisplayString(_ctx.$t("jklee.ui.session.start"))
+                    }, null, 8, _hoisted_12)
+                  ], 64)) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_13, [
+                    vue.createElementVNode("span", null, vue.toDisplayString(Math.floor($options.progressPercentage)) + "%", 1)
+                  ]))
                 ]),
                 _: 1
-                /* STABLE */
               }, 8, ["disabled"])
             ])
           ]),
           _: 1
-          /* STABLE */
         }, 8, ["title"]),
         vue.createVNode(_component_sba_panel, {
           title: _ctx.$t("jklee.ui.settings")
         }, {
           default: vue.withCtx(() => [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList(_ctx.settings.data, (setting, index) => {
-                return vue.openBlock(), vue.createElementBlock("div", {
-                  key: setting.name
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.settings.data, (setting, index) => {
+              return vue.openBlock(), vue.createElementBlock("div", {
+                key: setting.name
+              }, [
+                vue.createElementVNode("div", {
+                  class: vue.normalizeClass(["flex items-center px-4 py-3", {
+                    "bg-gray-50": index % 2 === 0
+                  }])
                 }, [
-                  vue.createElementVNode(
-                    "div",
-                    {
-                      class: vue.normalizeClass(["flex items-center px-4 py-3", {
-                        "bg-gray-50": index % 2 === 0
-                      }])
-                    },
-                    [
-                      vue.createElementVNode("div", _hoisted_14, [
-                        vue.createElementVNode("span", {
-                          textContent: vue.toDisplayString(setting.name)
-                        }, null, 8, _hoisted_15)
-                      ]),
-                      vue.createElementVNode("div", null, [
-                        vue.createElementVNode("span", {
-                          textContent: vue.toDisplayString(setting.value)
-                        }, null, 8, _hoisted_16)
-                      ])
-                    ],
-                    2
-                    /* CLASS */
-                  )
-                ]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
+                  vue.createElementVNode("div", _hoisted_14, [
+                    vue.createElementVNode("span", {
+                      textContent: vue.toDisplayString(setting.name)
+                    }, null, 8, _hoisted_15)
+                  ]),
+                  vue.createElementVNode("div", null, [
+                    vue.createElementVNode("span", {
+                      textContent: vue.toDisplayString(setting.value)
+                    }, null, 8, _hoisted_16)
+                  ])
+                ], 2)
+              ]);
+            }), 128))
           ]),
           _: 1
-          /* STABLE */
         }, 8, ["title"])
       ]),
       _: 1
-      /* STABLE */
     }, 8, ["error", "loading"]);
   }
-  const jkleeEndpoint = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/agenus/IdeaProjects/sandbox/jklee/spring-boot-admin/src/main/vue/jklee.vue"]]);
+  const jkleeEndpoint = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
   const jklee$1 = {
     ui: {
       results: "Profiling Results",
