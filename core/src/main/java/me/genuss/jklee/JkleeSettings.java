@@ -1,6 +1,7 @@
 package me.genuss.jklee;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
 import lombok.NonNull;
@@ -25,7 +26,7 @@ public class JkleeSettings {
   @Accessors(fluent = true)
   public static class AsyncProfiler {
 
-    @Builder.Default @NonNull List<@NonNull String> agentPathCandidates = List.of();
+    @Builder.Default @NonNull List<@NonNull String> agentPathCandidates = Collections.emptyList();
 
     Path resultsDir;
 

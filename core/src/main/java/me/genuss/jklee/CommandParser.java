@@ -22,9 +22,11 @@ class CommandParser {
   }
 
   private static String fileAndLogArgs(ProfilingRequest request, Path sessionDir) {
-    var formatString = request.format().format().isEmpty() ? "," + request.format().format() : "";
-    var resultFile = sessionDir + File.separator + FILENAME_RESULT + request.format().extension();
-    var logFile = sessionDir + File.separator + FILENAME_LOG;
+    String formatString =
+        request.format().format().isEmpty() ? "," + request.format().format() : "";
+    String resultFile =
+        sessionDir + File.separator + FILENAME_RESULT + request.format().extension();
+    String logFile = sessionDir + File.separator + FILENAME_LOG;
     return formatString + ",file=" + resultFile + ",log=" + logFile;
   }
 }

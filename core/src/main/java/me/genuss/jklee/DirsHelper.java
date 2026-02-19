@@ -1,6 +1,8 @@
 package me.genuss.jklee;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -8,6 +10,10 @@ class DirsHelper {
 
   static Path prepareResultsDir(JkleeSettings settings) throws IOException {
     return getPath(settings, settings.asyncProfiler().resultsDir());
+  }
+
+  static Path path(String path, String... more) {
+    return FileSystems.getDefault().getPath(path, more);
   }
 
   private static Path getPath(JkleeSettings settings, Path dir) throws IOException {
@@ -21,10 +27,13 @@ class DirsHelper {
   private static Path defaultDir(boolean appendPidToDirs) {
     String tmpDir = System.getProperty("java.io.tmpdir");
     if (appendPidToDirs) {
-      var myPid = String.valueOf(ProcessHandle.current().pid());
-      return Path.of(tmpDir, "jklee", myPid);
+      return path(tmpDir, "jklee", currentPid());
     } else {
-      return Path.of(tmpDir, "jklee");
+      return path(tmpDir, "jklee");
     }
+  }
+
+  private static String currentPid() {
+    return ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
   }
 }

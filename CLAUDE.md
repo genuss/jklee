@@ -2,7 +2,10 @@
 
 ## Project Overview
 
-Jklee is a Java library that wraps [async-profiler](https://github.com/async-profiler/async-profiler) for easy CPU/memory profiling from JVM applications. It provides a core Java API, Spring Boot integration with actuator endpoints, and a Spring Boot Admin UI plugin (Vue.js).
+Jklee is a Java library that
+wraps [async-profiler](https://github.com/async-profiler/async-profiler) for easy CPU/memory
+profiling from JVM applications. It provides a core Java API, Spring Boot integration with actuator
+endpoints, and a Spring Boot Admin UI plugin (Vue.js).
 
 ## Build & Test
 
@@ -20,7 +23,13 @@ Jklee is a Java library that wraps [async-profiler](https://github.com/async-pro
 ./gradlew :spring-boot-admin:npmWatch
 ```
 
-Requires **Java 17+**. The Gradle wrapper is included.
+Requires **Java 21+** (build JVM). Java target versions are per-module and defined in
+`gradle/libs.versions.toml`:
+
+- **core**: Java 8
+- **spring-boot**, **spring-boot-admin**, **samples**: Java 17
+
+The Gradle wrapper is included.
 
 ## Project Structure
 
@@ -36,11 +45,12 @@ Requires **Java 17+**. The Gradle wrapper is included.
 - Google Java Format enforced via Spotless (`./gradlew spotlessApply` to fix)
 - Kotlin files formatted with ktfmt
 - Lombok is used for builders, value types, and logging
-- Compiler flags: `-Werror` (warnings are errors), `-parameters`
+- Compiler flags: `-Werror` (warnings are errors), `-Xlint:-options` (suppress cross-compilation
+  warnings), `-parameters`
 
 ## Key Dependencies
 
-- Java 17, Gradle 8.x, JUnit 5
+- Java 8+ (core), Java 17+ (spring-boot, spring-boot-admin, samples), Gradle 8.x, JUnit 5
 - Spring Boot 3.1.5, Spring Boot Admin 3.1.7
 - Vue 3.3.4, Vite 4.4.9 (frontend)
 - Version catalog: `gradle/libs.versions.toml`

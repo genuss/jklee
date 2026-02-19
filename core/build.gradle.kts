@@ -3,6 +3,8 @@ plugins {
   id("lib")
 }
 
+extra["javaVersion"] = libs.versions.javaCore.get()
+
 dependencies {
   annotationProcessor("org.projectlombok:lombok")
   annotationProcessor(platform(libs.springBoot))
