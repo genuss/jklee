@@ -7,9 +7,6 @@ plugins {
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(libs.findVersion("java").get().requiredVersion)
-  }
   withJavadocJar()
   withSourcesJar()
 }
@@ -48,16 +45,16 @@ publishing {
 
 tasks {
   test { useJUnitPlatform() }
-  withType<JavaCompile> {
-    options.release = libs.findVersion("java").get().requiredVersion.toInt()
-    options.compilerArgs = listOf("-Werror", "-parameters")
+  withType<JavaCompile>().configureEach {
+    options.release = getVersion("javaVersion").toInt()
+    options.compilerArgs = listOf("-Werror", "-Xlint:-options", "-parameters")
   }
   withType<Javadoc> { (options as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet") }
 }
 
 spotless {
   java {
-    googleJavaFormat("1.16.0")
+    googleJavaFormat("1.19.2")
     targetExclude("src/main/java/one/profiler/**/*.java")
   }
 }

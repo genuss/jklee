@@ -1,8 +1,9 @@
 package me.genuss.jklee;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.extern.java.Log;
 import me.genuss.jklee.Jklee.ProfilingRequest;
@@ -12,7 +13,7 @@ import me.genuss.jklee.JkleeSettings.AsyncProfiler;
 public class JkleeTest {
 
   public static void main(String[] args) throws Exception {
-    var jklee =
+    Jklee jklee =
         new Jklee(
             JkleeSettings.builder()
                 .enabled(true)
@@ -20,14 +21,14 @@ public class JkleeTest {
                 .asyncProfiler(
                     AsyncProfiler.builder()
                         .agentPathCandidates(
-                            List.of(
+                            Collections.singletonList(
                                 "/Users/agenus/soft/async-profiler-2.8.3-macos/build/libasyncProfiler.so"))
                         .build())
                 .build());
-    var eater =
+    Thread eater =
         new Thread(
             () -> {
-              var integers = new HashMap<Integer, Integer>();
+              Map<Integer, Integer> integers = new HashMap<>();
               while (!Thread.interrupted()) {
                 integers.put(
                     ThreadLocalRandom.current().nextInt(100),

@@ -1,7 +1,6 @@
 package me.genuss.jklee;
 
 import static java.lang.String.format;
-import static java.util.function.Predicate.not;
 import static me.genuss.jklee.CommandParser.FILENAME_RESULT;
 import static me.genuss.jklee.CommandParser.prepareCommand;
 import static me.genuss.jklee.CommandParser.prepareStopCommand;
@@ -12,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
@@ -34,7 +35,7 @@ class AsyncProfilerLauncher {
   private static final ScheduledExecutorService POOL =
       Executors.newSingleThreadScheduledExecutor(
           r -> {
-            var thread = new Thread(r, "jklee");
+            Thread thread = new Thread(r, "jklee");
             thread.setDaemon(true);
             return thread;
           });
@@ -45,7 +46,7 @@ class AsyncProfilerLauncher {
   public AsyncProfilerLauncher(JkleeSettings settings) {
     asyncProfiler =
         settings.asyncProfiler().agentPathCandidates().stream()
-            .map(Path::of)
+            .map(DirsHelper::path)
             .filter(Files::exists)
             .map(this::tryLoad)
             .filter(Objects::nonNull)
@@ -78,9 +79,9 @@ class AsyncProfilerLauncher {
       throw new JkleeInactiveException("Async profiler is not loaded");
     }
     validate(request);
-    var sessionDir = getSessionDir(request.id());
+    Path sessionDir = getSessionDir(request.id());
     Files.createDirectories(sessionDir);
-    var startCommand = prepareCommand(request, sessionDir);
+    String startCommand = prepareCommand(request, sessionDir);
     log.fine("Executing raw command: " + startCommand);
     asyncProfiler.execute(startCommand);
 
@@ -91,16 +92,16 @@ class AsyncProfilerLauncher {
 
   public List<ProfilingResult> getAvailableProfilingResults() {
     if (!isLoaded()) {
-      return List.of();
+      return Collections.emptyList();
     }
-    try (var stream = Files.find(resultsDir, 1, this::isDir)) {
+    try (Stream<Path> stream = Files.find(resultsDir, 1, this::isDir)) {
       return stream
-          .filter(not(resultsDir::equals))
+          .filter(other -> !resultsDir.equals(other))
           .map(this::toProfilingResult)
           .sorted(Comparator.comparing(ProfilingResult::endedAt).reversed())
           .collect(Collectors.toList());
     } catch (IOException e) {
-      return List.of();
+      return Collections.emptyList();
     }
   }
 
@@ -108,7 +109,7 @@ class AsyncProfilerLauncher {
     if (!isLoaded()) {
       return null;
     }
-    try (var stream = Files.find(getSessionDir(sessionName), 1, this::isFile)) {
+    try (Stream<Path> stream = Files.find(getSessionDir(sessionName), 1, this::isFile)) {
       return stream
           .filter(path -> path.getFileName().toString().startsWith(FILENAME_RESULT))
           .findAny()
@@ -123,8 +124,8 @@ class AsyncProfilerLauncher {
   }
 
   private void stop(ProfilingRequest request) {
-    var sessionDir = getSessionDir(request.id());
-    var stopCommand = prepareStopCommand(request, sessionDir);
+    Path sessionDir = getSessionDir(request.id());
+    String stopCommand = prepareStopCommand(request, sessionDir);
     log.fine(() -> String.format("Executing stop command: %s", stopCommand));
     try {
       String result = asyncProfiler.execute(stopCommand);
@@ -169,10 +170,10 @@ class AsyncProfilerLauncher {
   }
 
   private void validate(ProfilingRequest request) {
-    if (request.id() == null || request.id().isBlank()) {
+    if (request.id() == null || request.id().isEmpty()) {
       throw new IllegalArgumentException("Session id is required");
     }
-    if (request.rawArguments() == null || request.rawArguments().isBlank()) {
+    if (request.rawArguments() == null || request.rawArguments().isEmpty()) {
       throw new IllegalArgumentException("Raw arguments are required");
     }
     if (request.format() == null) {
@@ -181,7 +182,7 @@ class AsyncProfilerLauncher {
   }
 
   private Path getSessionDir(String sessionName) {
-    return Path.of(resultsDir.toString(), sessionName);
+    return DirsHelper.path(resultsDir.toString(), sessionName);
   }
 
   private boolean isDir(Path path, BasicFileAttributes attributes) {

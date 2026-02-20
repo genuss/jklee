@@ -4,6 +4,8 @@ plugins {
   id("lib")
 }
 
+extra["javaVersion"] = libs.versions.javaSpringBootAdmin.get()
+
 dependencies {
   implementation("de.codecentric:spring-boot-admin-starter-client")
   implementation("de.codecentric:spring-boot-admin-starter-server")

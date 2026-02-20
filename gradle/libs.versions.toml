@@ -1,5 +1,7 @@
 [versions]
-java = "17"
+javaCore = "8"
+javaSpringBoot = "17"
+javaSpringBootAdmin = "17"
 siouanFrontend = "6.0.0"
 spotless = "6.22.0"
 springBoot = "3.1.5"
