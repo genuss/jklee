@@ -26,8 +26,8 @@ endpoints, and a Spring Boot Admin UI plugin (Vue.js).
 Requires **Java 21+** (build JVM). Java target versions are per-module and defined in
 `gradle/libs.versions.toml`:
 
-- **core**: Java 8
-- **spring-boot**, **spring-boot-admin**, **samples**: Java 17
+- **core**, **spring-boot**: Java 8
+- **spring-boot-admin**, **samples**: Java 17
 
 The Gradle wrapper is included.
 
@@ -50,8 +50,8 @@ The Gradle wrapper is included.
 
 ## Key Dependencies
 
-- Java 8+ (core), Java 17+ (spring-boot, spring-boot-admin, samples), Gradle 8.x, JUnit 5
-- Spring Boot 3.1.5, Spring Boot Admin 3.1.7
+- Java 8+ (core, spring-boot), Java 17+ (spring-boot-admin, samples), Gradle 8.x, JUnit 5
+- Spring Boot 2.7.18 (spring-boot), Spring Boot 3.1.5 (spring-boot-admin, samples), Spring Boot Admin 3.1.7
 - Vue 3.3.4, Vite 4.4.9 (frontend)
 - Version catalog: `gradle/libs.versions.toml`
 
