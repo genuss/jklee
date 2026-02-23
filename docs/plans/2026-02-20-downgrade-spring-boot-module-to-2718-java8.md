@@ -56,10 +56,10 @@ Downgrade the `spring-boot` module to use Spring Boot 2.7.18 and target Java 8, 
 **Files:**
 - Modify: `spring-boot/src/main/java/me/genuss/jklee/JkleeConfigurationProperties.java`
 
-- [ ] Move `@ConstructorBinding` from constructor level to class level (Spring Boot 2.7 canonical style) - place it on `JkleeConfigurationProperties` class and `AsyncProfiler` inner class
-- [ ] Change import from `org.springframework.boot.context.properties.ConstructorBinding` (used as FQCN in current code) to class-level annotation import `org.springframework.boot.context.properties.ConstructorBinding`
-- [ ] Remove `@SuppressWarnings("removal")` annotation (not needed in 2.7)
-- [ ] Run `./gradlew spotlessApply` then `./gradlew :spring-boot:compileJava` to verify
+- [x] Move `@ConstructorBinding` from constructor level to class level (Spring Boot 2.7 canonical style) - place it on `JkleeConfigurationProperties` class and `AsyncProfiler` inner class
+- [x] Change import from `org.springframework.boot.context.properties.ConstructorBinding` (used as FQCN in current code) to class-level annotation import `org.springframework.boot.context.properties.ConstructorBinding`
+- [x] Remove `@SuppressWarnings("removal")` annotation (not needed in 2.7)
+- [x] Run `./gradlew spotlessApply` then `./gradlew :spring-boot:compileJava` to verify
 
 ### Task 4: Add spring.factories for auto-configuration registration
 
