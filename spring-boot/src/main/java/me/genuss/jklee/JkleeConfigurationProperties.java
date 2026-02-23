@@ -25,7 +25,6 @@ public class JkleeConfigurationProperties {
     this.asyncProfiler = asyncProfiler;
   }
 
-  @ConstructorBinding
   @Value
   public static class AsyncProfiler {
 

@@ -2,6 +2,7 @@ package me.genuss.jklee;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class JkleeProfileEndpoint {
                   Map<String, String> map = new HashMap<>();
                   map.put("label", format.name().toLowerCase());
                   map.put("value", format.name());
-                  return map;
+                  return Collections.unmodifiableMap(map);
                 });
     return ProfilingOptions.builder().formats(formats.collect(Collectors.toList())).build();
   }

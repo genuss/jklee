@@ -19,7 +19,7 @@ public class JkleeSettingsEndpoint {
   @ReadOperation
   public ConfigResponse getConfig() {
     Jklee.EffectiveProperties settings = jklee.getSettings();
-    ArrayList<ConfigEntry> settingsMap = new ArrayList<ConfigEntry>();
+    ArrayList<ConfigEntry> settingsMap = new ArrayList<>();
     settingsMap.add(new ConfigEntry("enabled", settings.enabled()));
     settingsMap.add(new ConfigEntry("failOnInitErrors", settings.failOnInitErrors()));
     settingsMap.add(new ConfigEntry("cleanResultsDirOnStart", settings.cleanResultsDirOnStart()));
