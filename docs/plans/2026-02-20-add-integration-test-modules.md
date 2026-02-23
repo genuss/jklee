@@ -75,16 +75,16 @@ Create integration test submodules under `integration-tests/` that verify jklee'
 - Create: `integration-tests/spring-boot-3.5/src/test/java/me/genuss/jklee/it/JkleeAutoConfigurationIT.java`
 - Create: `integration-tests/spring-boot-3.5/src/test/resources/application.properties`
 
-- [ ] Add Spring Boot 3.5.11 version to `gradle/libs.versions.toml`
-- [ ] Add `include("integration-tests:spring-boot-3.5")` to `settings.gradle.kts`
-- [ ] Create `build.gradle.kts` applying `core` plugin (not `lib` - no publishing needed), setting Java 17, depending on `:spring-boot` project and Spring Boot 3.5.11 BOM, with `spring-boot-starter-test` and `spring-boot-starter-actuator`
-- [ ] Create `application.properties` configuring `jklee.async-profiler.agent-path-candidates` to point to the native library in `libs/async-profiler/`
-- [ ] Write `JkleeAutoConfigurationIT.java` test class:
+- [x] Add Spring Boot 3.5.11 version to `gradle/libs.versions.toml`
+- [x] Add `include("integration-tests:spring-boot-3.5")` to `settings.gradle.kts`
+- [x] Create `build.gradle.kts` applying `core` plugin (not `lib` - no publishing needed), setting Java 17, depending on `:spring-boot` project and Spring Boot 3.5.11 BOM, with `spring-boot-starter-test` and `spring-boot-starter-actuator`
+- [x] Create `application.properties` configuring `jklee.async-profiler.agent-path-candidates` to point to the native library in `libs/async-profiler/`
+- [x] Write `JkleeAutoConfigurationIT.java` test class:
   - Uses `@SpringBootTest` with `@ImportAutoConfiguration(JkleeAutoConfiguration.class)`
   - Asserts `Jklee` bean exists in context
   - Asserts `JkleeSettingsEndpoint` bean exists in context
   - Calls `jklee.getSettings()` and asserts `loaded` is true (async-profiler native lib loaded)
-- [ ] Run `./gradlew :integration-tests:spring-boot-3.5:test` and verify it passes
+- [x] Run `./gradlew :integration-tests:spring-boot-3.5:test` and verify it passes
 
 ### Task 3: Add Spring Boot 2.7 integration test module
 

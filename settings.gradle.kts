@@ -12,6 +12,8 @@ include("samples")
 
 include("spring-boot-admin")
 
+include("integration-tests:spring-boot-3.5")
+
 pluginManagement {
   includeBuild("build-logic")
 
