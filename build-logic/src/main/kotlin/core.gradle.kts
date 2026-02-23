@@ -3,4 +3,10 @@ plugins {
   id("idea")
 }
 
-spotless { kotlinGradle { ktfmt() } }
+spotless {
+  kotlinGradle {
+    endWithNewline()
+    ktfmt()
+    trimTrailingWhitespace()
+  }
+}

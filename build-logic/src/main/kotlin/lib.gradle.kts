@@ -7,8 +7,11 @@ val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 spotless {
   java {
+    endWithNewline()
+    forbidWildcardImports()
     googleJavaFormat(libs.getVersion("googleJavaFormat"))
     targetExclude("src/main/java/one/profiler/**/*.java")
+    trimTrailingWhitespace()
   }
 }
 

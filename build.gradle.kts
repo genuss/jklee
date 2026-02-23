@@ -10,8 +10,8 @@ val stageRepoPath: String =
 scmVersion {
   snapshotCreator { _, _ -> "" }
   versionCreator { versionFromTag, position ->
-    if (!position.isClean &&
-        providers.environmentVariable("CI").map(String::toBoolean).getOrElse(false)) {
+    val isCi = providers.environmentVariable("CI").map(String::toBoolean).getOrElse(false)
+    if (!position.isClean && isCi) {
       throw IllegalStateException("Cannot release dirty version in CI")
     }
     val revision =
