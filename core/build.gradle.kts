@@ -1,7 +1,4 @@
-plugins {
-  id("core")
-  id("lib")
-}
+plugins { id("lib.publish") }
 
 extra["javaVersion"] = libs.versions.javaCore.get()
 

@@ -19,8 +19,8 @@ The name _jklee_ comes from the German word Klee, which means clover.
 ### Prerequisites
 
 * Java 8 or higher for the `core` and `spring-boot` modules
-* Java 17 or higher for `spring-boot-admin` and `samples` modules
-* The `spring-boot` module is built against Spring Boot 2.7.18 and is compatible with both Spring Boot 2.x (2.7+) and 3.x
+* Java 17 or higher for `samples`
+* The `spring-boot` module is built against Spring Boot 2.7.18 and is compatible with Spring Boot 2.7+, 3.x, and 4.x
 * Spring Boot 3.x is required for the `spring-boot-admin` custom view module
 
 ### Installation
@@ -148,7 +148,6 @@ There are some features/improvements I'd like to implement in the future:
 * Better UI.
   I'm not a frontend developer, so UI looks not very good at the moment.
   Any help in this area would be much appreciated.
-* Profiling progress bar when it's in progress.
 * Hiding jklee tab when async-profiler couldn't be loaded.
 * Better request builder: instead of asking for raw arguments, implement a type-safe builder.
 

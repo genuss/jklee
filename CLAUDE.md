@@ -19,6 +19,9 @@ endpoints, and a Spring Boot Admin UI plugin (Vue.js).
 # Run the sample Spring Boot app
 ./gradlew :samples:bootRun
 
+# Run integration tests (Spring Boot compatibility)
+./gradlew :integration-tests:spring-boot-2.7:test :integration-tests:spring-boot-3.5:test :integration-tests:spring-boot-4.0:test
+
 # Frontend dev mode (spring-boot-admin module)
 ./gradlew :spring-boot-admin:npmWatch
 ```
@@ -27,7 +30,7 @@ Requires **Java 21+** (build JVM). Java target versions are per-module and defin
 `gradle/libs.versions.toml`:
 
 - **core**, **spring-boot**: Java 8
-- **spring-boot-admin**, **samples**: Java 17
+- **spring-boot-admin**, **samples**, **integration-tests**: Java 17
 
 The Gradle wrapper is included.
 
@@ -37,6 +40,8 @@ The Gradle wrapper is included.
 - **spring-boot/** - Spring Boot auto-configuration and actuator endpoints
 - **spring-boot-admin/** - Vue 3 frontend plugin for Spring Boot Admin
 - **samples/** - Example Spring Boot application
+- **integration-tests/** - Integration test modules verifying Spring Boot auto-configuration across versions (2.7, 3.5, 4.0)
+- **libs/async-profiler/** - Pre-built async-profiler v4.3 native libraries (macOS, Linux x64, Linux arm64) for integration tests
 - **bom/** - Bill of Materials for dependency management
 - **build-logic/** - Shared Gradle convention plugins
 
@@ -52,6 +57,7 @@ The Gradle wrapper is included.
 
 - Java 8+ (core, spring-boot), Java 17+ (spring-boot-admin, samples), Gradle 8.x, JUnit 5
 - Spring Boot 2.7.18 (spring-boot), Spring Boot 3.1.5 (spring-boot-admin, samples), Spring Boot Admin 3.1.7
+- Tested against: Spring Boot 2.7.18, 3.5.11, and 4.0.3 (integration-tests)
 - Vue 3.3.4, Vite 4.4.9 (frontend)
 - Version catalog: `gradle/libs.versions.toml`
 

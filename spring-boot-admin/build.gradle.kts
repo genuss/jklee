@@ -1,7 +1,6 @@
 plugins {
-  id("core")
   id("frontend")
-  id("lib")
+  id("lib.publish")
 }
 
 extra["javaVersion"] = libs.versions.javaSpringBootAdmin.get()

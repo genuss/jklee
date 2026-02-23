@@ -1,5 +1,7 @@
 * text=auto eol=lf
 *.bat text eol=crlf
+*.so binary
+*.dylib binary
 *.lockfile -diff
 gradlew -diff
 gradlew.bat -diff
