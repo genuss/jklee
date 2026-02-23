@@ -20,3 +20,10 @@ dependencies {
 
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
+
+tasks {
+  test {
+    systemProperty(
+        "jklee.libs.dir", rootProject.layout.projectDirectory.dir("libs").asFile.absolutePath)
+  }
+}
