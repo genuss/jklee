@@ -1,13 +1,13 @@
 [versions]
-axion = "1.18.16"
-googleJavaFormat = "1.28.0"
+axion = "1.21.1"
+googleJavaFormat = "1.28.0" # last versions to support java 8
 javaCore = "8"
 javaIntegrationTests = "17"
 javaSpringBoot = "8"
 javaSpringBootAdmin = "17"
 jreleaser = "1.22.0"
 siouanFrontend = "6.0.0"
-spotless = "7.2.1"
+spotless = "7.2.1" # don't upgrade, conflicts with jreleaser via jgit dep. See jreleaser/jreleaser/issues/1643
 springBoot27 = "2.7.18"
 springBoot35 = "3.5.11"
 springBoot40 = "4.0.3"
