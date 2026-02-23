@@ -33,15 +33,12 @@ scmVersion {
 }
 
 jreleaser {
-  announce { openCollective { active = org.jreleaser.model.Active.NEVER } }
   signing {
     active = org.jreleaser.model.Active.ALWAYS
-    pgp {
-      armored = true
-      checksums = false
-      mode = org.jreleaser.model.Signing.Mode.MEMORY
-      verify = true
-    }
+    armored = true
+    checksums = false
+    mode = org.jreleaser.model.Signing.Mode.MEMORY
+    verify = true
   }
   strict = true
   project {
