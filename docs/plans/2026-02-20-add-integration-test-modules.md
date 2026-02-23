@@ -96,12 +96,12 @@ Create integration test submodules under `integration-tests/` that verify jklee'
 - Create: `integration-tests/spring-boot-2.7/src/test/resources/application.properties`
 - Create: `integration-tests/spring-boot-2.7/src/test/resources/META-INF/spring.factories`
 
-- [ ] Add Spring Boot 2.7.18 version to `gradle/libs.versions.toml`
-- [ ] Add `include("integration-tests:spring-boot-2.7")` to `settings.gradle.kts`
-- [ ] Create `build.gradle.kts` with Spring Boot 2.7.18 BOM, depending on `:spring-boot` and `:core` projects
-- [ ] Create `META-INF/spring.factories` in test resources registering `JkleeAutoConfiguration` (needed because 2.7 doesn't read the new imports file)
-- [ ] Create test class and `application.properties` (similar to Task 2)
-- [ ] Run `./gradlew :integration-tests:spring-boot-2.7:test` - if binary incompatibilities are found, document them and adjust the test expectations accordingly
+- [x] Add Spring Boot 2.7.18 version to `gradle/libs.versions.toml`
+- [x] Add `include("integration-tests:spring-boot-2.7")` to `settings.gradle.kts`
+- [x] Create `build.gradle.kts` with Spring Boot 2.7.18 BOM, depending on `:spring-boot` and `:core` projects
+- [x] Create `META-INF/spring.factories` in test resources registering `JkleeAutoConfiguration` (needed because 2.7 doesn't read the new imports file)
+- [x] Create test class and `application.properties` (similar to Task 2)
+- [x] Run `./gradlew :integration-tests:spring-boot-2.7:test` - if binary incompatibilities are found, document them and adjust the test expectations accordingly
 
 ### Task 4: Add Spring Boot 4.0 integration test module
 
