@@ -66,13 +66,13 @@ Downgrade the `spring-boot` module to use Spring Boot 2.7.18 and target Java 8, 
 **Files:**
 - Create: `spring-boot/src/main/resources/META-INF/spring.factories`
 
-- [ ] Create `spring-boot/src/main/resources/META-INF/spring.factories` with content:
+- [x] Create `spring-boot/src/main/resources/META-INF/spring.factories` with content:
   ```
   org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   me.genuss.jklee.JkleeAutoConfiguration
   ```
-- [ ] Keep the existing `AutoConfiguration.imports` file (Spring Boot 2.7 supports both mechanisms, keeping it provides forward compatibility)
-- [ ] Run `./gradlew :spring-boot:compileJava` to verify
+- [x] Keep the existing `AutoConfiguration.imports` file (Spring Boot 2.7 supports both mechanisms, keeping it provides forward compatibility)
+- [x] Run `./gradlew :spring-boot:compileJava` to verify
 
 ### Task 5: Verify full build
 
