@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
 import me.genuss.jklee.Jklee.ProfilingRequest;
@@ -29,7 +28,7 @@ public class JkleeProfileEndpoint {
 
   @ReadOperation
   public ProfilingOptions profilingOptions() {
-    Stream<Map<String, String>> formats =
+    List<Map<String, String>> formats =
         Arrays.stream(Format.values())
             .map(
                 format -> {
@@ -37,8 +36,9 @@ public class JkleeProfileEndpoint {
                   map.put("label", format.name().toLowerCase());
                   map.put("value", format.name());
                   return Collections.unmodifiableMap(map);
-                });
-    return ProfilingOptions.builder().formats(formats.collect(Collectors.toList())).build();
+                })
+            .collect(Collectors.toList());
+    return ProfilingOptions.builder().formats(formats).build();
   }
 
   @WriteOperation

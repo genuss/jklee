@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.List;
 import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @ConfigurationProperties(prefix = "jklee")
@@ -14,7 +15,7 @@ public class JkleeConfigurationProperties {
   boolean failOnInitErrors;
   AsyncProfiler asyncProfiler;
 
-  @org.springframework.boot.context.properties.ConstructorBinding
+  @ConstructorBinding
   public JkleeConfigurationProperties(
       @DefaultValue("true") boolean enabled,
       boolean failOnInitErrors,
@@ -31,7 +32,7 @@ public class JkleeConfigurationProperties {
     Path resultsDir;
     boolean appendPidToDirs;
 
-    @org.springframework.boot.context.properties.ConstructorBinding
+    @ConstructorBinding
     public AsyncProfiler(
         @DefaultValue List<String> agentPathCandidates,
         Path resultsDir,

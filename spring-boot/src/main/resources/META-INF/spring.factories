@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-me.genuss.jklee.JkleeAutoConfiguration
+    me.genuss.jklee.JkleeAutoConfiguration
