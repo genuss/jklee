@@ -1,5 +1,6 @@
 [versions]
 javaCore = "8"
+javaIntegrationTests = "17"
 javaSpringBoot = "8"
 javaSpringBootAdmin = "17"
 siouanFrontend = "6.0.0"

@@ -20,7 +20,7 @@ The name _jklee_ comes from the German word Klee, which means clover.
 
 * Java 8 or higher for the `core` and `spring-boot` modules
 * Java 17 or higher for `spring-boot-admin` and `samples` modules
-* The `spring-boot` module is built against Spring Boot 2.7.18 and is compatible with both Spring Boot 2.x (2.7+) and 3.x
+* The `spring-boot` module is built against Spring Boot 2.7.18 and is compatible with Spring Boot 2.x (2.7+), 3.x, and 4.x
 * Spring Boot 3.x is required for the `spring-boot-admin` custom view module
 
 ### Installation

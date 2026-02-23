@@ -1,9 +1,11 @@
 plugins {
   id("core")
-  id("java-library")
+  java
 }
 
-val javaVersion = libs.versions.javaSpringBootAdmin.get().toInt()
+val javaVersion = libs.versions.javaIntegrationTests.get().toInt()
+
+spotless { java { googleJavaFormat("1.19.2") } }
 
 tasks {
   test {

@@ -21,12 +21,12 @@ class JkleeAutoConfigurationIT {
 
   @Test
   void jkleeBeanExists() {
-    assertThat(context.getBean(Jklee.class)).isNotNull();
+    assertThat(context.getBeanNamesForType(Jklee.class)).isNotEmpty();
   }
 
   @Test
   void jkleeSettingsEndpointBeanExists() {
-    assertThat(context.getBean(JkleeSettingsEndpoint.class)).isNotNull();
+    assertThat(context.getBeanNamesForType(JkleeSettingsEndpoint.class)).isNotEmpty();
   }
 
   @Test
