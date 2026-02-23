@@ -1,4 +1,5 @@
 [versions]
+googleJavaFormat = "1.19.2"
 javaCore = "8"
 javaIntegrationTests = "17"
 javaSpringBoot = "8"
@@ -18,7 +19,7 @@ springBoot = { group = "org.springframework.boot", name = "spring-boot-dependenc
 springBoot27 = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot27" }
 springBoot35 = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot35" }
 springBoot40 = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot40" }
-springBoot-gradlePlugin = { module = "org.springframework.boot:org.springframework.boot.gradle.plugin", version.ref = "springBoot" }
 springBootAdmin = { group = "de.codecentric", name = "spring-boot-admin-dependencies", version.ref = "springBootAdmin" }
 
 [plugins]
+springBoot = { id = "org.springframework.boot", version.ref = "springBoot" }

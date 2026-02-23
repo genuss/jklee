@@ -1,17 +1,19 @@
 plugins {
-  id("core")
-  id("java-platform")
+  id("lib")
   id("maven-publish")
 }
 
-javaPlatform { allowDependencies() }
+java {
+  withJavadocJar()
+  withSourcesJar()
+}
 
 publishing {
   publications {
     create<MavenPublication>("jklee") {
-      from(components["javaPlatform"])
+      from(components["java"])
       pom {
-        description = "Jklee BOM"
+        description = "Jklee integrates async-profiler in spring-boot application"
         developers {
           developer {
             id = "genuss"

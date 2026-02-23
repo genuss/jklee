@@ -3,4 +3,4 @@ package me.genuss.jklee.it;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-class TestApplication {}
+class SpringBoot40TestApplication {}
