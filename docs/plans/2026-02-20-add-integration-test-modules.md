@@ -120,7 +120,7 @@ Create integration test submodules under `integration-tests/` that verify jklee'
 
 ### Task 5: Verify all tests and clean up
 
-- [ ] Run `./gradlew build` to verify the full project still builds
-- [ ] Run all integration tests: `./gradlew :integration-tests:spring-boot-2.7:test :integration-tests:spring-boot-3.5:test :integration-tests:spring-boot-4.0:test`
-- [ ] Run `./gradlew spotlessApply` to ensure code formatting
-- [ ] Verify no regressions in existing modules
+- [x] Run `./gradlew build` to verify the full project still builds
+- [x] Run all integration tests: `./gradlew :integration-tests:spring-boot-2.7:test :integration-tests:spring-boot-3.5:test :integration-tests:spring-boot-4.0:test`
+- [x] Run `./gradlew spotlessApply` to ensure code formatting
+- [x] Verify no regressions in existing modules
