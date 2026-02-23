@@ -112,11 +112,11 @@ Create integration test submodules under `integration-tests/` that verify jklee'
 - Create: `integration-tests/spring-boot-4.0/src/test/java/me/genuss/jklee/it/JkleeAutoConfigurationIT.java`
 - Create: `integration-tests/spring-boot-4.0/src/test/resources/application.properties`
 
-- [ ] Add Spring Boot 4.0.3 version to `gradle/libs.versions.toml`
-- [ ] Add `include("integration-tests:spring-boot-4.0")` to `settings.gradle.kts`
-- [ ] Create `build.gradle.kts` with Spring Boot 4.0.3 BOM, depending on `:spring-boot` and `:core` projects
-- [ ] Create test class and `application.properties` (similar to Task 2)
-- [ ] Run `./gradlew :integration-tests:spring-boot-4.0:test` - if binary incompatibilities arise (e.g., removed `@ConstructorBinding` at old package), document and adjust
+- [x] Add Spring Boot 4.0.3 version to `gradle/libs.versions.toml`
+- [x] Add `include("integration-tests:spring-boot-4.0")` to `settings.gradle.kts`
+- [x] Create `build.gradle.kts` with Spring Boot 4.0.3 BOM, depending on `:spring-boot` and `:core` projects
+- [x] Create test class and `application.properties` (similar to Task 2)
+- [x] Run `./gradlew :integration-tests:spring-boot-4.0:test` - if binary incompatibilities arise (e.g., removed `@ConstructorBinding` at old package), document and adjust
 
 ### Task 5: Verify all tests and clean up
 

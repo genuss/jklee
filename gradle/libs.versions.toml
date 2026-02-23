@@ -7,6 +7,7 @@ spotless = "6.22.0"
 springBoot = "3.1.5"
 springBoot27 = "2.7.18"
 springBoot35 = "3.5.11"
+springBoot40 = "4.0.3"
 springBootAdmin = "3.1.7"
 
 [libraries]
@@ -15,6 +16,7 @@ spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle
 springBoot = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot" }
 springBoot27 = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot27" }
 springBoot35 = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot35" }
+springBoot40 = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot40" }
 springBoot-gradlePlugin = { module = "org.springframework.boot:org.springframework.boot.gradle.plugin", version.ref = "springBoot" }
 springBootAdmin = { group = "de.codecentric", name = "spring-boot-admin-dependencies", version.ref = "springBootAdmin" }
 

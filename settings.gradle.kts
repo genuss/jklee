@@ -16,6 +16,8 @@ include("integration-tests:spring-boot-2.7")
 
 include("integration-tests:spring-boot-3.5")
 
+include("integration-tests:spring-boot-4.0")
+
 pluginManagement {
   includeBuild("build-logic")
 
