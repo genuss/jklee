@@ -44,7 +44,7 @@ jobs:
           JRELEASER_MAVENCENTRAL_USERNAME: placeholder
         if: github.ref != 'refs/heads/master'
         name: Publish to Github Packages
-        run: ./gradlew jreleaserDeploy --deployer github
+        run: ./gradlew --no-configuration-cache jreleaserDeploy --deployer github
       - env:
           JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,7 +56,7 @@ jobs:
           JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.OSS_SONATYPE_USER }}
         if: github.ref == 'refs/heads/master'
         name: Publish to Github Packages and Maven Central
-        run: ./gradlew jreleaserRelease
+        run: ./gradlew --no-configuration-cache jreleaserRelease
       - if: always()
         name: JReleaser debug info
         uses: actions/upload-artifact@v4
