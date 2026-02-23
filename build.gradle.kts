@@ -49,7 +49,6 @@ jreleaser {
   }
   release {
     github {
-      immutableRelease = true
       makeLatest = org.jreleaser.model.api.release.GithubReleaser.MakeLatest.TRUE
       overwrite = true
       previousTagName = "v${scmVersion.previousVersion}"
