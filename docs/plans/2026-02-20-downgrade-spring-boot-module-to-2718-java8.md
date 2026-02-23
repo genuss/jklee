@@ -76,9 +76,9 @@ Downgrade the `spring-boot` module to use Spring Boot 2.7.18 and target Java 8, 
 
 ### Task 5: Verify full build
 
-- [ ] Run `./gradlew build` to verify all modules compile and pass
-- [ ] Run `./gradlew spotlessCheck` to verify code style
-- [ ] Verify the samples module still compiles (it depends on `:spring-boot` and uses Spring Boot 3.1.5)
+- [x] Run `./gradlew build` to verify all modules compile and pass
+- [x] Run `./gradlew spotlessCheck` to verify code style
+- [x] Verify the samples module still compiles (it depends on `:spring-boot` and uses Spring Boot 3.1.5)
 
 ### Task 6: Update documentation
 
