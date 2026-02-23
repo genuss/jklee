@@ -1,5 +1,5 @@
 [versions]
-axion = "1.20.1"
+axion = "1.19.1"
 googleJavaFormat = "1.28.0" # last versions to support java 8
 javaCore = "8"
 javaIntegrationTests = "17"
