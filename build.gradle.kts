@@ -1,7 +1,7 @@
 plugins {
   id("core")
-  id("org.jreleaser") version "1.15.0"
-  id("pl.allegro.tech.build.axion-release") version "1.18.16"
+  alias(libs.plugins.axion)
+  alias(libs.plugins.jreleaser)
 }
 
 val stageRepoPath: String =

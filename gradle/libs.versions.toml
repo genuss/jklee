@@ -1,9 +1,11 @@
 [versions]
+axion = "1.18.16"
 googleJavaFormat = "1.28.0"
 javaCore = "8"
 javaIntegrationTests = "17"
 javaSpringBoot = "8"
 javaSpringBootAdmin = "17"
+jreleaser = "1.22.0"
 siouanFrontend = "6.0.0"
 spotless = "8.2.1"
 springBoot27 = "2.7.18"
@@ -20,4 +22,6 @@ springBoot40 = { group = "org.springframework.boot", name = "spring-boot-depende
 springBootAdmin = { group = "de.codecentric", name = "spring-boot-admin-dependencies", version.ref = "springBootAdmin" }
 
 [plugins]
+axion = { id = "pl.allegro.tech.build.axion-release", version.ref = "axion"}
+jreleaser = { id = "org.jreleaser", version.ref = "jreleaser" }
 springBoot = { id = "org.springframework.boot", version.ref = "springBoot40" }
