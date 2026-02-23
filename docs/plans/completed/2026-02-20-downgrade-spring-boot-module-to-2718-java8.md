@@ -82,5 +82,5 @@ Downgrade the `spring-boot` module to use Spring Boot 2.7.18 and target Java 8, 
 
 ### Task 6: Update documentation
 
-- [ ] Update CLAUDE.md if internal patterns changed (update Java version info for spring-boot module)
-- [ ] Move this plan to `docs/plans/completed/`
+- [x] Update CLAUDE.md if internal patterns changed (update Java version info for spring-boot module)
+- [x] Move this plan to `docs/plans/completed/`
