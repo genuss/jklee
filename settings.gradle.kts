@@ -12,6 +12,8 @@ include("samples")
 
 include("spring-boot-admin")
 
+include("integration-tests:jklee")
+
 include("integration-tests:spring-boot-2.7")
 
 include("integration-tests:spring-boot-3.5")

@@ -16,7 +16,4 @@ dependencies {
   testCompileOnly("com.fasterxml.jackson.core:jackson-annotations")
   testCompileOnly("org.projectlombok:lombok")
   testCompileOnly(platform(libs.springBoot27))
-
-  testImplementation("org.junit.jupiter:junit-jupiter")
-  testImplementation(platform(libs.springBoot27))
 }
