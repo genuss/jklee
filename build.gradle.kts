@@ -18,7 +18,7 @@ scmVersion {
         providers
             .environmentVariable("GITHUB_SHA")
             .orElse(position.revision)
-            .map { it.substring(0, 7) }
+            .map { if (it.length >= 7) it.substring(0, 7) else it.ifEmpty { "unknown" } }
             .getOrElse("unknown")
     val revisionSuffix = "-$revision"
     val dirtySuffix = if (position.isClean) "" else "-dirty"
