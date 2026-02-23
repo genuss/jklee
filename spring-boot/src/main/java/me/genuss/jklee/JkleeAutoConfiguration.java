@@ -13,7 +13,7 @@ public class JkleeAutoConfiguration {
 
   @Bean
   public Jklee jklee(JkleeConfigurationProperties properties) {
-    var asyncProfiler = properties.getAsyncProfiler();
+    JkleeConfigurationProperties.AsyncProfiler asyncProfiler = properties.getAsyncProfiler();
     return new Jklee(
         JkleeSettings.builder()
             .enabled(properties.isEnabled())

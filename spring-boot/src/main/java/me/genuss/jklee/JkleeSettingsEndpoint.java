@@ -18,14 +18,14 @@ public class JkleeSettingsEndpoint {
 
   @ReadOperation
   public ConfigResponse getConfig() {
-    var settings = jklee.getSettings();
-    var settingsMap = new ArrayList<ConfigEntry>();
+    Jklee.EffectiveProperties settings = jklee.getSettings();
+    ArrayList<ConfigEntry> settingsMap = new ArrayList<ConfigEntry>();
     settingsMap.add(new ConfigEntry("enabled", settings.enabled()));
     settingsMap.add(new ConfigEntry("failOnInitErrors", settings.failOnInitErrors()));
     settingsMap.add(new ConfigEntry("cleanResultsDirOnStart", settings.cleanResultsDirOnStart()));
     settingsMap.add(new ConfigEntry("asyncProfiler.resultsDir", settings.resultsDir()));
     for (int i = 0; i < settings.agentPathCandidates().size(); i++) {
-      var candidate = settings.agentPathCandidates().get(i);
+      String candidate = settings.agentPathCandidates().get(i);
       settingsMap.add(new ConfigEntry("agentPathCandidates[" + i + "]", candidate));
     }
     settingsMap.add(new ConfigEntry("loaded", settings.loaded()));

@@ -2,8 +2,11 @@ package me.genuss.jklee;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
 import me.genuss.jklee.Jklee.ProfilingRequest;
@@ -25,10 +28,16 @@ public class JkleeProfileEndpoint {
 
   @ReadOperation
   public ProfilingOptions profilingOptions() {
-    var formats =
+    Stream<Map<String, String>> formats =
         Arrays.stream(Format.values())
-            .map(format -> Map.of("label", format.name().toLowerCase(), "value", format.name()));
-    return ProfilingOptions.builder().formats(formats.toList()).build();
+            .map(
+                format -> {
+                  Map<String, String> map = new HashMap<>();
+                  map.put("label", format.name().toLowerCase());
+                  map.put("value", format.name());
+                  return map;
+                });
+    return ProfilingOptions.builder().formats(formats.collect(Collectors.toList())).build();
   }
 
   @WriteOperation

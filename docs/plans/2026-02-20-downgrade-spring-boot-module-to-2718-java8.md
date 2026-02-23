@@ -45,11 +45,11 @@ Downgrade the `spring-boot` module to use Spring Boot 2.7.18 and target Java 8, 
 - Modify: `spring-boot/src/main/java/me/genuss/jklee/JkleeProfileEndpoint.java`
 - Modify: `spring-boot/src/main/java/me/genuss/jklee/JkleeSettingsEndpoint.java`
 
-- [ ] `JkleeAutoConfiguration.java` line 16: replace `var asyncProfiler` with `JkleeConfigurationProperties.AsyncProfiler asyncProfiler`
-- [ ] `JkleeProfileEndpoint.java` lines 28-31: replace `var formats` with explicit `Stream<Map<String, String>>` type, replace `Map.of("label", ...)` with a helper or `Collections.singletonMap` alternative (use a two-entry HashMap or a utility), replace `.toList()` with `.collect(Collectors.toList())`
-- [ ] `JkleeSettingsEndpoint.java` lines 21-22, 27-28: replace all `var` usages with explicit types (`JkleeSettings settings`, `ArrayList<ConfigEntry> settingsMap`, `String candidate`, etc.)
-- [ ] Run `./gradlew spotlessApply` to fix formatting
-- [ ] Run `./gradlew :spring-boot:compileJava` to verify compilation with Java 8 target
+- [x] `JkleeAutoConfiguration.java` line 16: replace `var asyncProfiler` with `JkleeConfigurationProperties.AsyncProfiler asyncProfiler`
+- [x] `JkleeProfileEndpoint.java` lines 28-31: replace `var formats` with explicit `Stream<Map<String, String>>` type, replace `Map.of("label", ...)` with a helper or `Collections.singletonMap` alternative (use a two-entry HashMap or a utility), replace `.toList()` with `.collect(Collectors.toList())`
+- [x] `JkleeSettingsEndpoint.java` lines 21-22, 27-28: replace all `var` usages with explicit types (`JkleeSettings settings`, `ArrayList<ConfigEntry> settingsMap`, `String candidate`, etc.)
+- [x] Run `./gradlew spotlessApply` to fix formatting
+- [x] Run `./gradlew :spring-boot:compileJava` to verify compilation with Java 8 target
 
 ### Task 3: Adjust @ConstructorBinding for Spring Boot 2.7
 
