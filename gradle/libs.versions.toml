@@ -1,5 +1,5 @@
 [versions]
-axion = "1.18.18"
+axion = "1.18.18" # don't upgrade, conflicts with jreleaser via jgit dep. See jreleaser/jreleaser/issues/1643
 googleJavaFormat = "1.28.0" # last versions to support java 8
 javaCore = "8"
 javaIntegrationTests = "17"
