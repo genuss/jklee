@@ -1,7 +1,7 @@
 plugins {
   id("core")
-  id("org.jreleaser") version "1.15.0"
-  id("pl.allegro.tech.build.axion-release") version "1.18.16"
+  alias(libs.plugins.axion)
+  alias(libs.plugins.jreleaser)
 }
 
 val stageRepoPath: String =
@@ -10,8 +10,8 @@ val stageRepoPath: String =
 scmVersion {
   snapshotCreator { _, _ -> "" }
   versionCreator { versionFromTag, position ->
-    if (!position.isClean &&
-        providers.environmentVariable("CI").map(String::toBoolean).getOrElse(false)) {
+    val isCi = providers.environmentVariable("CI").map(String::toBoolean).getOrElse(false)
+    if (!position.isClean && isCi) {
       throw IllegalStateException("Cannot release dirty version in CI")
     }
     val revision =
@@ -35,10 +35,12 @@ scmVersion {
 jreleaser {
   signing {
     active = org.jreleaser.model.Active.ALWAYS
-    armored = true
-    checksums = false
-    mode = org.jreleaser.model.Signing.Mode.MEMORY
-    verify = true
+    pgp {
+      armored = true
+      checksums = false
+      mode = org.jreleaser.model.Signing.Mode.MEMORY
+      verify = true
+    }
   }
   strict = true
   project {
@@ -49,7 +51,8 @@ jreleaser {
   }
   release {
     github {
-      overwrite = true
+      makeLatest = org.jreleaser.model.api.release.GithubReleaser.MakeLatest.TRUE
+      immutableRelease = true
       previousTagName = "v${scmVersion.previousVersion}"
       sign = true
       signatures = true

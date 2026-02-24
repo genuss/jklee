@@ -3,13 +3,12 @@ plugins {
   id("lib")
 }
 
-val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-val javaVersion = libs.findVersion("javaIntegrationTests").get().toString().toInt()
-
 tasks {
   test {
     systemProperty(
-        "jklee.libs.dir", rootProject.layout.projectDirectory.dir("libs").asFile.absolutePath)
+        "jklee.libs.dir",
+        rootProject.layout.projectDirectory.dir("libs").asFile.absolutePath,
+    )
   }
 }
 
