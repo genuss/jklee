@@ -14,7 +14,7 @@ springBoot40 = "4.0.3"
 springBootAdmin = "4.0.1"
 
 [libraries]
-siouanFrontend-gradlePlugin = { module = "org.siouan:frontend-gradle-plugin-jdk11  ", version.ref = "siouanFrontend" }
+siouanFrontend-gradlePlugin = { module = "org.siouan:frontend-gradle-plugin-jdk11", version.ref = "siouanFrontend" }
 spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 springBoot27 = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot27" }
 springBoot35 = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot35" }
