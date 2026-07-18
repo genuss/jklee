@@ -62,9 +62,33 @@
           return 0;
         }
         return Math.min(100, this.elapsedTime / this.profilingDuration * 100);
+      },
+      clockHandAngle() {
+        return this.progressPercentage * 3.6;
+      },
+      settingsMap() {
+        return this.settings.data.reduce((acc, setting) => {
+          acc[setting.name] = setting.value;
+          return acc;
+        }, {});
       }
     },
     methods: {
+      formatEndedAt(endedAt) {
+        if (!endedAt)
+          return "";
+        const date = new Date(endedAt);
+        if (isNaN(date.getTime()))
+          return endedAt;
+        const pad = (n) => String(n).padStart(2, "0");
+        const time = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+        const now = /* @__PURE__ */ new Date();
+        const isToday = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
+        if (isToday)
+          return time;
+        const day = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+        return `${day} ${time}`;
+      },
       parseToMillis(timeString) {
         if (!timeString)
           return 0;
@@ -155,31 +179,54 @@
       this.stopProgressTimer();
     }
   };
-  const _hoisted_1 = { class: "grid grid-cols-2 gap-4" };
-  const _hoisted_2 = { class: "w-1/2 pr-2" };
-  const _hoisted_3 = ["href"];
+  const _hoisted_1 = {
+    class: "grid gap-4 mt-2",
+    style: { "grid-template-columns": "repeat(auto-fill, minmax(20rem, 1fr))" }
+  };
+  const _hoisted_2 = { class: "flex items-center gap-2 w-full" };
+  const _hoisted_3 = ["textContent"];
   const _hoisted_4 = ["textContent"];
-  const _hoisted_5 = ["textContent"];
-  const _hoisted_6 = { class: "flex gap-6 flex-col lg:flex-row" };
+  const _hoisted_5 = { class: "flex gap-4 flex-col lg:flex-row" };
+  const _hoisted_6 = { class: "flex-1" };
   const _hoisted_7 = { class: "flex-1" };
   const _hoisted_8 = { class: "flex-1" };
-  const _hoisted_9 = { class: "flex-1" };
-  const _hoisted_10 = { class: "flex" };
-  const _hoisted_11 = { class: "flex-1 mr-4" };
-  const _hoisted_12 = ["textContent"];
-  const _hoisted_13 = {
+  const _hoisted_9 = { class: "flex gap-4 items-end mt-4" };
+  const _hoisted_10 = { class: "flex-1" };
+  const _hoisted_11 = ["textContent"];
+  const _hoisted_12 = {
     key: 1,
-    class: "flex items-center"
+    class: "inline-flex items-center justify-center"
   };
-  const _hoisted_14 = { class: "flex-1 sm:break-all" };
-  const _hoisted_15 = ["textContent"];
-  const _hoisted_16 = ["textContent"];
+  const _hoisted_13 = {
+    viewBox: "0 0 36 36",
+    class: "w-10 h-10",
+    fill: "none",
+    stroke: "currentColor"
+  };
+  const _hoisted_14 = /* @__PURE__ */ vue.createElementVNode("circle", {
+    cx: "18",
+    cy: "18",
+    r: "16",
+    "stroke-width": "2",
+    opacity: "0.3"
+  }, null, -1);
+  const _hoisted_15 = ["transform"];
+  const _hoisted_16 = {
+    x: "18",
+    y: "19",
+    "text-anchor": "middle",
+    "dominant-baseline": "middle",
+    fill: "currentColor",
+    stroke: "none",
+    "font-size": "8"
+  };
   function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_font_awesome_icon = vue.resolveComponent("font-awesome-icon");
+    const _component_sba_button = vue.resolveComponent("sba-button");
     const _component_sba_panel = vue.resolveComponent("sba-panel");
     const _component_sba_input = vue.resolveComponent("sba-input");
     const _component_sba_select = vue.resolveComponent("sba-select");
-    const _component_sba_button = vue.resolveComponent("sba-button");
+    const _component_sba_key_value_table = vue.resolveComponent("sba-key-value-table");
     const _component_sba_instance_section = vue.resolveComponent("sba-instance-section");
     return vue.openBlock(), vue.createBlock(_component_sba_instance_section, {
       error: _ctx.error,
@@ -192,28 +239,25 @@
           default: vue.withCtx(() => [
             vue.createElementVNode("div", _hoisted_1, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.results, (result) => {
-                return vue.openBlock(), vue.createElementBlock("div", {
+                return vue.openBlock(), vue.createBlock(_component_sba_button, {
                   key: result.name,
-                  class: "border p-2 flex"
-                }, [
-                  vue.createElementVNode("div", _hoisted_2, [
-                    vue.createElementVNode("a", {
-                      href: `instances/${$props.instance.id}/actuator/jkleeFiles/${result.name}`
-                    }, [
-                      vue.createVNode(_component_font_awesome_icon, {
-                        icon: "download",
-                        class: "mr-2"
-                      }),
+                  as: "a",
+                  href: `instances/${$props.instance.id}/actuator/jkleeFiles/${result.name}`
+                }, {
+                  default: vue.withCtx(() => [
+                    vue.createElementVNode("span", _hoisted_2, [
+                      vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
                       vue.createElementVNode("span", {
                         textContent: vue.toDisplayString(result.name)
+                      }, null, 8, _hoisted_3),
+                      vue.createElementVNode("span", {
+                        class: "text-sm opacity-60 ml-auto",
+                        textContent: vue.toDisplayString($options.formatEndedAt(result.endedAt))
                       }, null, 8, _hoisted_4)
-                    ], 8, _hoisted_3)
+                    ])
                   ]),
-                  vue.createElementVNode("div", {
-                    class: "w-1/2",
-                    textContent: vue.toDisplayString(result.endedAt)
-                  }, null, 8, _hoisted_5)
-                ]);
+                  _: 2
+                }, 1032, ["href"]);
               }), 128))
             ])
           ]),
@@ -223,8 +267,8 @@
           title: _ctx.$t("jklee.ui.session.title")
         }, {
           default: vue.withCtx(() => [
-            vue.createElementVNode("div", _hoisted_6, [
-              vue.createElementVNode("div", _hoisted_7, [
+            vue.createElementVNode("div", _hoisted_5, [
+              vue.createElementVNode("div", _hoisted_6, [
                 vue.createVNode(_component_sba_input, {
                   modelValue: _ctx.profileRequest.sessionName,
                   "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.profileRequest.sessionName = $event),
@@ -232,17 +276,16 @@
                   placeholder: _ctx.$t("jklee.ui.session.name")
                 }, null, 8, ["modelValue", "label", "placeholder"])
               ]),
-              vue.createElementVNode("div", _hoisted_8, [
+              vue.createElementVNode("div", _hoisted_7, [
                 vue.createVNode(_component_sba_select, {
-                  name: _ctx.$t("jklee.ui.session.format"),
+                  name: "format",
                   label: _ctx.$t("jklee.ui.session.format"),
                   options: _ctx.profileProperties.formats,
                   modelValue: _ctx.profileRequest.format,
-                  "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.profileRequest.format = $event),
-                  class: "focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                }, null, 8, ["name", "label", "options", "modelValue"])
+                  "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.profileRequest.format = $event)
+                }, null, 8, ["label", "options", "modelValue"])
               ]),
-              vue.createElementVNode("div", _hoisted_9, [
+              vue.createElementVNode("div", _hoisted_8, [
                 vue.createVNode(_component_sba_input, {
                   label: _ctx.$t("jklee.ui.session.duration"),
                   modelValue: _ctx.profileRequest.duration,
@@ -251,8 +294,8 @@
                 }, null, 8, ["label", "modelValue", "placeholder"])
               ])
             ]),
-            vue.createElementVNode("div", _hoisted_10, [
-              vue.createElementVNode("div", _hoisted_11, [
+            vue.createElementVNode("div", _hoisted_9, [
+              vue.createElementVNode("div", _hoisted_10, [
                 vue.createVNode(_component_sba_input, {
                   modelValue: _ctx.profileRequest.rawArguments,
                   "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => _ctx.profileRequest.rawArguments = $event),
@@ -261,18 +304,30 @@
                 }, null, 8, ["modelValue", "label", "placeholder"])
               ]),
               vue.createVNode(_component_sba_button, {
+                primary: "",
                 disabled: _ctx.profiling,
-                onClick: _cache[4] || (_cache[4] = ($event) => $options.profile(_ctx.profileRequest)),
-                class: "relative overflow-hidden"
+                onClick: _cache[4] || (_cache[4] = ($event) => $options.profile(_ctx.profileRequest))
               }, {
                 default: vue.withCtx(() => [
                   !_ctx.profiling ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
                     vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
                     vue.createElementVNode("span", {
                       textContent: vue.toDisplayString(_ctx.$t("jklee.ui.session.start"))
-                    }, null, 8, _hoisted_12)
-                  ], 64)) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_13, [
-                    vue.createElementVNode("span", null, vue.toDisplayString(Math.floor($options.progressPercentage)) + "%", 1)
+                    }, null, 8, _hoisted_11)
+                  ], 64)) : (vue.openBlock(), vue.createElementBlock("span", _hoisted_12, [
+                    (vue.openBlock(), vue.createElementBlock("svg", _hoisted_13, [
+                      _hoisted_14,
+                      vue.createElementVNode("line", {
+                        x1: "18",
+                        y1: "18",
+                        x2: "18",
+                        y2: "5",
+                        "stroke-width": "2",
+                        "stroke-linecap": "round",
+                        transform: `rotate(${$options.clockHandAngle} 18 18)`
+                      }, null, 8, _hoisted_15),
+                      vue.createElementVNode("text", _hoisted_16, vue.toDisplayString(Math.floor($options.progressPercentage)) + "%", 1)
+                    ]))
                   ]))
                 ]),
                 _: 1
@@ -285,28 +340,7 @@
           title: _ctx.$t("jklee.ui.settings")
         }, {
           default: vue.withCtx(() => [
-            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.settings.data, (setting, index) => {
-              return vue.openBlock(), vue.createElementBlock("div", {
-                key: setting.name
-              }, [
-                vue.createElementVNode("div", {
-                  class: vue.normalizeClass(["flex items-center px-4 py-3", {
-                    "bg-gray-50": index % 2 === 0
-                  }])
-                }, [
-                  vue.createElementVNode("div", _hoisted_14, [
-                    vue.createElementVNode("span", {
-                      textContent: vue.toDisplayString(setting.name)
-                    }, null, 8, _hoisted_15)
-                  ]),
-                  vue.createElementVNode("div", null, [
-                    vue.createElementVNode("span", {
-                      textContent: vue.toDisplayString(setting.value)
-                    }, null, 8, _hoisted_16)
-                  ])
-                ], 2)
-              ]);
-            }), 128))
+            vue.createVNode(_component_sba_key_value_table, { map: $options.settingsMap }, null, 8, ["map"])
           ]),
           _: 1
         }, 8, ["title"])
