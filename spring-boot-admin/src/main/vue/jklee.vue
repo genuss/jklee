@@ -1,24 +1,25 @@
 <template>
   <sba-instance-section :error="error" :loading="!hasLoaded">
     <sba-panel :title="$t('jklee.ui.results')">
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid gap-4 mt-2" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">
         <template v-for="result in results" :key="result.name">
-          <div class="border p-2 flex">
-            <div class="w-1/2 pr-2">
-              <a :href="`instances/${instance.id}/actuator/jkleeFiles/${result.name}`">
-                <font-awesome-icon icon="download" class="mr-2"/>
-                <span v-text="result.name"/>
-              </a>
-            </div>
-            <div class="w-1/2" v-text="result.endedAt"/>
-          </div>
+        <sba-button
+          as="a"
+          :href="`instances/${instance.id}/actuator/jkleeFiles/${result.name}`"
+        >
+          <span class="flex items-center gap-2 w-full">
+            <font-awesome-icon icon="download"/>
+            <span v-text="result.name"/>
+            <span class="text-sm opacity-60 ml-auto" v-text="formatEndedAt(result.endedAt)"/>
+          </span>
+        </sba-button>
         </template>
       </div>
 
     </sba-panel>
 
     <sba-panel :title="$t('jklee.ui.session.title')">
-      <div class="flex gap-6 flex-col lg:flex-row">
+      <div class="flex gap-4 flex-col lg:flex-row">
         <div class="flex-1">
           <sba-input
             v-model="profileRequest.sessionName"
@@ -28,13 +29,11 @@
         </div>
         <div class="flex-1">
           <sba-select
-            :name="$t('jklee.ui.session.format')"
+            name="format"
             :label="$t('jklee.ui.session.format')"
             :options="profileProperties.formats"
             v-model="profileRequest.format"
-            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-          >
-          </sba-select>
+          />
         </div>
         <div class="flex-1">
           <sba-input
@@ -44,26 +43,51 @@
           />
         </div>
       </div>
-      <div class="flex">
-        <div class="flex-1 mr-4">
+      <div class="flex gap-4 items-end mt-4">
+        <div class="flex-1">
           <sba-input
             v-model="profileRequest.rawArguments"
             :label="$t('jklee.ui.session.arguments')"
             :placeholder="$t('jklee.ui.session.arguments')"/>
         </div>
         <sba-button
+          primary
           :disabled="profiling"
           @click="profile(profileRequest)"
-          class="relative overflow-hidden"
         >
           <template v-if="!profiling">
             <font-awesome-icon icon="download"/>
             <span v-text="$t('jklee.ui.session.start')"/>
           </template>
           <template v-else>
-            <div class="flex items-center">
-              <span>{{ Math.floor(progressPercentage) }}%</span>
-            </div>
+            <span class="inline-flex items-center justify-center">
+              <svg
+                viewBox="0 0 36 36"
+                class="w-10 h-10"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="18" cy="18" r="16" stroke-width="2" opacity="0.3"/>
+                <line
+                  x1="18"
+                  y1="18"
+                  x2="18"
+                  y2="5"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  :transform="`rotate(${clockHandAngle} 18 18)`"
+                />
+                <text
+                  x="18"
+                  y="19"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                  fill="currentColor"
+                  stroke="none"
+                  font-size="8"
+                >{{ Math.floor(progressPercentage) }}%</text>
+              </svg>
+            </span>
           </template>
         </sba-button>
       </div>
@@ -71,20 +95,7 @@
     </sba-panel>
 
     <sba-panel :title="$t('jklee.ui.settings')">
-      <template v-for="(setting, index) in settings.data" :key="setting.name">
-        <div>
-          <div class="flex items-center px-4 py-3" :class="{
-            'bg-gray-50': index % 2 === 0,
-          }">
-            <div class="flex-1 sm:break-all">
-              <span v-text="setting.name"/>
-            </div>
-            <div>
-              <span v-text="setting.value"/>
-            </div>
-          </div>
-        </div>
-      </template>
+      <sba-key-value-table :map="settingsMap"/>
     </sba-panel>
   </sba-instance-section>
 
@@ -125,8 +136,32 @@ export default {
       }
       return Math.min(100, (this.elapsedTime / this.profilingDuration) * 100);
     },
+    clockHandAngle() {
+      return this.progressPercentage * 3.6;
+    },
+    settingsMap() {
+      return this.settings.data.reduce((acc, setting) => {
+        acc[setting.name] = setting.value;
+        return acc;
+      }, {});
+    },
   },
   methods: {
+    formatEndedAt(endedAt) {
+      if (!endedAt) return '';
+      const date = new Date(endedAt);
+      if (isNaN(date.getTime())) return endedAt;
+      const pad = (n) => String(n).padStart(2, '0');
+      const time = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+      const now = new Date();
+      const isToday =
+        date.getFullYear() === now.getFullYear() &&
+        date.getMonth() === now.getMonth() &&
+        date.getDate() === now.getDate();
+      if (isToday) return time;
+      const day = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+      return `${day} ${time}`;
+    },
     parseToMillis(timeString) {
       if (!timeString) return 0;
 
