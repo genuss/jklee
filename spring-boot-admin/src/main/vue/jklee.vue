@@ -102,6 +102,8 @@
 </template>
 
 <script>
+import { computeNextSessionName, formatEndedAt, parseToMillis } from './helpers.js';
+
 export default {
   props: {
     instance: {
@@ -117,7 +119,7 @@ export default {
     },
     profileProperties: {},
     profileRequest: {
-      sessionName: 'test',
+      sessionName: '',
       rawArguments: 'start,event=itimer,interval=1ms',
       duration: '2s',
       format: 'FLAMEGRAPH',
@@ -147,37 +149,8 @@ export default {
     },
   },
   methods: {
-    formatEndedAt(endedAt) {
-      if (!endedAt) return '';
-      const date = new Date(endedAt);
-      if (isNaN(date.getTime())) return endedAt;
-      const pad = (n) => String(n).padStart(2, '0');
-      const time = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-      const now = new Date();
-      const isToday =
-        date.getFullYear() === now.getFullYear() &&
-        date.getMonth() === now.getMonth() &&
-        date.getDate() === now.getDate();
-      if (isToday) return time;
-      const day = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-      return `${day} ${time}`;
-    },
-    parseToMillis(timeString) {
-      if (!timeString) return 0;
-
-      const value = parseInt(timeString, 10);
-      if (isNaN(value)) return 0;
-
-      const unit = timeString.slice(-1);
-
-      switch(unit) {
-        case 's': return value * 1000;
-        case 'm': return value * 60 * 1000;
-        case 'h': return value * 60 * 60 * 1000;
-        case 'd': return value * 60 * 60 * 24 * 1000;
-        default: return value; // Assume milliseconds if no unit
-      }
-    },
+    formatEndedAt,
+    parseToMillis,
     async profile(profileRequest) {
       this.profiling = true;
       try {
@@ -226,9 +199,16 @@ export default {
       try {
         const response = await this.instance.axios.get('actuator/jkleeFiles');
         this.results = response.data.results;
+        this.refreshSessionName();
       } catch (error) {
         this.error = error;
       }
+    },
+    refreshSessionName() {
+      const appName = this.instance.registration
+        ? this.instance.registration.name
+        : '';
+      this.profileRequest.sessionName = computeNextSessionName(appName, this.results);
     }
   },
   async created() {

@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "build:dev": "NODE_ENV=development vite build --emptyOutDir --sourcemap --mode development --watch"
+    "build:dev": "NODE_ENV=development vite build --emptyOutDir --sourcemap --mode development --watch",
+    "test": "vitest run"
   },
   "dependencies": {
     "vue": "3.3.4"
@@ -15,7 +16,8 @@
     "@vitejs/plugin-vue": "4.3.4",
     "@vue-macros/reactivity-transform": "^0.3.0",
     "vite": "4.4.9",
-    "vite-plugin-static-copy": "^0.17.0"
+    "vite-plugin-static-copy": "^0.17.0",
+    "vitest": "^1.6.0"
   },
   "browserslist": [
     "> 1%",
