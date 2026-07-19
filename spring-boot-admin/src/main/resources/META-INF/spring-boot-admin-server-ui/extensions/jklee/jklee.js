@@ -44,7 +44,7 @@
       },
       profileProperties: {},
       profileRequest: {
-        sessionName: "test",
+        sessionName: "",
         rawArguments: "start,event=itimer,interval=1ms",
         duration: "2s",
         format: "FLAMEGRAPH"
@@ -154,6 +154,10 @@
           try {
             const response = yield this.instance.axios.get("actuator/jkleeFiles");
             this.results = response.data.results;
+            const formFields = response.data.formFields;
+            if (formFields && formFields.sessionName) {
+              this.profileRequest.sessionName = formFields.sessionName;
+            }
           } catch (error) {
             this.error = error;
           }

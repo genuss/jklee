@@ -5,14 +5,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 @Configuration
 @EnableConfigurationProperties(JkleeConfigurationProperties.class)
 @ConditionalOnProperty(value = "jklee.enabled", matchIfMissing = true)
-public class JkleeAutoConfiguration {
+class JkleeAutoConfiguration {
 
   @Bean
-  public Jklee jklee(JkleeConfigurationProperties properties) {
+  Jklee jklee(JkleeConfigurationProperties properties) {
     JkleeConfigurationProperties.AsyncProfiler asyncProfiler = properties.getAsyncProfiler();
     return new Jklee(
         JkleeSettings.builder()
@@ -28,17 +29,23 @@ public class JkleeAutoConfiguration {
   }
 
   @Bean
-  public JkleeSettingsEndpoint jkleeSettingsEndpoint(Jklee jklee) {
+  JkleeSettingsEndpoint jkleeSettingsEndpoint(Jklee jklee) {
     return new JkleeSettingsEndpoint(jklee);
   }
 
   @Bean
-  public JkleeFilesEndpoint jkleeFilesEndpoint(Jklee jklee) {
-    return new JkleeFilesEndpoint(jklee);
+  JkleeFormFieldsManager jkleeFormFieldsManager(
+      JkleeConfigurationProperties properties, Environment environment) {
+    return JkleeFormFieldsManager.withEnv(properties, environment);
   }
 
   @Bean
-  public JkleeProfileEndpoint jkleeProfileEndpoint(Jklee jklee) {
+  JkleeFilesEndpoint jkleeFilesEndpoint(Jklee jklee, JkleeFormFieldsManager formFieldsManager) {
+    return new JkleeFilesEndpoint(jklee, formFieldsManager);
+  }
+
+  @Bean
+  JkleeProfileEndpoint jkleeProfileEndpoint(Jklee jklee) {
     return new JkleeProfileEndpoint(jklee);
   }
 }
