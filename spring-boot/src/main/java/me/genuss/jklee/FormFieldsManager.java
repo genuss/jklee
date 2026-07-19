@@ -11,7 +11,7 @@ public class FormFieldsManager {
 
   private final String sessionPrefix;
 
-  private FormFieldsManager(String sessionPrefix) {
+  FormFieldsManager(String sessionPrefix) {
     this.sessionPrefix = sessionPrefix == null ? "" : sessionPrefix;
   }
 
@@ -25,10 +25,10 @@ public class FormFieldsManager {
   }
 
   public FormFields buildFormFields(List<ProfilingResult> results) {
-    return new FormFields(sessionPrefix, computeNextSessionName(sessionPrefix, results));
+    return new FormFields(sessionPrefix, computeNextSessionName(results));
   }
 
-  static String computeNextSessionName(String sessionPrefix, List<ProfilingResult> results) {
+  String computeNextSessionName(List<ProfilingResult> results) {
     Pattern pattern = Pattern.compile("^" + Pattern.quote(sessionPrefix) + "_(\\d+)$");
     long max = 0;
     for (ProfilingResult result : results) {

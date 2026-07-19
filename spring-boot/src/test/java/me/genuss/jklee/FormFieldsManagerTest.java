@@ -1,6 +1,5 @@
 package me.genuss.jklee;
 
-import static me.genuss.jklee.FormFieldsManager.computeNextSessionName;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -13,7 +12,7 @@ class FormFieldsManagerTest {
 
   @Test
   void returnsFirstNameWhenNoResults() {
-    assertThat(computeNextSessionName("jklee-sample", Collections.emptyList()))
+    assertThat(manager("jklee-sample").computeNextSessionName(Collections.emptyList()))
         .isEqualTo("jklee-sample_001");
   }
 
@@ -22,7 +21,8 @@ class FormFieldsManagerTest {
     List<ProfilingResult> results =
         Arrays.asList(
             result("jklee-sample_001"), result("jklee-sample_007"), result("jklee-sample_003"));
-    assertThat(computeNextSessionName("jklee-sample", results)).isEqualTo("jklee-sample_008");
+    assertThat(manager("jklee-sample").computeNextSessionName(results))
+        .isEqualTo("jklee-sample_008");
   }
 
   @Test
@@ -33,24 +33,29 @@ class FormFieldsManagerTest {
             result("jklee-sample"),
             result("jklee-sample_foo"),
             result("jklee-sample_002"));
-    assertThat(computeNextSessionName("jklee-sample", results)).isEqualTo("jklee-sample_003");
+    assertThat(manager("jklee-sample").computeNextSessionName(results))
+        .isEqualTo("jklee-sample_003");
   }
 
   @Test
   void growsBeyondThreeDigitsPast999() {
-    assertThat(computeNextSessionName("app", Collections.singletonList(result("app_999"))))
+    assertThat(manager("app").computeNextSessionName(Collections.singletonList(result("app_999"))))
         .isEqualTo("app_1000");
   }
 
   @Test
   void escapesRegexSpecialCharactersInAppName() {
     List<ProfilingResult> results = Arrays.asList(result("a.b_005"), result("axb_009"));
-    assertThat(computeNextSessionName("a.b", results)).isEqualTo("a.b_006");
+    assertThat(manager("a.b").computeNextSessionName(results)).isEqualTo("a.b_006");
   }
 
   @Test
   void fallsBackToFirstNameWhenPrefixIsEmpty() {
-    assertThat(computeNextSessionName("", Collections.emptyList())).isEqualTo("_001");
+    assertThat(manager("").computeNextSessionName(Collections.emptyList())).isEqualTo("_001");
+  }
+
+  private static FormFieldsManager manager(String sessionPrefix) {
+    return new FormFieldsManager(sessionPrefix);
   }
 
   private static ProfilingResult result(String name) {
