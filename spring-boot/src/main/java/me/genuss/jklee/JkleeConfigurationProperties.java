@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.util.List;
 import lombok.Value;
 import me.genuss.jklee.Jklee.ProfilingRequest.Format;
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
@@ -33,14 +34,14 @@ public class JkleeConfigurationProperties {
   @Value
   public static class SpringBootAdmin {
 
-    String sessionPrefix;
+    @Nullable String sessionPrefix;
     String rawArguments;
     Duration duration;
     Format format;
 
     @ConstructorBinding
     public SpringBootAdmin(
-        String sessionPrefix,
+        @Nullable String sessionPrefix,
         @DefaultValue("start,event=itimer,interval=1ms") String rawArguments,
         @DefaultValue("1s") Duration duration,
         @DefaultValue("FLAMEGRAPH") Format format) {
@@ -55,13 +56,13 @@ public class JkleeConfigurationProperties {
   public static class AsyncProfiler {
 
     List<String> agentPathCandidates;
-    Path resultsDir;
+    @Nullable Path resultsDir;
     boolean appendPidToDirs;
 
     @ConstructorBinding
     public AsyncProfiler(
         @DefaultValue List<String> agentPathCandidates,
-        Path resultsDir,
+        @Nullable Path resultsDir,
         @DefaultValue("true") boolean appendPidToDirs) {
       this.agentPathCandidates = agentPathCandidates;
       this.resultsDir = resultsDir;

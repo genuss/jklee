@@ -5,6 +5,7 @@ import java.lang.management.ManagementFactory;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.jspecify.annotations.Nullable;
 
 class DirsHelper {
 
@@ -16,7 +17,7 @@ class DirsHelper {
     return FileSystems.getDefault().getPath(path, more);
   }
 
-  private static Path getPath(JkleeSettings settings, Path dir) throws IOException {
+  private static Path getPath(JkleeSettings settings, @Nullable Path dir) throws IOException {
     boolean appendPidToDirs = settings.asyncProfiler().appendPidToDirs();
     Path logsDir = dir != null ? dir : defaultDir(appendPidToDirs);
     Files.createDirectories(logsDir);

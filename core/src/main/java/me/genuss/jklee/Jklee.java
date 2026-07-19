@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Value;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
+import org.jspecify.annotations.Nullable;
 
 @Log
 public class Jklee {
@@ -89,6 +90,7 @@ public class Jklee {
     return asyncProfiler.getAvailableProfilingResults();
   }
 
+  @Nullable
   public Path getProfilingResult(String sessionName) {
     return asyncProfiler.getProfilingResult(sessionName);
   }
@@ -103,7 +105,7 @@ public class Jklee {
     String id;
     String rawArguments;
     @Builder.Default Format format = Format.TEXT;
-    Duration duration;
+    @Nullable Duration duration;
 
     @Getter
     @Accessors(fluent = true)
@@ -132,8 +134,9 @@ public class Jklee {
   @JsonAutoDetect(fieldVisibility = Visibility.ANY)
   @JsonInclude(Include.NON_EMPTY)
   public static class ProfilingResponse {
+
     ResultCode result;
-    String errorMessage;
+    @Nullable String errorMessage;
 
     static ProfilingResponse ok() {
       return ProfilingResponse.builder().result(ResultCode.STARTED).build();
@@ -146,6 +149,7 @@ public class Jklee {
   @JsonAutoDetect(fieldVisibility = Visibility.ANY)
   @JsonInclude(Include.NON_EMPTY)
   public static class ProfilingResult {
+
     String name;
     Instant endedAt;
   }
@@ -163,6 +167,7 @@ public class Jklee {
   @Value
   @Accessors(fluent = true)
   public static class EffectiveProperties {
+
     List<String> agentPathCandidates;
     String resultsDir;
     boolean cleanResultsDirOnStart;
