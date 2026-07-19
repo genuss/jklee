@@ -43,8 +43,7 @@ public class JkleeFilesEndpoint {
   }
 
   static String computeNextSessionName(String sessionPrefix, List<ProfilingResult> results) {
-    String prefix = sessionPrefix == null ? "" : sessionPrefix;
-    Pattern pattern = Pattern.compile("^" + Pattern.quote(prefix) + "_(\\d+)$");
+    Pattern pattern = Pattern.compile("^" + Pattern.quote(sessionPrefix) + "_(\\d+)$");
     long max = 0;
     for (ProfilingResult result : results) {
       Matcher matcher = pattern.matcher(result.name());
@@ -58,7 +57,7 @@ public class JkleeFilesEndpoint {
         }
       }
     }
-    return prefix + "_" + String.format("%03d", max + 1);
+    return sessionPrefix + "_" + String.format("%03d", max + 1);
   }
 
   @Value
