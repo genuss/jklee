@@ -16,7 +16,7 @@ class JkleeFormFieldsManager {
   private final FormFields formFields;
 
   JkleeFormFieldsManager(String sessionPrefix) {
-    this.formFields = new FormFields((sessionPrefix == null ? "" : sessionPrefix) + "_000");
+    this.formFields = new FormFields(sessionPrefix + "_000");
   }
 
   FormFields buildFormFields(List<ProfilingResult> results) {
