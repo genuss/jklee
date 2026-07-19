@@ -175,14 +175,10 @@
             this.results = response.data.results;
             const formFields = response.data.formFields;
             if (formFields) {
-              if (formFields.sessionName)
-                this.profileRequest.sessionName = formFields.sessionName;
-              if (formFields.rawArguments)
-                this.profileRequest.rawArguments = formFields.rawArguments;
-              if (formFields.duration)
-                this.profileRequest.duration = this.formatDuration(formFields.duration);
-              if (formFields.format)
-                this.profileRequest.format = formFields.format;
+              this.profileRequest.sessionName = formFields.sessionName;
+              this.profileRequest.rawArguments = formFields.rawArguments;
+              this.profileRequest.duration = this.formatDuration(formFields.duration);
+              this.profileRequest.format = formFields.format;
             }
           } catch (error) {
             this.error = error;
