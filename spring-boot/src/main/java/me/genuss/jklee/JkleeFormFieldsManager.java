@@ -14,9 +14,15 @@ class JkleeFormFieldsManager {
   private static final Pattern SESSION_PATTERN = Pattern.compile("^(.*)_(\\d+)$");
 
   private final String sessionPrefix;
+  private final FormFields formFields;
 
   JkleeFormFieldsManager(String sessionPrefix) {
     this.sessionPrefix = sessionPrefix == null ? "" : sessionPrefix;
+    this.formFields = new FormFields(this.sessionPrefix + "_000");
+  }
+
+  FormFields buildFormFields(List<ProfilingResult> results) {
+    return new FormFields(nextSessionName(results));
   }
 
   static JkleeFormFieldsManager withEnv(
@@ -28,11 +34,7 @@ class JkleeFormFieldsManager {
     return new JkleeFormFieldsManager(sessionPrefix);
   }
 
-  FormFields buildFormFields(List<ProfilingResult> results) {
-    return new FormFields(nextSessionName(results));
-  }
-
-  String nextSessionName(List<ProfilingResult> results) {
+  private String nextSessionName(List<ProfilingResult> results) {
     List<ProfilingResult> matching =
         results.stream()
             .filter(result -> SESSION_PATTERN.matcher(result.name()).matches())
@@ -44,7 +46,7 @@ class JkleeFormFieldsManager {
                 Comparator.comparing(
                     ProfilingResult::endedAt, Comparator.nullsLast(Comparator.naturalOrder())))
             .map(result -> prefixOf(result.name()))
-            .orElse(sessionPrefix);
+            .orElse(prefixOf(formFields.getSessionName()));
 
     long max =
         matching.stream()
