@@ -1,6 +1,6 @@
 package me.genuss.jklee;
 
-import static me.genuss.jklee.JkleeFilesEndpoint.computeNextSessionName;
+import static me.genuss.jklee.FormFields.computeNextSessionName;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.List;
 import me.genuss.jklee.Jklee.ProfilingResult;
 import org.junit.jupiter.api.Test;
 
-class JkleeFilesEndpointTest {
+class FormFieldsTest {
 
   @Test
   void returnsFirstNameWhenNoResults() {

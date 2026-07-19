@@ -2,8 +2,6 @@ package me.genuss.jklee;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.Value;
 import me.genuss.jklee.Jklee.ProfilingResult;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -27,9 +25,7 @@ public class JkleeFilesEndpoint {
   @ReadOperation
   public ProfilingResultFiles getResults() {
     List<ProfilingResult> results = jklee.getAvailableProfilingResults();
-    FormFields formFields =
-        new FormFields(sessionPrefix, computeNextSessionName(sessionPrefix, results));
-    return new ProfilingResultFiles(results, formFields);
+    return new ProfilingResultFiles(results, FormFields.from(sessionPrefix, results));
   }
 
   @ReadOperation
@@ -42,33 +38,9 @@ public class JkleeFilesEndpoint {
     return new WebEndpointResponse<>(new FileSystemResource(result));
   }
 
-  static String computeNextSessionName(String sessionPrefix, List<ProfilingResult> results) {
-    Pattern pattern = Pattern.compile("^" + Pattern.quote(sessionPrefix) + "_(\\d+)$");
-    long max = 0;
-    for (ProfilingResult result : results) {
-      Matcher matcher = pattern.matcher(result.name());
-      if (matcher.matches()) {
-        try {
-          long value = Long.parseLong(matcher.group(1));
-          if (value > max) {
-            max = value;
-          }
-        } catch (NumberFormatException ignored) {
-        }
-      }
-    }
-    return sessionPrefix + "_" + String.format("%03d", max + 1);
-  }
-
   @Value
   public static class ProfilingResultFiles {
     List<ProfilingResult> results;
     FormFields formFields;
-  }
-
-  @Value
-  public static class FormFields {
-    String sessionPrefix;
-    String nextSessionName;
   }
 }
