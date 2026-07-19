@@ -15,17 +15,17 @@ import org.springframework.core.io.Resource;
 public class JkleeFilesEndpoint {
 
   private final Jklee jklee;
-  private final String sessionPrefix;
+  private final FormFieldsManager formFieldsManager;
 
-  public JkleeFilesEndpoint(Jklee jklee, String sessionPrefix) {
+  public JkleeFilesEndpoint(Jklee jklee, FormFieldsManager formFieldsManager) {
     this.jklee = jklee;
-    this.sessionPrefix = sessionPrefix == null ? "" : sessionPrefix;
+    this.formFieldsManager = formFieldsManager;
   }
 
   @ReadOperation
   public ProfilingResultFiles getResults() {
     List<ProfilingResult> results = jklee.getAvailableProfilingResults();
-    return new ProfilingResultFiles(results, FormFields.from(sessionPrefix, results));
+    return new ProfilingResultFiles(results, formFieldsManager.buildFormFields(results));
   }
 
   @ReadOperation

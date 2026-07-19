@@ -34,15 +34,19 @@ public class JkleeAutoConfiguration {
   }
 
   @Bean
-  public JkleeFilesEndpoint jkleeFilesEndpoint(
-      Jklee jklee,
+  public FormFieldsManager formFieldsManager(
       JkleeConfigurationProperties properties,
       @Value("${spring.application.name:}") String applicationName) {
     String sessionPrefix = properties.getSpringBootAdmin().getSessionPrefix();
     if (sessionPrefix == null || sessionPrefix.isEmpty()) {
       sessionPrefix = applicationName;
     }
-    return new JkleeFilesEndpoint(jklee, sessionPrefix);
+    return new FormFieldsManager(sessionPrefix);
+  }
+
+  @Bean
+  public JkleeFilesEndpoint jkleeFilesEndpoint(Jklee jklee, FormFieldsManager formFieldsManager) {
+    return new JkleeFilesEndpoint(jklee, formFieldsManager);
   }
 
   @Bean
