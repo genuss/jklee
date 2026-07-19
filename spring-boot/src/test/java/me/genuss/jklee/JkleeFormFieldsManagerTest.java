@@ -2,6 +2,7 @@ package me.genuss.jklee;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,24 +29,31 @@ class JkleeFormFieldsManagerTest {
         Arguments.of(
             "jklee-sample",
             Arrays.asList(
-                result("jklee-sample_001"), result("jklee-sample_007"), result("jklee-sample_003")),
+                result("jklee-sample_001", 1),
+                result("jklee-sample_007", 3),
+                result("jklee-sample_003", 2)),
             new FormFields("jklee-sample_008")),
         Arguments.of(
             "jklee-sample",
             Arrays.asList(
-                result("test1"),
-                result("jklee-sample"),
-                result("jklee-sample_foo"),
-                result("jklee-sample_002")),
+                result("test1", 1),
+                result("jklee-sample", 2),
+                result("jklee-sample_foo", 3),
+                result("jklee-sample_002", 4)),
             new FormFields("jklee-sample_003")),
         Arguments.of(
-            "app", Collections.singletonList(result("app_999")), new FormFields("app_1000")),
+            "app", Collections.singletonList(result("app_999", 1)), new FormFields("app_1000")),
         Arguments.of(
-            "a.b", Arrays.asList(result("a.b_005"), result("axb_009")), new FormFields("a.b_006")),
+            "app",
+            Arrays.asList(result("app_005", 1), result("loadtest_002", 2)),
+            new FormFields("loadtest_003")),
         Arguments.of("", Collections.emptyList(), new FormFields("_001")));
   }
 
-  private static ProfilingResult result(String name) {
-    return ProfilingResult.builder().name(name).build();
+  private static ProfilingResult result(String name, long endedAtEpochSecond) {
+    return ProfilingResult.builder()
+        .name(name)
+        .endedAt(Instant.ofEpochSecond(endedAtEpochSecond))
+        .build();
   }
 }
