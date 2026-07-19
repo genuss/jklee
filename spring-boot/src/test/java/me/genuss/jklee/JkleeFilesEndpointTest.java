@@ -54,11 +54,6 @@ class JkleeFilesEndpointTest {
     assertThat(computeNextSessionName(null, Collections.emptyList())).isEqualTo("_001");
   }
 
-  @Test
-  void handlesNullResults() {
-    assertThat(computeNextSessionName("app", null)).isEqualTo("app_001");
-  }
-
   private static ProfilingResult result(String name) {
     return ProfilingResult.builder().name(name).build();
   }

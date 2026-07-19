@@ -17,17 +17,19 @@ import org.springframework.core.io.Resource;
 public class JkleeFilesEndpoint {
 
   private final Jklee jklee;
-  private final String applicationName;
+  private final String sessionPrefix;
 
-  public JkleeFilesEndpoint(Jklee jklee, String applicationName) {
+  public JkleeFilesEndpoint(Jklee jklee, String sessionPrefix) {
     this.jklee = jklee;
-    this.applicationName = applicationName == null ? "" : applicationName;
+    this.sessionPrefix = sessionPrefix == null ? "" : sessionPrefix;
   }
 
   @ReadOperation
   public ProfilingResultFiles getResults() {
     List<ProfilingResult> results = jklee.getAvailableProfilingResults();
-    return new ProfilingResultFiles(results, computeNextSessionName(applicationName, results));
+    FormFields formFields =
+        new FormFields(sessionPrefix, computeNextSessionName(sessionPrefix, results));
+    return new ProfilingResultFiles(results, formFields);
   }
 
   @ReadOperation
@@ -40,9 +42,9 @@ public class JkleeFilesEndpoint {
     return new WebEndpointResponse<>(new FileSystemResource(result));
   }
 
-  static String computeNextSessionName(String appName, List<ProfilingResult> results) {
-    String name = appName == null ? "" : appName;
-    Pattern pattern = Pattern.compile("^" + Pattern.quote(name) + "_(\\d+)$");
+  static String computeNextSessionName(String sessionPrefix, List<ProfilingResult> results) {
+    String prefix = sessionPrefix == null ? "" : sessionPrefix;
+    Pattern pattern = Pattern.compile("^" + Pattern.quote(prefix) + "_(\\d+)$");
     long max = 0;
     for (ProfilingResult result : results) {
       Matcher matcher = pattern.matcher(result.name());
@@ -56,12 +58,18 @@ public class JkleeFilesEndpoint {
         }
       }
     }
-    return name + "_" + String.format("%03d", max + 1);
+    return prefix + "_" + String.format("%03d", max + 1);
   }
 
   @Value
   public static class ProfilingResultFiles {
     List<ProfilingResult> results;
+    FormFields formFields;
+  }
+
+  @Value
+  public static class FormFields {
+    String sessionPrefix;
     String nextSessionName;
   }
 }

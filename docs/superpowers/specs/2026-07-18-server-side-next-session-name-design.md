@@ -9,8 +9,9 @@ application instance computes the suggested name and exposes it as
 
 ## Naming Rules
 
-Given the application name `<app_name>` (from `spring.application.name`) and the
-list of existing profiling results:
+Given the session prefix `<prefix>` (from `jklee.spring-boot-admin.session-prefix`,
+defaulting to `spring.application.name`) and the list of existing profiling
+results:
 
 - If no report matches the pattern, use `<app_name>_001`.
 - If reports named `<app_name>_<number>` exist, use `max(number) + 1`.
@@ -29,18 +30,24 @@ list of existing profiling results:
 Server side lives entirely in the **spring-boot** module. This is a Spring Boot
 Admin convenience feature, so the logic stays out of `core`.
 
+- A new `SpringBootAdmin` group in `JkleeConfigurationProperties` holds
+  `sessionPrefix`, defaulting via `@DefaultValue("${spring.application.name:}")`.
 - The naming logic is a package-private `static` method inside
   `JkleeFilesEndpoint` for easy unit testing.
-- `JkleeFilesEndpoint` holds the application name (constructor-injected).
-- The `jkleeFiles` read response (`ProfilingResultFiles`) gains a
-  `nextSessionName` field, computed in `getResults()`.
-- `JkleeAutoConfiguration` injects `${spring.application.name:}` into the
+- `JkleeFilesEndpoint` holds the session prefix (constructor-injected).
+- The `jkleeFiles` read response (`ProfilingResultFiles`) gains a `formFields`
+  object (`FormFields`) carrying `sessionPrefix` and `nextSessionName`,
+  computed in `getResults()`. `FormFields` is the home for server-provided form
+  defaults/config and will grow as more fields are added.
+- `JkleeAutoConfiguration` passes
+  `properties.getSpringBootAdmin().getSessionPrefix()` into the
   `jkleeFilesEndpoint` bean.
 
 Client side lives in **spring-boot-admin** (`jklee.vue`):
 
 - The `jkleeFiles` fetch already runs on load and after each run. Read
-  `response.data.nextSessionName` and set it as `profileRequest.sessionName`.
+  `response.data.formFields.nextSessionName` and set it as
+  `profileRequest.sessionName`.
 - Remove the hardcoded `sessionName: 'test'` default.
 - The field stays editable; on the next refresh the server value replaces it.
 
