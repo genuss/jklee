@@ -5,13 +5,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Value;
 import me.genuss.jklee.Jklee.ProfilingResult;
+import org.springframework.core.env.Environment;
 
 public class FormFieldsManager {
 
   private final String sessionPrefix;
 
-  public FormFieldsManager(String sessionPrefix) {
+  private FormFieldsManager(String sessionPrefix) {
     this.sessionPrefix = sessionPrefix == null ? "" : sessionPrefix;
+  }
+
+  public static FormFieldsManager withEnv(
+      JkleeConfigurationProperties properties, Environment environment) {
+    String sessionPrefix = properties.getSpringBootAdmin().getSessionPrefix();
+    if (sessionPrefix == null || sessionPrefix.isEmpty()) {
+      sessionPrefix = environment.getProperty("spring.application.name", "");
+    }
+    return new FormFieldsManager(sessionPrefix);
   }
 
   public FormFields buildFormFields(List<ProfilingResult> results) {
