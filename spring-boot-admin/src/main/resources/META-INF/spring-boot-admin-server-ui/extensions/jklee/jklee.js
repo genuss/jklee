@@ -57,6 +57,9 @@
       progressTimer: null
     }),
     computed: {
+      isProfilerLoaded() {
+        return this.settingsMap.loaded === true || this.settingsMap.loaded === "true";
+      },
       progressPercentage() {
         if (!this.profiling || this.profilingDuration === 0) {
           return 0;
@@ -204,13 +207,15 @@
         try {
           const settingsResponse = yield this.instance.axios.get("actuator/jkleeSettings");
           this.settings.data = settingsResponse.data.settings;
-          yield this.updateProfileOptions();
+          if (this.isProfilerLoaded) {
+            yield this.updateProfileOptions();
+            yield this.updateResultsList();
+          }
         } catch (error) {
           this.error = error;
         } finally {
           this.hasLoaded = true;
         }
-        yield this.updateResultsList();
       });
     },
     beforeUnmount() {
@@ -264,6 +269,7 @@
     const _component_sba_panel = vue.resolveComponent("sba-panel");
     const _component_sba_input = vue.resolveComponent("sba-input");
     const _component_sba_select = vue.resolveComponent("sba-select");
+    const _component_sba_alert = vue.resolveComponent("sba-alert");
     const _component_sba_key_value_table = vue.resolveComponent("sba-key-value-table");
     const _component_sba_instance_section = vue.resolveComponent("sba-instance-section");
     return vue.openBlock(), vue.createBlock(_component_sba_instance_section, {
@@ -271,109 +277,119 @@
       loading: !_ctx.hasLoaded
     }, {
       default: vue.withCtx(() => [
-        vue.createVNode(_component_sba_panel, {
-          title: _ctx.$t("jklee.ui.results")
-        }, {
-          default: vue.withCtx(() => [
-            vue.createElementVNode("div", _hoisted_1, [
-              (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.results, (result) => {
-                return vue.openBlock(), vue.createBlock(_component_sba_button, {
-                  key: result.name,
-                  as: "a",
-                  href: `instances/${$props.instance.id}/actuator/jkleeFiles/${result.name}`
-                }, {
-                  default: vue.withCtx(() => [
-                    vue.createElementVNode("span", _hoisted_2, [
-                      vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
-                      vue.createElementVNode("span", {
-                        textContent: vue.toDisplayString(result.name)
-                      }, null, 8, _hoisted_3),
-                      vue.createElementVNode("span", {
-                        class: "text-sm opacity-60 ml-auto",
-                        textContent: vue.toDisplayString($options.formatEndedAt(result.endedAt))
-                      }, null, 8, _hoisted_4)
-                    ])
-                  ]),
-                  _: 2
-                }, 1032, ["href"]);
-              }), 128))
-            ])
-          ]),
-          _: 1
-        }, 8, ["title"]),
-        vue.createVNode(_component_sba_panel, {
-          title: _ctx.$t("jklee.ui.session.title")
-        }, {
-          default: vue.withCtx(() => [
-            vue.createElementVNode("div", _hoisted_5, [
-              vue.createElementVNode("div", _hoisted_6, [
-                vue.createVNode(_component_sba_input, {
-                  modelValue: _ctx.profileRequest.sessionName,
-                  "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.profileRequest.sessionName = $event),
-                  label: _ctx.$t("jklee.ui.session.name"),
-                  placeholder: _ctx.$t("jklee.ui.session.name")
-                }, null, 8, ["modelValue", "label", "placeholder"])
-              ]),
-              vue.createElementVNode("div", _hoisted_7, [
-                vue.createVNode(_component_sba_select, {
-                  name: "format",
-                  label: _ctx.$t("jklee.ui.session.format"),
-                  options: _ctx.profileProperties.formats,
-                  modelValue: _ctx.profileRequest.format,
-                  "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.profileRequest.format = $event)
-                }, null, 8, ["label", "options", "modelValue"])
-              ]),
-              vue.createElementVNode("div", _hoisted_8, [
-                vue.createVNode(_component_sba_input, {
-                  label: _ctx.$t("jklee.ui.session.duration"),
-                  modelValue: _ctx.profileRequest.duration,
-                  "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => _ctx.profileRequest.duration = $event),
-                  placeholder: _ctx.$t("jklee.ui.session.duration")
-                }, null, 8, ["label", "modelValue", "placeholder"])
+        $options.isProfilerLoaded ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
+          vue.createVNode(_component_sba_panel, {
+            title: _ctx.$t("jklee.ui.results")
+          }, {
+            default: vue.withCtx(() => [
+              vue.createElementVNode("div", _hoisted_1, [
+                (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.results, (result) => {
+                  return vue.openBlock(), vue.createBlock(_component_sba_button, {
+                    key: result.name,
+                    as: "a",
+                    href: `instances/${$props.instance.id}/actuator/jkleeFiles/${result.name}`
+                  }, {
+                    default: vue.withCtx(() => [
+                      vue.createElementVNode("span", _hoisted_2, [
+                        vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
+                        vue.createElementVNode("span", {
+                          textContent: vue.toDisplayString(result.name)
+                        }, null, 8, _hoisted_3),
+                        vue.createElementVNode("span", {
+                          class: "text-sm opacity-60 ml-auto",
+                          textContent: vue.toDisplayString($options.formatEndedAt(result.endedAt))
+                        }, null, 8, _hoisted_4)
+                      ])
+                    ]),
+                    _: 2
+                  }, 1032, ["href"]);
+                }), 128))
               ])
             ]),
-            vue.createElementVNode("div", _hoisted_9, [
-              vue.createElementVNode("div", _hoisted_10, [
-                vue.createVNode(_component_sba_input, {
-                  modelValue: _ctx.profileRequest.rawArguments,
-                  "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => _ctx.profileRequest.rawArguments = $event),
-                  label: _ctx.$t("jklee.ui.session.arguments"),
-                  placeholder: _ctx.$t("jklee.ui.session.arguments")
-                }, null, 8, ["modelValue", "label", "placeholder"])
-              ]),
-              vue.createVNode(_component_sba_button, {
-                primary: "",
-                disabled: _ctx.profiling,
-                onClick: _cache[4] || (_cache[4] = ($event) => $options.profile(_ctx.profileRequest))
-              }, {
-                default: vue.withCtx(() => [
-                  !_ctx.profiling ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
-                    vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
-                    vue.createElementVNode("span", {
-                      textContent: vue.toDisplayString(_ctx.$t("jklee.ui.session.start"))
-                    }, null, 8, _hoisted_11)
-                  ], 64)) : (vue.openBlock(), vue.createElementBlock("span", _hoisted_12, [
-                    (vue.openBlock(), vue.createElementBlock("svg", _hoisted_13, [
-                      _hoisted_14,
-                      vue.createElementVNode("line", {
-                        x1: "18",
-                        y1: "18",
-                        x2: "18",
-                        y2: "5",
-                        "stroke-width": "2",
-                        "stroke-linecap": "round",
-                        transform: `rotate(${$options.clockHandAngle} 18 18)`
-                      }, null, 8, _hoisted_15),
-                      vue.createElementVNode("text", _hoisted_16, vue.toDisplayString(Math.floor($options.progressPercentage)) + "%", 1)
-                    ]))
-                  ]))
+            _: 1
+          }, 8, ["title"]),
+          vue.createVNode(_component_sba_panel, {
+            title: _ctx.$t("jklee.ui.session.title")
+          }, {
+            default: vue.withCtx(() => [
+              vue.createElementVNode("div", _hoisted_5, [
+                vue.createElementVNode("div", _hoisted_6, [
+                  vue.createVNode(_component_sba_input, {
+                    modelValue: _ctx.profileRequest.sessionName,
+                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.profileRequest.sessionName = $event),
+                    label: _ctx.$t("jklee.ui.session.name"),
+                    placeholder: _ctx.$t("jklee.ui.session.name")
+                  }, null, 8, ["modelValue", "label", "placeholder"])
                 ]),
-                _: 1
-              }, 8, ["disabled"])
-            ])
+                vue.createElementVNode("div", _hoisted_7, [
+                  vue.createVNode(_component_sba_select, {
+                    name: "format",
+                    label: _ctx.$t("jklee.ui.session.format"),
+                    options: _ctx.profileProperties.formats,
+                    modelValue: _ctx.profileRequest.format,
+                    "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.profileRequest.format = $event)
+                  }, null, 8, ["label", "options", "modelValue"])
+                ]),
+                vue.createElementVNode("div", _hoisted_8, [
+                  vue.createVNode(_component_sba_input, {
+                    label: _ctx.$t("jklee.ui.session.duration"),
+                    modelValue: _ctx.profileRequest.duration,
+                    "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => _ctx.profileRequest.duration = $event),
+                    placeholder: _ctx.$t("jklee.ui.session.duration")
+                  }, null, 8, ["label", "modelValue", "placeholder"])
+                ])
+              ]),
+              vue.createElementVNode("div", _hoisted_9, [
+                vue.createElementVNode("div", _hoisted_10, [
+                  vue.createVNode(_component_sba_input, {
+                    modelValue: _ctx.profileRequest.rawArguments,
+                    "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => _ctx.profileRequest.rawArguments = $event),
+                    label: _ctx.$t("jklee.ui.session.arguments"),
+                    placeholder: _ctx.$t("jklee.ui.session.arguments")
+                  }, null, 8, ["modelValue", "label", "placeholder"])
+                ]),
+                vue.createVNode(_component_sba_button, {
+                  primary: "",
+                  disabled: _ctx.profiling,
+                  onClick: _cache[4] || (_cache[4] = ($event) => $options.profile(_ctx.profileRequest))
+                }, {
+                  default: vue.withCtx(() => [
+                    !_ctx.profiling ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
+                      vue.createVNode(_component_font_awesome_icon, { icon: "download" }),
+                      vue.createElementVNode("span", {
+                        textContent: vue.toDisplayString(_ctx.$t("jklee.ui.session.start"))
+                      }, null, 8, _hoisted_11)
+                    ], 64)) : (vue.openBlock(), vue.createElementBlock("span", _hoisted_12, [
+                      (vue.openBlock(), vue.createElementBlock("svg", _hoisted_13, [
+                        _hoisted_14,
+                        vue.createElementVNode("line", {
+                          x1: "18",
+                          y1: "18",
+                          x2: "18",
+                          y2: "5",
+                          "stroke-width": "2",
+                          "stroke-linecap": "round",
+                          transform: `rotate(${$options.clockHandAngle} 18 18)`
+                        }, null, 8, _hoisted_15),
+                        vue.createElementVNode("text", _hoisted_16, vue.toDisplayString(Math.floor($options.progressPercentage)) + "%", 1)
+                      ]))
+                    ]))
+                  ]),
+                  _: 1
+                }, 8, ["disabled"])
+              ])
+            ]),
+            _: 1
+          }, 8, ["title"])
+        ], 64)) : (vue.openBlock(), vue.createBlock(_component_sba_panel, { key: 1 }, {
+          default: vue.withCtx(() => [
+            vue.createVNode(_component_sba_alert, {
+              severity: "WARN",
+              error: _ctx.$t("jklee.ui.notLoaded.message")
+            }, null, 8, ["error"])
           ]),
           _: 1
-        }, 8, ["title"]),
+        })),
         vue.createVNode(_component_sba_panel, {
           title: _ctx.$t("jklee.ui.settings")
         }, {
@@ -399,6 +415,9 @@
         start: "Start Profiling",
         title: "Profiling Session"
       },
+      notLoaded: {
+        message: "Async profiler is not loaded."
+      },
       settings: "Settings"
     }
   };
@@ -416,6 +435,9 @@
         profiling: "Profiling...",
         start: "Start Profiling",
         title: "Profilierungsession"
+      },
+      notLoaded: {
+        message: "Async Profiler ist nicht geladen."
       },
       settings: "Einstellungen"
     }

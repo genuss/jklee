@@ -11,6 +11,9 @@
         "start": "Start Profiling",
         "title": "Profilierungsession"
       },
+      "notLoaded": {
+        "message": "Async Profiler ist nicht geladen."
+      },
       "settings": "Einstellungen"
     }
   }

@@ -1,5 +1,6 @@
 <template>
   <sba-instance-section :error="error" :loading="!hasLoaded">
+    <template v-if="isProfilerLoaded">
     <sba-panel :title="$t('jklee.ui.results')">
       <div class="grid gap-4 mt-2" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">
         <template v-for="result in results" :key="result.name">
@@ -94,6 +95,12 @@
 
     </sba-panel>
 
+    </template>
+
+    <sba-panel v-else>
+      <sba-alert severity="WARN" :error="$t('jklee.ui.notLoaded.message')"/>
+    </sba-panel>
+
     <sba-panel :title="$t('jklee.ui.settings')">
       <sba-key-value-table :map="settingsMap"/>
     </sba-panel>
@@ -130,6 +137,9 @@ export default {
     progressTimer: null
   }),
   computed: {
+    isProfilerLoaded() {
+      return this.settingsMap.loaded === true || this.settingsMap.loaded === 'true';
+    },
     progressPercentage() {
       if (!this.profiling || this.profilingDuration === 0) {
         return 0;
@@ -268,14 +278,15 @@ export default {
       const settingsResponse = await this.instance.axios.get('actuator/jkleeSettings');
       this.settings.data = settingsResponse.data.settings;
 
-      await this.updateProfileOptions();
-
+      if (this.isProfilerLoaded) {
+        await this.updateProfileOptions();
+        await this.updateResultsList();
+      }
     } catch (error) {
       this.error = error
     } finally {
       this.hasLoaded = true;
     }
-    await this.updateResultsList()
   },
   beforeUnmount() {
     this.stopProgressTimer();
