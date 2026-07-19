@@ -26,6 +26,7 @@ import lombok.extern.java.Log;
 import me.genuss.jklee.Jklee.ProfilingRequest;
 import me.genuss.jklee.Jklee.ProfilingResult;
 import one.profiler.AsyncProfiler;
+import org.jspecify.annotations.Nullable;
 
 @Accessors(fluent = true)
 @Getter
@@ -40,8 +41,8 @@ class AsyncProfilerLauncher {
             return thread;
           });
 
-  private final AsyncProfiler asyncProfiler;
-  private final Path resultsDir;
+  @Nullable private final AsyncProfiler asyncProfiler;
+  @Nullable private final Path resultsDir;
 
   public AsyncProfilerLauncher(JkleeSettings settings) {
     asyncProfiler =
@@ -65,11 +66,7 @@ class AsyncProfilerLauncher {
     try {
       resultsDir = DirsHelper.prepareResultsDir(settings);
     } catch (IOException e) {
-      if (settings.failOnInitErrors()) {
-        throw new UncheckedIOException(e);
-      }
-      this.resultsDir = null;
-      return;
+      throw new UncheckedIOException(e);
     }
     this.resultsDir = resultsDir;
   }
@@ -78,6 +75,7 @@ class AsyncProfilerLauncher {
     if (!isLoaded()) {
       throw new JkleeInactiveException("Async profiler is not loaded");
     }
+    assert asyncProfiler != null;
     validate(request);
     Path sessionDir = getSessionDir(request.id());
     Files.createDirectories(sessionDir);
@@ -94,6 +92,7 @@ class AsyncProfilerLauncher {
     if (!isLoaded()) {
       return Collections.emptyList();
     }
+    assert resultsDir != null;
     try (Stream<Path> stream = Files.find(resultsDir, 1, this::isDir)) {
       return stream
           .filter(other -> !resultsDir.equals(other))
@@ -105,6 +104,7 @@ class AsyncProfilerLauncher {
     }
   }
 
+  @Nullable
   public Path getProfilingResult(String sessionName) {
     if (!isLoaded()) {
       return null;
@@ -124,6 +124,7 @@ class AsyncProfilerLauncher {
   }
 
   private void stop(ProfilingRequest request) {
+    assert asyncProfiler != null;
     Path sessionDir = getSessionDir(request.id());
     String stopCommand = prepareStopCommand(request, sessionDir);
     log.fine(() -> String.format("Executing stop command: %s", stopCommand));
@@ -143,6 +144,7 @@ class AsyncProfilerLauncher {
         .build();
   }
 
+  @Nullable
   private AsyncProfiler tryLoad(Path path) {
     Path realPath;
     try {
@@ -169,6 +171,7 @@ class AsyncProfilerLauncher {
     return asyncProfiler;
   }
 
+  @SuppressWarnings("ConstantValue")
   private void validate(ProfilingRequest request) {
     if (request.id() == null || request.id().isEmpty()) {
       throw new IllegalArgumentException("Session id is required");
@@ -182,6 +185,7 @@ class AsyncProfilerLauncher {
   }
 
   private Path getSessionDir(String sessionName) {
+    assert resultsDir != null;
     return DirsHelper.path(resultsDir.toString(), sessionName);
   }
 

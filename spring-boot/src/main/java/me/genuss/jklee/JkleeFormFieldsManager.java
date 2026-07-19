@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Value;
 import me.genuss.jklee.Jklee.ProfilingRequest.Format;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.env.Environment;
 
 class JkleeFormFieldsManager {
@@ -21,8 +22,14 @@ class JkleeFormFieldsManager {
     return fields;
   }
 
-  void recordSubmission(String sessionName, String rawArguments, Duration duration, Format format) {
-    fields = new FormFields(nextSessionName(sessionName), rawArguments, duration, format);
+  void recordSubmission(
+      String sessionName,
+      @Nullable String rawArguments,
+      @Nullable Duration duration,
+      @Nullable Format format) {
+    if (rawArguments != null && duration != null && format != null) {
+      fields = new FormFields(nextSessionName(sessionName), rawArguments, duration, format);
+    }
   }
 
   static JkleeFormFieldsManager withEnv(

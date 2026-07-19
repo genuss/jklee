@@ -10,11 +10,7 @@ class CommandParser {
   public static final String FILENAME_LOG = "async-profiler.log";
 
   static String prepareCommand(ProfilingRequest request, Path sessionDir) {
-    if (request.rawArguments() != null) {
-      return request.rawArguments() + fileAndLogArgs(request, sessionDir);
-    }
-
-    throw new UnsupportedOperationException("Parser without raw arguments is not implemented");
+    return request.rawArguments() + fileAndLogArgs(request, sessionDir);
   }
 
   public static String prepareStopCommand(ProfilingRequest request, Path sessionDir) {

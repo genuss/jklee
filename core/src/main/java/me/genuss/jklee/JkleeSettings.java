@@ -4,9 +4,9 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.Value;
 import lombok.experimental.Accessors;
+import org.jspecify.annotations.Nullable;
 
 @Builder
 @Value
@@ -19,16 +19,16 @@ public class JkleeSettings {
 
   boolean cleanResultsDirOnStart;
 
-  @Builder.Default @NonNull AsyncProfiler asyncProfiler = AsyncProfiler.builder().build();
+  @Builder.Default AsyncProfiler asyncProfiler = AsyncProfiler.builder().build();
 
   @Builder
   @Value
   @Accessors(fluent = true)
   public static class AsyncProfiler {
 
-    @Builder.Default @NonNull List<@NonNull String> agentPathCandidates = Collections.emptyList();
+    @Builder.Default List<String> agentPathCandidates = Collections.emptyList();
 
-    Path resultsDir;
+    @Nullable Path resultsDir;
 
     @Builder.Default boolean appendPidToDirs = true;
   }

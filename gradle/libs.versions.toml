@@ -5,6 +5,7 @@ javaCore = "8"
 javaIntegrationTests = "17"
 javaSpringBoot = "8"
 javaSpringBootAdmin = "17"
+jspecify = "1.0.0"
 jreleaser = "1.22.0"
 siouanFrontend = "6.0.0"
 spotless = "7.2.1" # don't upgrade, conflicts with jreleaser via jgit dep. See jreleaser/jreleaser/issues/1643
@@ -14,6 +15,7 @@ springBoot40 = "4.0.3"
 springBootAdmin = "4.0.1"
 
 [libraries]
+jspecify = { group = "org.jspecify", name = "jspecify", version.ref = "jspecify" }
 siouanFrontend-gradlePlugin = { module = "org.siouan:frontend-gradle-plugin-jdk11", version.ref = "siouanFrontend" }
 spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 springBoot27 = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot27" }
