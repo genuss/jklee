@@ -13,12 +13,10 @@ class JkleeFormFieldsManager {
 
   private static final Pattern SESSION_PATTERN = Pattern.compile("^(.*)_(\\d+)$");
 
-  private final String sessionPrefix;
   private final FormFields formFields;
 
   JkleeFormFieldsManager(String sessionPrefix) {
-    this.sessionPrefix = sessionPrefix == null ? "" : sessionPrefix;
-    this.formFields = new FormFields(this.sessionPrefix + "_000");
+    this.formFields = new FormFields((sessionPrefix == null ? "" : sessionPrefix) + "_000");
   }
 
   FormFields buildFormFields(List<ProfilingResult> results) {
