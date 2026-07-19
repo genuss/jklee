@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -42,7 +44,7 @@ jobs:
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
           JRELEASER_MAVENCENTRAL_PASSWORD: placeholder
           JRELEASER_MAVENCENTRAL_USERNAME: placeholder
-        if: github.ref != 'refs/heads/master'
+        if: github.ref == 'refs/heads/master'
         name: Publish to Github Packages
         run: ./gradlew --no-configuration-cache jreleaserDeploy --deployer github
       - env:
@@ -54,9 +56,9 @@ jobs:
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY_VALUE }}
           JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
           JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.OSS_SONATYPE_USER }}
-        if: github.ref == 'refs/heads/master'
-        name: Publish to Github Packages and Maven Central
-        run: ./gradlew --no-configuration-cache jreleaserRelease
+        if: startsWith(github.ref, 'refs/tags/v')
+        name: Publish to Maven Central
+        run: ./gradlew --no-configuration-cache jreleaserDeploy --exclude-deployer github
       - if: always()
         name: JReleaser debug info
         uses: actions/upload-artifact@v4

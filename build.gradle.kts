@@ -24,11 +24,16 @@ scmVersion {
     val dirtySuffix = if (position.isClean) "" else "-dirty"
     val runNumber = providers.environmentVariable("GITHUB_RUN_NUMBER").getOrElse("000000")
     val runNumberSuffix = "-${runNumber.padStart(6, '0')}"
-
-    if (position.branch != "master") {
-      return@versionCreator "$versionFromTag$runNumberSuffix$revisionSuffix$dirtySuffix"
+    val isTagBuild =
+        providers
+            .environmentVariable("GITHUB_REF")
+            .map { it.startsWith("refs/tags/") }
+            .getOrElse(false)
+    if (isTagBuild) {
+      "$versionFromTag$dirtySuffix"
+    } else {
+      "$versionFromTag$runNumberSuffix$revisionSuffix$dirtySuffix"
     }
-    "$versionFromTag$dirtySuffix"
   }
 }
 
