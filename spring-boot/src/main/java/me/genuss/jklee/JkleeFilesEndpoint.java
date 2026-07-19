@@ -44,21 +44,15 @@ public class JkleeFilesEndpoint {
     String name = appName == null ? "" : appName;
     Pattern pattern = Pattern.compile("^" + Pattern.quote(name) + "_(\\d+)$");
     long max = 0;
-    if (results != null) {
-      for (ProfilingResult result : results) {
-        if (result == null || result.name() == null) {
-          continue;
-        }
-        Matcher matcher = pattern.matcher(result.name());
-        if (matcher.matches()) {
-          try {
-            long value = Long.parseLong(matcher.group(1));
-            if (value > max) {
-              max = value;
-            }
-          } catch (NumberFormatException ignored) {
-            // suffix too large to parse; ignore it
+    for (ProfilingResult result : results) {
+      Matcher matcher = pattern.matcher(result.name());
+      if (matcher.matches()) {
+        try {
+          long value = Long.parseLong(matcher.group(1));
+          if (value > max) {
+            max = value;
           }
+        } catch (NumberFormatException ignored) {
         }
       }
     }
