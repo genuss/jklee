@@ -3,6 +3,7 @@ package me.genuss.jklee;
 import java.nio.file.Path;
 import java.util.List;
 import lombok.Value;
+import me.genuss.jklee.FormFieldsManager.FormFields;
 import me.genuss.jklee.Jklee.ProfilingResult;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;

@@ -3,6 +3,7 @@ package me.genuss.jklee;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.Value;
 import me.genuss.jklee.Jklee.ProfilingResult;
 
 public class FormFieldsManager {
@@ -33,5 +34,11 @@ public class FormFieldsManager {
       }
     }
     return sessionPrefix + "_" + String.format("%03d", max + 1);
+  }
+
+  @Value
+  public static class FormFields {
+    String sessionPrefix;
+    String nextSessionName;
   }
 }
