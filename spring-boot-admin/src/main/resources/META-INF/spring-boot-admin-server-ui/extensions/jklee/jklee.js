@@ -145,11 +145,12 @@
                 format: profileRequest.format
               }
             );
-            setTimeout(() => {
+            setTimeout(() => __async(this, null, function* () {
               this.stopProgressTimer();
               this.profiling = false;
-              this.updateResultsList();
-            }, durationInMillis);
+              yield this.updateProfileOptions();
+              yield this.updateResultsList();
+            }), durationInMillis);
           } catch (error) {
             this.stopProgressTimer();
             this.profiling = false;
@@ -168,18 +169,30 @@
           this.progressTimer = null;
         }
       },
+      applyFormFields(formFields) {
+        if (formFields) {
+          this.profileRequest.sessionName = formFields.sessionName;
+          this.profileRequest.rawArguments = formFields.rawArguments;
+          this.profileRequest.duration = this.formatDuration(formFields.duration);
+          this.profileRequest.format = formFields.format;
+        }
+      },
+      updateProfileOptions() {
+        return __async(this, null, function* () {
+          try {
+            const profileResponse = yield this.instance.axios.get("actuator/jkleeProfile");
+            this.profileProperties = profileResponse.data;
+            this.applyFormFields(profileResponse.data.formFields);
+          } catch (error) {
+            this.error = error;
+          }
+        });
+      },
       updateResultsList() {
         return __async(this, null, function* () {
           try {
             const response = yield this.instance.axios.get("actuator/jkleeFiles");
             this.results = response.data.results;
-            const formFields = response.data.formFields;
-            if (formFields) {
-              this.profileRequest.sessionName = formFields.sessionName;
-              this.profileRequest.rawArguments = formFields.rawArguments;
-              this.profileRequest.duration = this.formatDuration(formFields.duration);
-              this.profileRequest.format = formFields.format;
-            }
           } catch (error) {
             this.error = error;
           }
@@ -191,8 +204,7 @@
         try {
           const settingsResponse = yield this.instance.axios.get("actuator/jkleeSettings");
           this.settings.data = settingsResponse.data.settings;
-          const profileResponse = yield this.instance.axios.get("actuator/jkleeProfile");
-          this.profileProperties = profileResponse.data;
+          yield this.updateProfileOptions();
         } catch (error) {
           this.error = error;
         } finally {

@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.util.List;
 import lombok.Value;
 import me.genuss.jklee.Jklee.ProfilingResult;
-import me.genuss.jklee.JkleeFormFieldsManager.FormFields;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
@@ -16,17 +15,15 @@ import org.springframework.core.io.Resource;
 class JkleeFilesEndpoint {
 
   private final Jklee jklee;
-  private final JkleeFormFieldsManager formFieldsManager;
 
-  JkleeFilesEndpoint(Jklee jklee, JkleeFormFieldsManager formFieldsManager) {
+  JkleeFilesEndpoint(Jklee jklee) {
     this.jklee = jklee;
-    this.formFieldsManager = formFieldsManager;
   }
 
   @ReadOperation
   ProfilingResultFiles getResults() {
     List<ProfilingResult> results = jklee.getAvailableProfilingResults();
-    return new ProfilingResultFiles(results, formFieldsManager.buildFormFields());
+    return new ProfilingResultFiles(results);
   }
 
   @ReadOperation
@@ -42,6 +39,5 @@ class JkleeFilesEndpoint {
   @Value
   static class ProfilingResultFiles {
     List<ProfilingResult> results;
-    FormFields formFields;
   }
 }

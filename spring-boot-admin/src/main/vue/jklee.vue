@@ -214,11 +214,11 @@ export default {
           }
         );
 
-        // Set a timeout to update the UI when profiling is expected to complete
-        setTimeout(() => {
+        setTimeout(async () => {
           this.stopProgressTimer();
           this.profiling = false;
-          this.updateResultsList();
+          await this.updateProfileOptions();
+          await this.updateResultsList();
         }, durationInMillis);
       } catch (error) {
         this.stopProgressTimer();
@@ -229,7 +229,7 @@ export default {
     startProgressTimer() {
       this.progressTimer = setInterval(() => {
         this.elapsedTime = Date.now() - this.profilingStartTime;
-      }, 100); // Update every 100ms for smoother progress
+      }, 100);
     },
     stopProgressTimer() {
       if (this.progressTimer) {
@@ -237,17 +237,27 @@ export default {
         this.progressTimer = null;
       }
     },
+    applyFormFields(formFields) {
+      if (formFields) {
+        this.profileRequest.sessionName = formFields.sessionName;
+        this.profileRequest.rawArguments = formFields.rawArguments;
+        this.profileRequest.duration = this.formatDuration(formFields.duration);
+        this.profileRequest.format = formFields.format;
+      }
+    },
+    async updateProfileOptions() {
+      try {
+        const profileResponse = await this.instance.axios.get('actuator/jkleeProfile');
+        this.profileProperties = profileResponse.data;
+        this.applyFormFields(profileResponse.data.formFields);
+      } catch (error) {
+        this.error = error;
+      }
+    },
     async updateResultsList() {
       try {
         const response = await this.instance.axios.get('actuator/jkleeFiles');
         this.results = response.data.results;
-        const formFields = response.data.formFields;
-        if (formFields) {
-          this.profileRequest.sessionName = formFields.sessionName;
-          this.profileRequest.rawArguments = formFields.rawArguments;
-          this.profileRequest.duration = this.formatDuration(formFields.duration);
-          this.profileRequest.format = formFields.format;
-        }
       } catch (error) {
         this.error = error;
       }
@@ -258,8 +268,7 @@ export default {
       const settingsResponse = await this.instance.axios.get('actuator/jkleeSettings');
       this.settings.data = settingsResponse.data.settings;
 
-      const profileResponse = await this.instance.axios.get('actuator/jkleeProfile');
-      this.profileProperties = profileResponse.data;
+      await this.updateProfileOptions();
 
     } catch (error) {
       this.error = error
