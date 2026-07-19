@@ -15,6 +15,10 @@ public class FormFieldsManager {
     this.sessionPrefix = sessionPrefix == null ? "" : sessionPrefix;
   }
 
+  public FormFields buildFormFields(List<ProfilingResult> results) {
+    return new FormFields(computeNextSessionName(results));
+  }
+
   public static FormFieldsManager withEnv(
       JkleeConfigurationProperties properties, Environment environment) {
     String sessionPrefix = properties.getSpringBootAdmin().getSessionPrefix();
@@ -22,10 +26,6 @@ public class FormFieldsManager {
       sessionPrefix = environment.getProperty("spring.application.name", "");
     }
     return new FormFieldsManager(sessionPrefix);
-  }
-
-  public FormFields buildFormFields(List<ProfilingResult> results) {
-    return new FormFields(sessionPrefix, computeNextSessionName(results));
   }
 
   String computeNextSessionName(List<ProfilingResult> results) {
@@ -48,7 +48,6 @@ public class FormFieldsManager {
 
   @Value
   public static class FormFields {
-    String sessionPrefix;
     String nextSessionName;
   }
 }
