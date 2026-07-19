@@ -26,7 +26,7 @@ class JkleeFilesEndpoint {
   @ReadOperation
   ProfilingResultFiles getResults() {
     List<ProfilingResult> results = jklee.getAvailableProfilingResults();
-    return new ProfilingResultFiles(results, formFieldsManager.buildFormFields(results));
+    return new ProfilingResultFiles(results, formFieldsManager.buildFormFields());
   }
 
   @ReadOperation

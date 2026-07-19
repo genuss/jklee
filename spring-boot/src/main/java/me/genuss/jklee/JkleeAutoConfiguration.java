@@ -45,7 +45,7 @@ class JkleeAutoConfiguration {
   }
 
   @Bean
-  JkleeProfileEndpoint jkleeProfileEndpoint(Jklee jklee) {
-    return new JkleeProfileEndpoint(jklee);
+  JkleeProfileEndpoint jkleeProfileEndpoint(Jklee jklee, JkleeFormFieldsManager formFieldsManager) {
+    return new JkleeProfileEndpoint(jklee, formFieldsManager);
   }
 }
