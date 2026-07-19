@@ -18,16 +18,16 @@ import org.springframework.boot.actuate.endpoint.annotation.Selector;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 
 @Endpoint(id = "jkleeProfile")
-public class JkleeProfileEndpoint {
+class JkleeProfileEndpoint {
 
   private final Jklee jklee;
 
-  public JkleeProfileEndpoint(Jklee jklee) {
+  JkleeProfileEndpoint(Jklee jklee) {
     this.jklee = jklee;
   }
 
   @ReadOperation
-  public ProfilingOptions profilingOptions() {
+  ProfilingOptions profilingOptions() {
     List<Map<String, String>> formats =
         Arrays.stream(Format.values())
             .map(
@@ -42,7 +42,7 @@ public class JkleeProfileEndpoint {
   }
 
   @WriteOperation
-  public ProfilingResponse start(
+  ProfilingResponse start(
       @Selector String id, String rawArguments, Duration duration, Format format) {
     // rawArguments example start,event=itimer,interval=1ms
     return jklee.start(
@@ -56,7 +56,7 @@ public class JkleeProfileEndpoint {
 
   @Builder
   @Value
-  public static class ProfilingOptions {
+  static class ProfilingOptions {
     List<Map<String, String>> formats;
   }
 }

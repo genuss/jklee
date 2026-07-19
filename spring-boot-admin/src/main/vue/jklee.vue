@@ -227,8 +227,8 @@ export default {
         const response = await this.instance.axios.get('actuator/jkleeFiles');
         this.results = response.data.results;
         const formFields = response.data.formFields;
-        if (formFields && formFields.nextSessionName) {
-          this.profileRequest.sessionName = formFields.nextSessionName;
+        if (formFields && formFields.sessionName) {
+          this.profileRequest.sessionName = formFields.sessionName;
         }
       } catch (error) {
         this.error = error;

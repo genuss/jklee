@@ -3,8 +3,8 @@ package me.genuss.jklee;
 import java.nio.file.Path;
 import java.util.List;
 import lombok.Value;
-import me.genuss.jklee.FormFieldsManager.FormFields;
 import me.genuss.jklee.Jklee.ProfilingResult;
+import me.genuss.jklee.JkleeFormFieldsManager.FormFields;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
@@ -13,24 +13,24 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 @Endpoint(id = "jkleeFiles")
-public class JkleeFilesEndpoint {
+class JkleeFilesEndpoint {
 
   private final Jklee jklee;
-  private final FormFieldsManager formFieldsManager;
+  private final JkleeFormFieldsManager formFieldsManager;
 
-  public JkleeFilesEndpoint(Jklee jklee, FormFieldsManager formFieldsManager) {
+  JkleeFilesEndpoint(Jklee jklee, JkleeFormFieldsManager formFieldsManager) {
     this.jklee = jklee;
     this.formFieldsManager = formFieldsManager;
   }
 
   @ReadOperation
-  public ProfilingResultFiles getResults() {
+  ProfilingResultFiles getResults() {
     List<ProfilingResult> results = jklee.getAvailableProfilingResults();
     return new ProfilingResultFiles(results, formFieldsManager.buildFormFields(results));
   }
 
   @ReadOperation
-  public WebEndpointResponse<Resource> download(@Selector String sessionName) {
+  WebEndpointResponse<Resource> download(@Selector String sessionName) {
     Path result = jklee.getProfilingResult(sessionName);
     if (result == null) {
       return new WebEndpointResponse<>(WebEndpointResponse.STATUS_NOT_FOUND);
@@ -40,7 +40,7 @@ public class JkleeFilesEndpoint {
   }
 
   @Value
-  public static class ProfilingResultFiles {
+  static class ProfilingResultFiles {
     List<ProfilingResult> results;
     FormFields formFields;
   }

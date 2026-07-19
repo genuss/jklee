@@ -8,16 +8,16 @@ import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
 @Endpoint(id = "jkleeSettings")
-public class JkleeSettingsEndpoint {
+class JkleeSettingsEndpoint {
 
   private final Jklee jklee;
 
-  public JkleeSettingsEndpoint(Jklee jklee) {
+  JkleeSettingsEndpoint(Jklee jklee) {
     this.jklee = jklee;
   }
 
   @ReadOperation
-  public ConfigResponse getConfig() {
+  ConfigResponse getConfig() {
     Jklee.EffectiveProperties settings = jklee.getSettings();
     List<ConfigEntry> settingsMap = new ArrayList<>();
     settingsMap.add(new ConfigEntry("enabled", settings.enabled()));
@@ -34,11 +34,11 @@ public class JkleeSettingsEndpoint {
   }
 
   @Value
-  public static class ConfigResponse {
+  static class ConfigResponse {
     List<ConfigEntry> settings;
 
     @Value
-    public static class ConfigEntry {
+    static class ConfigEntry {
       String name;
       Object value;
     }

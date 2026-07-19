@@ -6,19 +6,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-import me.genuss.jklee.FormFieldsManager.FormFields;
 import me.genuss.jklee.Jklee.ProfilingResult;
+import me.genuss.jklee.JkleeFormFieldsManager.FormFields;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class FormFieldsManagerTest {
+class JkleeFormFieldsManagerTest {
 
   @ParameterizedTest
   @MethodSource("nextSessionNameCases")
   void computesNextSessionName(
       String sessionPrefix, List<ProfilingResult> results, FormFields expected) {
-    assertThat(new FormFieldsManager(sessionPrefix).buildFormFields(results)).isEqualTo(expected);
+    assertThat(new JkleeFormFieldsManager(sessionPrefix).buildFormFields(results))
+        .isEqualTo(expected);
   }
 
   static Stream<Arguments> nextSessionNameCases() {
