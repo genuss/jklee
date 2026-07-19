@@ -16,7 +16,7 @@ class JkleeFormFieldsManagerTest {
 
   @Test
   void seedsInitialSessionNameFromPrefix() {
-    assertThat(manager("jklee-sample_001").buildFormFields())
+    assertThat(manager("jklee-sample_001").lastFormFields())
         .isEqualTo(
             new FormFields(
                 "jklee-sample_001", DEFAULT_RAW_ARGUMENTS, DEFAULT_DURATION, Format.FLAMEGRAPH));
@@ -36,7 +36,7 @@ class JkleeFormFieldsManagerTest {
     manager.recordSubmission(
         submitted, DEFAULT_RAW_ARGUMENTS, Duration.ofSeconds(2), Format.FLAMEGRAPH);
 
-    assertThat(manager.buildFormFields().getSessionName()).isEqualTo(expected);
+    assertThat(manager.lastFormFields().getSessionName()).isEqualTo(expected);
   }
 
   @Test
@@ -45,7 +45,7 @@ class JkleeFormFieldsManagerTest {
 
     manager.recordSubmission("app_005", "start,event=cpu", Duration.ofMinutes(5), Format.TREE);
 
-    assertThat(manager.buildFormFields())
+    assertThat(manager.lastFormFields())
         .isEqualTo(
             new FormFields("app_006", "start,event=cpu", Duration.ofMinutes(5), Format.TREE));
   }

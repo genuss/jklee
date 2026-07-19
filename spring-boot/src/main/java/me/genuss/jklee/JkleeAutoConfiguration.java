@@ -40,8 +40,8 @@ class JkleeAutoConfiguration {
   }
 
   @Bean
-  JkleeFilesEndpoint jkleeFilesEndpoint(Jklee jklee, JkleeFormFieldsManager formFieldsManager) {
-    return new JkleeFilesEndpoint(jklee, formFieldsManager);
+  JkleeFilesEndpoint jkleeFilesEndpoint(Jklee jklee) {
+    return new JkleeFilesEndpoint(jklee);
   }
 
   @Bean

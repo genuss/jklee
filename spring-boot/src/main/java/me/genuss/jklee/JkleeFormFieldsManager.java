@@ -18,7 +18,7 @@ class JkleeFormFieldsManager {
     this.fields = defaults;
   }
 
-  FormFields buildFormFields() {
+  FormFields lastFormFields() {
     return fields;
   }
 

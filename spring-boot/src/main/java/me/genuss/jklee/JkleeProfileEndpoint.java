@@ -12,6 +12,7 @@ import lombok.Value;
 import me.genuss.jklee.Jklee.ProfilingRequest;
 import me.genuss.jklee.Jklee.ProfilingRequest.Format;
 import me.genuss.jklee.Jklee.ProfilingResponse;
+import me.genuss.jklee.JkleeFormFieldsManager.FormFields;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
@@ -40,7 +41,10 @@ class JkleeProfileEndpoint {
                   return Collections.unmodifiableMap(map);
                 })
             .collect(Collectors.toList());
-    return ProfilingOptions.builder().formats(formats).build();
+    return ProfilingOptions.builder()
+        .formats(formats)
+        .formFields(formFieldsManager.lastFormFields())
+        .build();
   }
 
   @WriteOperation
@@ -61,5 +65,6 @@ class JkleeProfileEndpoint {
   @Value
   static class ProfilingOptions {
     List<Map<String, String>> formats;
+    FormFields formFields;
   }
 }
