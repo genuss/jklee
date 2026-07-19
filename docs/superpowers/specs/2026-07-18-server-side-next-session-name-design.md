@@ -31,7 +31,9 @@ Server side lives entirely in the **spring-boot** module. This is a Spring Boot
 Admin convenience feature, so the logic stays out of `core`.
 
 - A new `SpringBootAdmin` group in `JkleeConfigurationProperties` holds
-  `sessionPrefix`, defaulting via `@DefaultValue("${spring.application.name:}")`.
+  `sessionPrefix`. When it is unset, `JkleeAutoConfiguration` falls back to
+  `spring.application.name` (resolved via `@Value("${spring.application.name:}")`
+  in the bean, since `@DefaultValue` does not resolve property placeholders).
 - The naming logic is a package-private `static` method inside
   `JkleeFilesEndpoint` for easy unit testing.
 - `JkleeFilesEndpoint` holds the session prefix (constructor-injected).
@@ -39,9 +41,9 @@ Admin convenience feature, so the logic stays out of `core`.
   object (`FormFields`) carrying `sessionPrefix` and `nextSessionName`,
   computed in `getResults()`. `FormFields` is the home for server-provided form
   defaults/config and will grow as more fields are added.
-- `JkleeAutoConfiguration` passes
-  `properties.getSpringBootAdmin().getSessionPrefix()` into the
-  `jkleeFilesEndpoint` bean.
+- `JkleeAutoConfiguration` resolves the effective session prefix
+  (`jklee.spring-boot-admin.session-prefix`, falling back to
+  `spring.application.name`) and passes it into the `jkleeFilesEndpoint` bean.
 
 Client side lives in **spring-boot-admin** (`jklee.vue`):
 

@@ -49,9 +49,8 @@ class JkleeFilesEndpointTest {
   }
 
   @Test
-  void fallsBackToFirstNameWhenAppNameIsMissing() {
+  void fallsBackToFirstNameWhenPrefixIsEmpty() {
     assertThat(computeNextSessionName("", Collections.emptyList())).isEqualTo("_001");
-    assertThat(computeNextSessionName(null, Collections.emptyList())).isEqualTo("_001");
   }
 
   private static ProfilingResult result(String name) {

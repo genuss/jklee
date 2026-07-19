@@ -34,7 +34,7 @@ public class JkleeConfigurationProperties {
     String sessionPrefix;
 
     @ConstructorBinding
-    public SpringBootAdmin(@DefaultValue("${spring.application.name:}") String sessionPrefix) {
+    public SpringBootAdmin(String sessionPrefix) {
       this.sessionPrefix = sessionPrefix;
     }
   }

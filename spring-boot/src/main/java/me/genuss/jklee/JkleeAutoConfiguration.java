@@ -1,6 +1,7 @@
 package me.genuss.jklee;
 
 import me.genuss.jklee.JkleeSettings.AsyncProfiler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -34,8 +35,14 @@ public class JkleeAutoConfiguration {
 
   @Bean
   public JkleeFilesEndpoint jkleeFilesEndpoint(
-      Jklee jklee, JkleeConfigurationProperties properties) {
-    return new JkleeFilesEndpoint(jklee, properties.getSpringBootAdmin().getSessionPrefix());
+      Jklee jklee,
+      JkleeConfigurationProperties properties,
+      @Value("${spring.application.name:}") String applicationName) {
+    String sessionPrefix = properties.getSpringBootAdmin().getSessionPrefix();
+    if (sessionPrefix == null || sessionPrefix.isEmpty()) {
+      sessionPrefix = applicationName;
+    }
+    return new JkleeFilesEndpoint(jklee, sessionPrefix);
   }
 
   @Bean
