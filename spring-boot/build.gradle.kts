@@ -18,6 +18,8 @@ dependencies {
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation(platform(libs.springBoot27))
+
   testCompileOnly("com.fasterxml.jackson.core:jackson-annotations")
+
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
