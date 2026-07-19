@@ -11,3 +11,6 @@ staging-repo
 
 # ralphex progress logs
 .ralphex/progress/
+
+# superpowers planning docs
+docs/superpowers/
