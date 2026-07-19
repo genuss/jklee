@@ -89,6 +89,25 @@
         const day = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
         return `${day} ${time}`;
       },
+      formatDuration(iso) {
+        if (!iso)
+          return "";
+        const match = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?$/.exec(iso);
+        if (!match)
+          return iso;
+        const hours = parseInt(match[1] || "0", 10);
+        const minutes = parseInt(match[2] || "0", 10);
+        const seconds = parseFloat(match[3] || "0");
+        if (hours && !minutes && !seconds)
+          return `${hours}h`;
+        if (!hours && minutes && !seconds)
+          return `${minutes}m`;
+        if (!hours && !minutes) {
+          return Number.isInteger(seconds) ? `${seconds}s` : `${Math.round(seconds * 1e3)}ms`;
+        }
+        const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        return Number.isInteger(totalSeconds) ? `${totalSeconds}s` : `${Math.round(totalSeconds * 1e3)}ms`;
+      },
       parseToMillis(timeString) {
         if (!timeString)
           return 0;
@@ -155,8 +174,15 @@
             const response = yield this.instance.axios.get("actuator/jkleeFiles");
             this.results = response.data.results;
             const formFields = response.data.formFields;
-            if (formFields && formFields.sessionName) {
-              this.profileRequest.sessionName = formFields.sessionName;
+            if (formFields) {
+              if (formFields.sessionName)
+                this.profileRequest.sessionName = formFields.sessionName;
+              if (formFields.rawArguments)
+                this.profileRequest.rawArguments = formFields.rawArguments;
+              if (formFields.duration)
+                this.profileRequest.duration = this.formatDuration(formFields.duration);
+              if (formFields.format)
+                this.profileRequest.format = formFields.format;
             }
           } catch (error) {
             this.error = error;

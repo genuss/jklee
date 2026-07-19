@@ -1,8 +1,10 @@
 package me.genuss.jklee;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import lombok.Value;
+import me.genuss.jklee.Jklee.ProfilingRequest.Format;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
@@ -32,10 +34,20 @@ public class JkleeConfigurationProperties {
   public static class SpringBootAdmin {
 
     String sessionPrefix;
+    String rawArguments;
+    Duration duration;
+    Format format;
 
     @ConstructorBinding
-    public SpringBootAdmin(String sessionPrefix) {
+    public SpringBootAdmin(
+        String sessionPrefix,
+        @DefaultValue("start,event=itimer,interval=1ms") String rawArguments,
+        @DefaultValue("1s") Duration duration,
+        @DefaultValue("FLAMEGRAPH") Format format) {
       this.sessionPrefix = sessionPrefix;
+      this.rawArguments = rawArguments;
+      this.duration = duration;
+      this.format = format;
     }
   }
 

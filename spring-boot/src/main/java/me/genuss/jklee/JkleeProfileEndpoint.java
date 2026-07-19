@@ -21,9 +21,11 @@ import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 class JkleeProfileEndpoint {
 
   private final Jklee jklee;
+  private final JkleeFormFieldsManager formFieldsManager;
 
-  JkleeProfileEndpoint(Jklee jklee) {
+  JkleeProfileEndpoint(Jklee jklee, JkleeFormFieldsManager formFieldsManager) {
     this.jklee = jklee;
+    this.formFieldsManager = formFieldsManager;
   }
 
   @ReadOperation
@@ -45,6 +47,7 @@ class JkleeProfileEndpoint {
   ProfilingResponse start(
       @Selector String id, String rawArguments, Duration duration, Format format) {
     // rawArguments example start,event=itimer,interval=1ms
+    formFieldsManager.recordSubmission(id, rawArguments, duration, format);
     return jklee.start(
         ProfilingRequest.builder()
             .id(id)
