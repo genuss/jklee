@@ -57,8 +57,8 @@ jobs:
           JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
           JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.OSS_SONATYPE_USER }}
         if: startsWith(github.ref, 'refs/tags/v')
-        name: Publish to Maven Central
-        run: ./gradlew --no-configuration-cache jreleaserDeploy --exclude-deployer github
+        name: Publish release
+        run: ./gradlew --no-configuration-cache jreleaserRelease
       - if: always()
         name: JReleaser debug info
         uses: actions/upload-artifact@v4
