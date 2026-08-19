@@ -61,6 +61,7 @@ jreleaser {
       previousTagName = "v${scmVersion.previousVersion}"
       sign = true
       signatures = true
+      skipTag = true
       tagName = "v${scmVersion.version}"
     }
   }
