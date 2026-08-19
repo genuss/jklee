@@ -48,7 +48,7 @@ jobs:
         name: Publish to Github Packages
         run: ./gradlew --no-configuration-cache jreleaserDeploy --deployer github
       - env:
-          JRELEASER_BRANCH: ${{ github.head_ref || github.ref_name }}
+          JRELEASER_BRANCH: ${{ github.event.repository.default_branch }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GITHUB_USERNAME: ${{ github.actor }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
