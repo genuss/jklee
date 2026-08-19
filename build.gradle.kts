@@ -58,11 +58,10 @@ jreleaser {
     github {
       makeLatest = org.jreleaser.model.api.release.GithubReleaser.MakeLatest.TRUE
       immutableRelease = true
-      previousTagName = "v${scmVersion.previousVersion}"
       sign = true
       signatures = true
       skipTag = true
-      tagName = "v${scmVersion.version}"
+      tagName = "v{{projectVersion}}"
     }
   }
   deploy {
