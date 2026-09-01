@@ -173,6 +173,9 @@ export default {
       return `${day} ${time}`;
     },
     formatDuration(iso) {
+      if (typeof iso === 'number') {
+        return Number.isInteger(iso) ? `${iso}s` : `${Math.round(iso * 1000)}ms`;
+      }
       if (!iso) return '';
       const match = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?$/.exec(iso);
       if (!match) return iso;
@@ -187,21 +190,24 @@ export default {
       const totalSeconds = hours * 3600 + minutes * 60 + seconds;
       return Number.isInteger(totalSeconds) ? `${totalSeconds}s` : `${Math.round(totalSeconds * 1000)}ms`;
     },
-    parseToMillis(timeString) {
-      if (!timeString) return 0;
-
-      const value = parseInt(timeString, 10);
-      if (isNaN(value)) return 0;
-
-      const unit = timeString.slice(-1);
-
-      switch(unit) {
-        case 's': return value * 1000;
-        case 'm': return value * 60 * 1000;
-        case 'h': return value * 60 * 60 * 1000;
-        case 'd': return value * 60 * 60 * 24 * 1000;
-        default: return value; // Assume milliseconds if no unit
+    parseToMillis(duration) {
+      if (typeof duration === 'number') {
+        return Number.isFinite(duration) ? duration * 1000 : 0;
       }
+      if (!duration) return 0;
+
+      const match = /^(\d+(?:\.\d+)?)\s*(ms|s|m|h|d)?$/.exec(String(duration).trim());
+      if (!match) return 0;
+
+      const value = Number(match[1]);
+      const multipliers = {
+        ms: 1,
+        s: 1000,
+        m: 60 * 1000,
+        h: 60 * 60 * 1000,
+        d: 60 * 60 * 24 * 1000,
+      };
+      return value * multipliers[match[2] || 'ms'];
     },
     async profile(profileRequest) {
       this.profiling = true;
