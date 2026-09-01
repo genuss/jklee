@@ -94,8 +94,6 @@
       },
       formatDuration(iso) {
         if (typeof iso === "number") {
-          if (!Number.isFinite(iso))
-            return "";
           return Number.isInteger(iso) ? `${iso}s` : `${Math.round(iso * 1e3)}ms`;
         }
         if (!iso)
